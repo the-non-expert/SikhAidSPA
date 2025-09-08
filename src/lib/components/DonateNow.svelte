@@ -1,3 +1,7 @@
+<script lang="ts">
+	import PaymentForm from '$lib/components/PaymentForm.svelte';
+</script>
+
 <section id="donate" class="py-24 px-4 bg-navy text-white">
 	<div class="max-w-7xl mx-auto text-center">
 		<div class="mb-16">
@@ -8,54 +12,24 @@
 			</p>
 		</div>
 
-		<!-- UPI Payment Section - Primary -->
+		<!-- Online Payment Section - Primary -->
 		<div class="bg-white text-navy p-8 rounded-2xl shadow-xl mb-12 max-w-3xl mx-auto">
-			<h3 class="text-3xl font-bold mb-8 text-center">Quick UPI Payment</h3>
+			<h3 class="text-3xl font-bold mb-8 text-center">Quick Online Payment</h3>
 			
-			<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-				<!-- QR Code -->
+			<div class="space-y-6">
+				<!-- Payment Form -->
+				<PaymentForm />
+				
+				<!-- Popular Payment Methods -->
 				<div class="text-center">
-					<div class="inline-block p-6 bg-gray-50 rounded-2xl shadow-lg">
-						<img src="/DonationQRImage.jpeg" alt="UPI QR Code" class="w-64 h-64 object-contain mx-auto" />
+					<p class="text-sm text-gray-600 mb-3">Secure payments powered by Razorpay:</p>
+					<div class="flex justify-center flex-wrap gap-3">
+						<span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">UPI</span>
+						<span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">Cards</span>
+						<span class="bg-red-100 text-red-800 text-xs font-semibold px-3 py-1 rounded-full">Net Banking</span>
+						<span class="bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full">Wallets</span>
 					</div>
-					<p class="font-mono text-lg font-semibold text-navy mt-4">9340475426@okbiaxis</p>
-					<p class="text-sm text-gray-600 mt-2">Sikh Aid Charitable Trust</p>
-				</div>
-
-				<!-- UPI Instructions -->
-				<div class="space-y-6">
-					<div class="bg-blue-50 p-6 rounded-xl">
-						<h4 class="text-xl font-bold mb-4 text-blue-900">💳 Easy UPI Payment</h4>
-						<div class="space-y-3 text-left">
-							<div class="flex items-start space-x-3">
-								<span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded-full mt-1">1</span>
-								<p class="text-gray-700"><strong>Screenshot this QR code</strong> and save it to your phone</p>
-							</div>
-							<div class="flex items-start space-x-3">
-								<span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded-full mt-1">2</span>
-								<p class="text-gray-700">Open <strong>any UPI app</strong> (PhonePe, Paytm, GPay, etc.)</p>
-							</div>
-							<div class="flex items-start space-x-3">
-								<span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded-full mt-1">3</span>
-								<p class="text-gray-700"><strong>Upload the screenshot</strong> using "Scan from Gallery"</p>
-							</div>
-							<div class="flex items-start space-x-3">
-								<span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded-full mt-1">4</span>
-								<p class="text-gray-700"><strong>Enter amount</strong> and complete payment</p>
-							</div>
-						</div>
-					</div>
-
-					<!-- Popular UPI Apps -->
-					<div class="text-center">
-						<p class="text-sm text-gray-600 mb-3">Works with all popular UPI apps:</p>
-						<div class="flex justify-center space-x-4">
-							<span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">PhonePe</span>
-							<span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">Paytm</span>
-							<span class="bg-red-100 text-red-800 text-xs font-semibold px-3 py-1 rounded-full">GPay</span>
-							<span class="bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full">BHIM</span>
-						</div>
-					</div>
+					<p class="text-xs text-gray-500 mt-2">UPI ID for direct transfer: 9340475426@okbiaxis</p>
 				</div>
 			</div>
 		</div>
