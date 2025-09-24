@@ -1,37 +1,64 @@
-<section id="hero" class="min-h-screen flex items-center justify-center bg-white pt-24 pb-16 px-4">
-	<div class="max-w-6xl mx-auto text-center">
+<section id="hero" class="min-h-screen flex items-center justify-center bg-white pt-8 pb-16 px-4 relative overflow-hidden">
+	<!-- Background Elements -->
+	<div class="absolute inset-0 bg-gradient-to-r from-gray-50 to-white"></div>
+	<div class="absolute top-20 right-10 w-72 h-72 bg-orange-custom rounded-full opacity-10 animate-pulse"></div>
+	<div class="absolute bottom-20 left-10 w-48 h-48 bg-navy rounded-full opacity-10 animate-pulse delay-1000"></div>
+
+	<div class="max-w-6xl mx-auto text-center relative z-10">
 		<div class="mb-12">
-			<h1 class="text-5xl md:text-7xl font-bold text-navy mb-6 leading-tight">
-				Punjab Floods
-				<span class="block">Relief Aid 2025</span>
+			<!-- NGO Badge -->
+			<div class="inline-flex items-center bg-orange-custom text-white px-6 py-2 rounded-full text-sm font-semibold mb-6 animate-fade-in">
+				🇮🇳 Serving India Since 2020
+			</div>
+
+			<h1 class="text-5xl md:text-7xl font-bold text-navy mb-6 leading-tight animate-slide-up">
+				<span class="text-orange-custom">SikhAid</span>
+				<span class="block">Charitable Trust</span>
 			</h1>
-			<p class="text-xl md:text-2xl text-gray-700 mb-8 max-w-3xl mx-auto leading-relaxed">
-				Supporting Punjab's communities affected by devastating rains and floods. 
-				Your donation provides immediate relief to farming families and displaced communities in urgent need.
+			<p class="text-xl md:text-2xl text-gray-700 mb-8 max-w-4xl mx-auto leading-relaxed animate-slide-up delay-200">
+				Compassionate service in times of crisis. From natural disasters to community emergencies,
+				we stand with Indians across the nation, providing immediate relief and long-term support.
 			</p>
 		</div>
-		
-		<div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
-			<a href="#donate" class="bg-navy hover:bg-navy-dark text-white px-12 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 shadow-lg">
-				Donate Now
+
+		<div class="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12 animate-slide-up delay-400">
+			<a href="/donate" class="bg-orange-custom hover:bg-orange-dark text-white px-12 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 shadow-lg">
+				Support Our Mission
 			</a>
-			<a href="#summary" class="border-2 border-navy text-navy hover:bg-navy hover:text-white px-12 py-4 rounded-lg text-lg font-semibold transition-all">
-				Learn More
+			<a href="/about" class="border-2 border-navy text-navy hover:bg-navy hover:text-white px-12 py-4 rounded-lg text-lg font-semibold transition-all">
+				Our Story
 			</a>
 		</div>
-		
-		<div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-			<div class="bg-gray-50 p-8 rounded-lg">
-				<div class="text-3xl font-bold text-navy mb-2">2000+</div>
-				<div class="text-gray-600">Punjab Families Helped</div>
+
+		<!-- Current Campaign Alert -->
+		<div class="bg-red-50 border border-red-200 rounded-lg p-6 mb-12 max-w-2xl mx-auto animate-slide-up delay-600">
+			<div class="flex items-center justify-center space-x-2 mb-2">
+				<div class="w-2 h-2 bg-red-500 rounded-full animate-ping"></div>
+				<span class="text-red-700 font-semibold text-sm">URGENT: Active Relief Campaign</span>
 			</div>
-			<div class="bg-gray-50 p-8 rounded-lg">
+			<h3 class="text-lg font-bold text-red-800 mb-2">Punjab Floods 2025</h3>
+			<p class="text-red-700 text-sm mb-3">2000+ families need immediate assistance</p>
+			<a href="/donate" class="inline-block bg-red-600 text-white px-6 py-2 rounded text-sm font-semibold hover:bg-red-700 transition-colors">
+				Help Now →
+			</a>
+		</div>
+
+		<div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-center animate-slide-up delay-800">
+			<div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-orange-custom">
+				<div class="text-3xl font-bold text-navy mb-2">50,000+</div>
+				<div class="text-gray-600 text-sm">Lives Impacted</div>
+			</div>
+			<div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-navy">
+				<div class="text-3xl font-bold text-navy mb-2">15+</div>
+				<div class="text-gray-600 text-sm">States Served</div>
+			</div>
+			<div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-orange-custom">
 				<div class="text-3xl font-bold text-navy mb-2">24/7</div>
-				<div class="text-gray-600">Rescue Operations</div>
+				<div class="text-gray-600 text-sm">Emergency Response</div>
 			</div>
-			<div class="bg-gray-50 p-8 rounded-lg">
+			<div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-navy">
 				<div class="text-3xl font-bold text-navy mb-2">100%</div>
-				<div class="text-gray-600">Direct Relief</div>
+				<div class="text-gray-600 text-sm">Transparency</div>
 			</div>
 		</div>
 	</div>

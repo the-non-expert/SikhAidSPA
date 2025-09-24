@@ -1,35 +1,45 @@
 <script lang="ts">
+	import { page } from '$app/stores';
+
 	let isMenuOpen = false;
-	
+
 	function toggleMenu() {
 		isMenuOpen = !isMenuOpen;
 	}
-	
+
 	function closeMenu() {
 		isMenuOpen = false;
 	}
+
+	// Check if current page matches the link
+	function isActivePage(href: string): boolean {
+		if (href === '/') {
+			return $page.url.pathname === '/';
+		}
+		return $page.url.pathname.startsWith(href);
+	}
 </script>
 
-<header class="bg-navy text-white py-4 px-4 fixed w-full top-0 z-50 shadow-lg">
+<header class="bg-white text-navy py-4 px-4 fixed w-full top-0 z-50 shadow-lg border-b border-gray-200">
 	<nav class="max-w-7xl mx-auto flex justify-between items-center">
-		<!-- Logo with contrast background -->
+		<!-- Logo -->
 		<div class="flex items-center">
-			<div class="bg-white p-2 rounded-lg shadow-md">
-				<img src="/sikhaidLogo.png" alt="Sikh Aid Logo" class="h-12 sm:h-14 md:h-16 w-auto" />
-			</div>
+			<img src="/sikhaidLogo.png" alt="SikhAid Logo" class="h-12 sm:h-14 md:h-16 w-auto" />
 		</div>
 		
 		<!-- Desktop Navigation -->
-		<ul class="hidden md:flex space-x-8">
-			<li><a href="#hero" class="hover:text-gray-200 transition-colors font-medium">Home</a></li>
-			<li><a href="#summary" class="hover:text-gray-200 transition-colors font-medium">About</a></li>
-			<li><a href="#donate" class="hover:text-gray-200 transition-colors font-medium">Donate</a></li>
-			<li><a href="#contact" class="hover:text-gray-200 transition-colors font-medium">Contact</a></li>
+		<ul class="hidden md:flex space-x-2">
+			<li><a href="/" class="px-4 py-2 rounded-lg font-medium transition-all {isActivePage('/') ? 'bg-orange-custom text-white' : 'text-navy hover:bg-gray-100'}">Home</a></li>
+			<li><a href="/about" class="px-4 py-2 rounded-lg font-medium transition-all {isActivePage('/about') ? 'bg-orange-custom text-white' : 'text-navy hover:bg-gray-100'}">About</a></li>
+			<li><a href="/campaigns" class="px-4 py-2 rounded-lg font-medium transition-all {isActivePage('/campaigns') ? 'bg-orange-custom text-white' : 'text-navy hover:bg-gray-100'}">Campaigns</a></li>
+			<li><a href="/blog" class="px-4 py-2 rounded-lg font-medium transition-all {isActivePage('/blog') ? 'bg-orange-custom text-white' : 'text-navy hover:bg-gray-100'}">Blog</a></li>
+			<li><a href="/donate" class="px-4 py-2 rounded-lg font-medium transition-all {isActivePage('/donate') ? 'bg-orange-custom text-white' : 'text-navy hover:bg-gray-100'}">Donate</a></li>
+			<li><a href="/contact" class="px-4 py-2 rounded-lg font-medium transition-all {isActivePage('/contact') ? 'bg-orange-custom text-white' : 'text-navy hover:bg-gray-100'}">Contact</a></li>
 		</ul>
 		
 		<!-- Mobile Menu Button -->
-		<button 
-			class="md:hidden text-white p-2 rounded-lg hover:bg-white hover:bg-opacity-20 transition-colors"
+		<button
+			class="md:hidden text-navy p-2 rounded-lg hover:bg-gray-100 transition-colors"
 			on:click={toggleMenu}
 			aria-label="Toggle navigation menu"
 		>
@@ -47,32 +57,46 @@
 	
 	<!-- Mobile Navigation Menu -->
 	{#if isMenuOpen}
-		<div class="md:hidden bg-navy border-t border-white border-opacity-20">
-			<div class="max-w-7xl mx-auto py-4 px-4 space-y-3">
-				<a 
-					href="#hero" 
-					class="block text-white hover:text-gray-200 transition-colors font-medium py-2"
+		<div class="md:hidden bg-white border-t border-gray-200 shadow-lg">
+			<div class="max-w-7xl mx-auto py-4 px-4 space-y-2">
+				<a
+					href="/"
+					class="block px-4 py-3 rounded-lg font-medium transition-all {isActivePage('/') ? 'bg-orange-custom text-white' : 'text-navy hover:bg-gray-100'}"
 					on:click={closeMenu}
 				>
 					Home
 				</a>
-				<a 
-					href="#summary" 
-					class="block text-white hover:text-gray-200 transition-colors font-medium py-2"
+				<a
+					href="/about"
+					class="block px-4 py-3 rounded-lg font-medium transition-all {isActivePage('/about') ? 'bg-orange-custom text-white' : 'text-navy hover:bg-gray-100'}"
 					on:click={closeMenu}
 				>
 					About
 				</a>
-				<a 
-					href="#donate" 
-					class="block text-white hover:text-gray-200 transition-colors font-medium py-2"
+				<a
+					href="/campaigns"
+					class="block px-4 py-3 rounded-lg font-medium transition-all {isActivePage('/campaigns') ? 'bg-orange-custom text-white' : 'text-navy hover:bg-gray-100'}"
+					on:click={closeMenu}
+				>
+					Campaigns
+				</a>
+				<a
+					href="/blog"
+					class="block px-4 py-3 rounded-lg font-medium transition-all {isActivePage('/blog') ? 'bg-orange-custom text-white' : 'text-navy hover:bg-gray-100'}"
+					on:click={closeMenu}
+				>
+					Blog
+				</a>
+				<a
+					href="/donate"
+					class="block px-4 py-3 rounded-lg font-medium transition-all {isActivePage('/donate') ? 'bg-orange-custom text-white' : 'text-navy hover:bg-gray-100'}"
 					on:click={closeMenu}
 				>
 					Donate
 				</a>
-				<a 
-					href="#contact" 
-					class="block text-white hover:text-gray-200 transition-colors font-medium py-2"
+				<a
+					href="/contact"
+					class="block px-4 py-3 rounded-lg font-medium transition-all {isActivePage('/contact') ? 'bg-orange-custom text-white' : 'text-navy hover:bg-gray-100'}"
 					on:click={closeMenu}
 				>
 					Contact
