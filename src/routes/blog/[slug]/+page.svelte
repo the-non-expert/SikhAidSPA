@@ -10,6 +10,9 @@
 	let slug = '';
 	let relatedPosts = [];
 
+	// Get all blogs for related posts
+	const allBlogs = getAllBlogs();
+
 	onMount(() => {
 		slug = $page.params.slug;
 		currentPost = getBlogBySlug(slug);
@@ -34,12 +37,12 @@
 	}
 </script>
 
-{#if currentPost}
-	<svelte:head>
-		<title>{currentPost.title} - Sikh Aid Blog</title>
-		<meta name="description" content={currentPost.title} />
-	</svelte:head>
+<svelte:head>
+	<title>{currentPost ? currentPost.title + ' - Sikh Aid Blog' : 'Blog Post - Sikh Aid Charitable Trust'}</title>
+	<meta name="description" content={currentPost ? currentPost.excerpt : 'Blog post from Sikh Aid Charitable Trust'} />
+</svelte:head>
 
+{#if currentPost}
 	<Header />
 
 	<main class="pt-32 min-h-screen">

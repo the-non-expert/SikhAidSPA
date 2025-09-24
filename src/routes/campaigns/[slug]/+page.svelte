@@ -306,9 +306,4 @@
 		-webkit-box-orient: vertical;
 		overflow: hidden;
 	}
-
-	.prose p {
-		margin-bottom: 1rem;
-		line-height: 1.7;
-	}
 </style>
