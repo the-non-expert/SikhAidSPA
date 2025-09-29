@@ -1,14 +1,10 @@
 <script lang="ts">
-	import Header from '$lib/components/Header.svelte';
-	import Footer from '$lib/components/Footer.svelte';
 </script>
 
 <svelte:head>
 	<title>About Us - Sikh Aid Charitable Trust</title>
 	<meta name="description" content="Learn about Sikh Aid Charitable Trust's mission to serve humanity with compassion and dignity during times of crisis. Serving Punjab and beyond since 2020." />
 </svelte:head>
-
-<Header />
 
 <main class="pt-32 min-h-screen">
 	<!-- Hero Section -->
@@ -244,8 +240,6 @@
 		</div>
 	</section>
 </main>
-
-<Footer />
 
 <style>
 	:global(:root) {

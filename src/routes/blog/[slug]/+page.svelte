@@ -2,8 +2,6 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import Header from '$lib/components/Header.svelte';
-	import Footer from '$lib/components/Footer.svelte';
 	import { getBlogBySlug, getAllBlogs } from '$lib/data/blogs.js';
 
 	let currentPost = null;
@@ -43,8 +41,6 @@
 </svelte:head>
 
 {#if currentPost}
-	<Header />
-
 	<main class="pt-32 min-h-screen">
 		<!-- Hero Section -->
 		<section class="py-16 px-4 bg-gray-50">
@@ -130,8 +126,6 @@
 			</div>
 		</section>
 	</main>
-
-	<Footer />
 {:else}
 	<div class="min-h-screen flex items-center justify-center">
 		<div class="text-center">

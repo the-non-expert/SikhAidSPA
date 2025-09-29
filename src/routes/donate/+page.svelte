@@ -1,6 +1,4 @@
 <script lang="ts">
-	import Header from '$lib/components/Header.svelte';
-	import Footer from '$lib/components/Footer.svelte';
 	import PaymentForm from '$lib/components/PaymentForm.svelte';
 </script>
 
@@ -8,8 +6,6 @@
 	<title>Donate Now - Support SikhAid's Mission Across India</title>
 	<meta name="description" content="Support SikhAid's humanitarian work across India. 100% of funds go directly to relief efforts. Multiple payment options available including UPI, cards, and bank transfer." />
 </svelte:head>
-
-<Header />
 
 <main class="pt-32 min-h-screen">
 	<!-- Hero Section -->
@@ -413,8 +409,6 @@
 		</div>
 	</section>
 </main>
-
-<Footer />
 
 <style>
 	:global(:root) {

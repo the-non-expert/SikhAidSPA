@@ -1,6 +1,4 @@
 <script lang="ts">
-	import Header from '$lib/components/Header.svelte';
-	import Footer from '$lib/components/Footer.svelte';
 	import { getAllBlogs } from '$lib/data/blogs.js';
 
 	// Get all blog posts from data file
@@ -20,8 +18,6 @@
 	<title>Blog - SikhAid Charitable Trust</title>
 	<meta name="description" content="Read our latest updates on disaster relief efforts across India, impact stories, transparency reports, and insights from SikhAid Charitable Trust." />
 </svelte:head>
-
-<Header />
 
 <main class="pt-32 min-h-screen">
 	<!-- Hero Section -->
@@ -134,8 +130,6 @@
 		</div>
 	</section>
 </main>
-
-<Footer />
 
 <style>
 	:global(:root) {

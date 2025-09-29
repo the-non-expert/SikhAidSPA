@@ -1,6 +1,4 @@
 <script lang="ts">
-	import Header from '$lib/components/Header.svelte';
-	import Footer from '$lib/components/Footer.svelte';
 	import { campaigns, featuredCampaign } from '$lib/data/campaigns.js';
 </script>
 
@@ -8,8 +6,6 @@
 	<title>Our Campaigns - Sikh Aid Charitable Trust</title>
 	<meta name="description" content="Discover our ongoing humanitarian campaigns and relief efforts across India. From Langar Aid to emergency response, see how SikhAid is making a difference." />
 </svelte:head>
-
-<Header />
 
 <main class="pt-32 min-h-screen">
 	<!-- Hero Section -->
@@ -190,8 +186,6 @@
 		</div>
 	</section>
 </main>
-
-<Footer />
 
 <style>
 	:global(:root) {

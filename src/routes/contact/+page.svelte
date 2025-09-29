@@ -1,7 +1,4 @@
 <script lang="ts">
-	import Header from '$lib/components/Header.svelte';
-	import Footer from '$lib/components/Footer.svelte';
-
 	let formData = {
 		name: '',
 		email: '',
@@ -43,8 +40,6 @@
 	<title>Contact Us - Sikh Aid Charitable Trust</title>
 	<meta name="description" content="Get in touch with Sikh Aid Charitable Trust. Contact us for inquiries about our relief efforts, volunteering opportunities, or partnership proposals." />
 </svelte:head>
-
-<Header />
 
 <main class="pt-32 min-h-screen">
 	<!-- Hero Section -->
@@ -269,8 +264,6 @@
 		</div>
 	</section>
 </main>
-
-<Footer />
 
 <style>
 	:global(:root) {

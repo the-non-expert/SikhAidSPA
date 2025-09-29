@@ -2,8 +2,6 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import Header from '$lib/components/Header.svelte';
-	import Footer from '$lib/components/Footer.svelte';
 	import { getCampaignBySlug, campaigns } from '$lib/data/campaigns.js';
 
 	let currentCampaign = null;
@@ -44,8 +42,6 @@
 </svelte:head>
 
 {#if currentCampaign}
-
-	<Header />
 
 	<main class="pt-32 min-h-screen">
 		<!-- Hero Section -->
@@ -237,8 +233,6 @@
 			</section>
 		{/if}
 	</main>
-
-	<Footer />
 {:else}
 	<div class="min-h-screen flex items-center justify-center">
 		<div class="text-center">
