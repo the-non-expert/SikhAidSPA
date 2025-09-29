@@ -12,7 +12,7 @@ export const campaigns = [
 
 			This initiative embodies the Sikh principle of 'Langar' - community kitchens that serve free meals to all, regardless of background, caste, or creed. Every meal served is a step towards eliminating hunger and fostering unity in our diverse nation.
 		`,
-		image: '/sikhaidLogo.png',
+		image: 'https://i.ibb.co/9kkX22Tz/151.png',
 		category: 'Food Security',
 		status: 'ongoing',
 		impactStats: [
@@ -64,7 +64,7 @@ export const campaigns = [
 
 			This initiative fights the stigma around menstruation with quiet strength and steady seva, ensuring that no woman has to compromise her dignity due to lack of access to basic sanitary facilities.
 		`,
-		image: '/sikhaidLogo.png',
+		image: 'https://i.ibb.co/7dVCJV2p/No-Spot-Main.png',
 		category: 'Women\'s Health',
 		status: 'ongoing',
 		impactStats: [
@@ -116,7 +116,7 @@ export const campaigns = [
 
 			Our teams work tirelessly during winter months, conducting door-to-door distributions in slums, organizing community distribution points, and ensuring that the most vulnerable populations receive adequate winter protection when they need it most.
 		`,
-		image: '/sikhaidLogo.png',
+		image: 'https://i.ibb.co/zWNmNZhN/Blanket-Main.png',
 		category: 'Winter Relief',
 		status: 'seasonal',
 		impactStats: [
@@ -168,7 +168,7 @@ export const campaigns = [
 
 			Our rapid response network mobilized volunteers, medical professionals, and logistics teams to ensure that no family faced the pandemic alone. The initiative showcased the power of community solidarity in times of unprecedented crisis.
 		`,
-		image: '/sikhaidLogo.png',
+		image: 'https://i.ibb.co/n8bLzJWC/Oxygen-Main.png',
 		category: 'Pandemic Relief',
 		status: 'completed',
 		impactStats: [
@@ -275,7 +275,7 @@ export const featuredCampaign = {
 
 		As of today, we continue to provide support to 1,500 families still in temporary accommodations. Our focus has shifted to rehabilitation and helping families rebuild their lives and livelihoods, demonstrating our long-term commitment to disaster recovery.
 	`,
-	image: '/sikhaidLogo.png',
+	image: 'https://i.ibb.co/B20Q7cBV/Hero1.jpg',
 	category: 'Emergency Response',
 	status: 'ongoing',
 	impactStats: [
