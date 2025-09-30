@@ -29,18 +29,18 @@
 						<img
 							src={method.logo}
 							alt="{method.name} Logo"
-							class="h-8 w-auto object-contain filter grayscale hover:grayscale-0 transition-all duration-300"
+							class="h-8 w-auto object-contain transition-all duration-300"
 							loading="lazy"
 						/>
 					</div>
 				{/each}
 
 				<!-- Net Banking Placeholder -->
-				<div class="flex items-center justify-center p-2">
+				<!-- <div class="flex items-center justify-center p-2">
 					<div class="w-16 h-8 bg-purple-600 rounded flex items-center justify-center">
 						<span class="text-white font-bold text-xs">NET BANKING</span>
 					</div>
-				</div>
+				</div> -->
 			</div>
 
 			<p class="text-sm text-gray-600 mt-4">

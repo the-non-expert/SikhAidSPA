@@ -217,7 +217,7 @@ export const campaigns = [
 
 			SikhAid also manages a nationwide blood donation network, bridging urgent gaps in critical cases. These initiatives reflect a holistic approach to seva - uplifting minds, healing bodies, and saving lives with quiet determination.
 		`,
-		image: '/sikhaidLogo.png',
+		image: 'https://i.ibb.co/F4YZrjZR/174.png',
 		category: 'Community Welfare',
 		status: 'ongoing',
 		impactStats: [
