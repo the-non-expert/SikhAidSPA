@@ -44,12 +44,12 @@ export const campaigns = [
 			}
 		],
 		gallery: [
-			{ src: '/sikhaidLogo.png', alt: 'Volunteers preparing meals in community kitchen' },
-			{ src: '/sikhaidLogo.png', alt: 'Food distribution to homeless individuals' },
-			{ src: '/sikhaidLogo.png', alt: 'Large-scale meal preparation' },
-			{ src: '/sikhaidLogo.png', alt: 'Volunteers serving food in rural areas' },
-			{ src: '/sikhaidLogo.png', alt: 'Community kitchen operations' },
-			{ src: '/sikhaidLogo.png', alt: 'Beneficiaries receiving nutritious meals' }
+			{ src: 'https://i.ibb.co/chXkRPDx/147.png', alt: 'Volunteers preparing meals in community kitchen' },
+			{ src: 'https://i.ibb.co/8gRBfkV5/148.png', alt: 'Food distribution to homeless individuals' },
+			{ src: 'https://i.ibb.co/1tXPdK2m/149.png', alt: 'Large-scale meal preparation' },
+			{ src: 'https://i.ibb.co/F42y3Z90/150.png', alt: 'Volunteers serving food in rural areas' },
+			{ src: 'https://i.ibb.co/hR7362s8/151.png', alt: 'Community kitchen operations' },
+			{ src: 'https://i.ibb.co/jP5d1kmj/152.png', alt: 'Beneficiaries receiving nutritious meals' }
 		]
 	},
 	{
@@ -96,12 +96,12 @@ export const campaigns = [
 			}
 		],
 		gallery: [
-			{ src: '/sikhaidLogo.png', alt: 'Distribution of sanitary pads to women' },
-			{ src: '/sikhaidLogo.png', alt: 'Hygiene awareness workshop' },
-			{ src: '/sikhaidLogo.png', alt: 'Portable toilet installation' },
-			{ src: '/sikhaidLogo.png', alt: 'Women volunteers conducting session' },
-			{ src: '/sikhaidLogo.png', alt: 'Community gathering for awareness' },
-			{ src: '/sikhaidLogo.png', alt: 'Sanitation drive in urban slums' }
+			{ src: 'https://i.ibb.co/Pvb6V68C/153.png', alt: 'Distribution of sanitary pads to women' },
+			{ src: 'https://i.ibb.co/ZpNYDK8C/154.png', alt: 'Hygiene awareness workshop' },
+			{ src: 'https://i.ibb.co/WW2SqyRG/155.png', alt: 'Portable toilet installation' },
+			{ src: 'https://i.ibb.co/F4PKdh2n/156.png', alt: 'Women volunteers conducting session' },
+			{ src: 'https://i.ibb.co/yBdptGNj/157.png', alt: 'Community gathering for awareness' },
+			{ src: 'https://i.ibb.co/8nbT036R/159.png', alt: 'Sanitation drive in urban slums' }
 		]
 	},
 	{
@@ -148,12 +148,9 @@ export const campaigns = [
 			}
 		],
 		gallery: [
-			{ src: '/sikhaidLogo.png', alt: 'Blanket distribution to homeless individuals' },
-			{ src: '/sikhaidLogo.png', alt: 'Elderly receiving warm blankets' },
-			{ src: '/sikhaidLogo.png', alt: 'Community distribution event' },
-			{ src: '/sikhaidLogo.png', alt: 'Volunteers organizing blankets' },
-			{ src: '/sikhaidLogo.png', alt: 'Winter relief in rural villages' },
-			{ src: '/sikhaidLogo.png', alt: 'Families receiving winter supplies' }
+			{ src: 'https://i.ibb.co/nsTW1dT9/160.png', alt: 'Blanket distribution to homeless individuals' },
+			{ src: 'https://i.ibb.co/gLVY2YGZ/161.png', alt: 'Elderly receiving warm blankets' },
+			{ src: 'https://i.ibb.co/0j2BzXf5/162.png', alt: 'Community distribution event' }
 		]
 	},
 	{
@@ -200,12 +197,12 @@ export const campaigns = [
 			}
 		],
 		gallery: [
-			{ src: '/sikhaidLogo.png', alt: 'Oxygen concentrator delivery to patients' },
-			{ src: '/sikhaidLogo.png', alt: 'Volunteers distributing ration kits' },
-			{ src: '/sikhaidLogo.png', alt: 'Medical equipment preparation' },
-			{ src: '/sikhaidLogo.png', alt: 'Contactless delivery during COVID' },
-			{ src: '/sikhaidLogo.png', alt: 'Oxygen cylinder distribution' },
-			{ src: '/sikhaidLogo.png', alt: 'Emergency response team in action' }
+			{ src: 'https://i.ibb.co/S4ZDMGfh/168.png', alt: 'Oxygen concentrator delivery to patients' },
+			{ src: 'https://i.ibb.co/N2KPNs6J/164.png', alt: 'Volunteers distributing ration kits' },
+			{ src: 'https://i.ibb.co/q3qjnfNd/165.png', alt: 'Medical equipment preparation' },
+			{ src: 'https://i.ibb.co/Zp2wtcGQ/166.png', alt: 'Contactless delivery during COVID' },
+			{ src: 'https://i.ibb.co/bgbXtDhg/169.png', alt: 'Oxygen cylinder distribution' },
+			{ src: 'https://i.ibb.co/pGxCQRw/170.png', alt: 'Emergency response team in action' }
 		]
 	},
 	{
@@ -252,12 +249,12 @@ export const campaigns = [
 			}
 		],
 		gallery: [
-			{ src: '/sikhaidLogo.png', alt: 'Students receiving educational supplies' },
-			{ src: '/sikhaidLogo.png', alt: 'Mobile medical camp in rural area' },
-			{ src: '/sikhaidLogo.png', alt: 'Ambulance service for emergency transport' },
-			{ src: '/sikhaidLogo.png', alt: 'Blood donation drive' },
-			{ src: '/sikhaidLogo.png', alt: 'Community health checkup' },
-			{ src: '/sikhaidLogo.png', alt: 'Educational scholarship distribution' }
+			{ src: 'https://i.ibb.co/LhgSyWJJ/171.png', alt: 'Students receiving educational supplies' },
+			{ src: 'https://i.ibb.co/SXd9fQTp/172.png', alt: 'Mobile medical camp in rural area' },
+			{ src: 'https://i.ibb.co/5WCLwQXv/173.png', alt: 'Ambulance service for emergency transport' },
+			{ src: 'https://i.ibb.co/F4YZrjZR/174.png', alt: 'Blood donation drive' },
+			{ src: 'https://i.ibb.co/GQXntpf3/175.png', alt: 'Community health checkup' },
+			{ src: 'https://i.ibb.co/CKzsTxyW/176.png', alt: 'Educational scholarship distribution' }
 		]
 	}
 ];
