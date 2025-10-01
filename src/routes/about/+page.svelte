@@ -230,7 +230,7 @@
 				<h3 class="text-2xl font-bold text-navy mb-4">Contact Information</h3>
 				<div class="space-y-3">
 					<p class="text-gray-700">
-						<strong>Email:</strong> sikhaidcharity@gmail.com
+						<strong>Email:</strong> help@sikhaid.ngo
 					</p>
 					<p class="text-gray-700">
 						<strong>Phone:</strong> +91 98513 41234

@@ -8,7 +8,7 @@
 	let activeTab = 'relief-aid';
 	let tabAnimationsStarted: { [key: string]: boolean } = {};
 
-	const targetNumber = 800000;
+	const targetNumber = 500000;
 	const animationDuration = 2500; // 2.5 seconds
 
 	// Tab configuration with stats, background images, and icons

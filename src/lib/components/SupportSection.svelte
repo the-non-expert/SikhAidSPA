@@ -2,7 +2,7 @@
 	let copySuccess = false;
 	let copyTimeout: number;
 
-	const csrEmail = 'sikhaidcharity@gmail.com';
+	const csrEmail = 'help@sikhaid.ngo';
 
 	async function copyToClipboard() {
 		try {

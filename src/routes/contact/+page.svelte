@@ -106,7 +106,7 @@
 								</div>
 								<div>
 									<h3 class="text-lg font-semibold text-gray-900 mb-2">Email</h3>
-									<p class="text-gray-600">sikhaidcharity@gmail.com</p>
+									<p class="text-gray-600">help@sikhaid.ngo</p>
 									<p class="text-sm text-gray-500 mt-1">We respond within 24 hours</p>
 								</div>
 							</div>

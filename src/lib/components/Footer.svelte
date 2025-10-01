@@ -48,7 +48,7 @@
 							/>
 						</svg>
 						<span class="text-gray-700"
-							>sikhaidcharity@gmail.com</span
+							>help@sikhaid.ngo</span
 						>
 					</div>
 					<div class="flex items-center space-x-3">

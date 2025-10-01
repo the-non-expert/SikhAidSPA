@@ -89,7 +89,7 @@
 		<div class="mt-6 pt-6 border-t border-gray-200">
 			<p class="text-xs text-gray-500">
 				Need help? Contact us at<br>
-				<span class="font-semibold">sikhaidcharity@gmail.com</span> or <span class="font-semibold">+91 98513 41234</span>
+				<span class="font-semibold">help@sikhaid.ngo</span> or <span class="font-semibold">+91 98513 41234</span>
 			</p>
 		</div>
 	</div>

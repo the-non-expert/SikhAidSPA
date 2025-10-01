@@ -175,7 +175,7 @@
 </script>
 
 <!-- Our Impact Section -->
-<section bind:this={sectionElement} class="py-16 px-4 bg-white">
+<section bind:this={sectionElement} class="py-1 px-4 bg-white">
 	<div class="max-w-7xl mx-auto">
 		<!-- Section Header -->
 		<div class="text-center mb-16">
