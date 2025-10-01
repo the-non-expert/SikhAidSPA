@@ -8,10 +8,16 @@
 
 <main class="pt-32 min-h-screen">
 	<!-- Hero Section -->
-	<section class="py-16 px-4 bg-navy text-white">
-		<div class="max-w-6xl mx-auto text-center">
-			<h1 class="text-4xl md:text-6xl font-bold mb-6">About Sikh Aid</h1>
-			<p class="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
+	<section class="relative py-16 px-4 text-white overflow-hidden">
+		<!-- Background Image -->
+		<div class="absolute inset-0 bg-cover bg-top bg-no-repeat" style="background-image: url('https://i.ibb.co/Xr0wXcmm/193.png');">
+			<!-- Overlay for text readability -->
+			<div class="absolute inset-0 bg-black/50"></div>
+		</div>
+
+		<div class="relative z-10 max-w-6xl mx-auto text-center">
+			<h1 class="text-4xl md:text-6xl font-bold mb-6 drop-shadow-lg">About Sikh Aid</h1>
+			<p class="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto leading-relaxed drop-shadow-md">
 				Serving humanity with compassion and dignity across India since 2020
 			</p>
 		</div>

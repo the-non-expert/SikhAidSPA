@@ -28,5 +28,8 @@
 	"main": "svelte.config.js",
 	"keywords": [],
 	"author": "",
-	"license": "ISC"
+	"license": "ISC",
+	"dependencies": {
+		"@iconify/svelte": "^5.0.2"
+	}
 }

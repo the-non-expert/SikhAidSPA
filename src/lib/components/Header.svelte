@@ -53,7 +53,7 @@
 
 		<!-- Center: Logo -->
 		<div class="flex justify-center">
-			<img src="/sikhaidLogo.png" alt="SikhAid Logo" class="h-20 sm:h-16 md:h-24 w-auto" />
+			<img src="/sikhaidLogo.png" alt="SikhAid Logo" class="h-15 sm:h-16 md:h-24 w-auto" />
 		</div>
 
 		<!-- Right: Donate Button -->

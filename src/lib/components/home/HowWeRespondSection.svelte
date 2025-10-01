@@ -6,7 +6,7 @@
 			<p class="text-xl text-gray-700 max-w-3xl mx-auto">Our proven 4-stage emergency response process</p>
 		</div>
 
-		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+		<div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8">
 			<div class="text-center group">
 				<div class="bg-orange-custom text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
 					<span class="text-2xl font-bold">1</span>
@@ -102,6 +102,43 @@
 
 	.text-orange-custom {
 		color: var(--orange);
+	}
+
+	/* Mobile-specific adjustments for 2x2 grid */
+	@media (max-width: 768px) {
+		.w-16.h-16 {
+			width: 3rem;
+			height: 3rem;
+		}
+
+		.text-2xl {
+			font-size: 1.25rem;
+		}
+
+		.text-xl {
+			font-size: 1rem;
+		}
+
+		.text-sm {
+			font-size: 0.75rem;
+		}
+
+		.mb-6 {
+			margin-bottom: 1rem;
+		}
+
+		.mb-3 {
+			margin-bottom: 0.5rem;
+		}
+
+		.gap-8 {
+			gap: 1rem;
+		}
+
+		.px-4 {
+			padding-left: 0.5rem;
+			padding-right: 0.5rem;
+		}
 	}
 
 	/* Responsive timeline adjustments */
