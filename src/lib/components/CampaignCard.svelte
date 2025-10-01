@@ -80,7 +80,13 @@
 
 			<!-- View Campaign Button -->
 			<div class="card-button-wrapper">
-				<span class="card-button">View Campaign</span>
+				<a
+					href="/campaigns/{campaign.slug}"
+					class="card-button"
+					onclick={(e) => e.stopPropagation()}
+				>
+					View Campaign
+				</a>
 			</div>
 		</div>
 	</div>
@@ -199,6 +205,7 @@
 	}
 
 	.card-button {
+		display: inline-block;
 		background: rgba(255, 255, 255, 0.2);
 		backdrop-filter: blur(10px);
 		color: white;
@@ -207,6 +214,7 @@
 		border-radius: 12px;
 		transition: all 0.3s ease;
 		border: 1px solid rgba(255, 255, 255, 0.3);
+		text-decoration: none;
 	}
 
 	.campaign-card:hover .card-button {
