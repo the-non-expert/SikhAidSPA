@@ -1,10 +1,16 @@
-<footer class="bg-white text-gray-800 py-16 px-4 border-t border-gray-200">
-	<div class="max-w-6xl mx-auto">
+<footer class="relative text-gray-800 py-16 px-4 border-t border-gray-200 overflow-hidden min-h-[600px] md:min-h-[400px]">
+	<!-- Background Image -->
+	<div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url('https://i.ibb.co/XxbGRmcs/Group-Image.png'); background-size: cover; background-position: center center;">
+		<!-- Overlay for text readability -->
+		<div class="absolute inset-0 bg-white/80"></div>
+	</div>
+
+	<div class="relative z-10 max-w-6xl mx-auto">
 		<div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
 			<!-- Organization Info -->
 			<div class="md:col-span-2">
 				<div class="flex items-center mb-6">
-					<img src="/sikhaidLogo.png" alt="SikhAid Logo" class="h-12 w-auto mr-4" />
+					<img src="/sikhaidLogo.png" alt="SikhAid Logo" class="h-20 w-auto mr-4" />
 					<h3 class="text-2xl font-bold text-navy">SikhAid Charitable Trust</h3>
 				</div>
 				<p class="text-gray-600 mb-6 leading-relaxed max-w-md">
@@ -60,9 +66,9 @@
 		</div>
 
 		<!-- Bottom Bar -->
-		<div class="pt-8 border-t border-gray-200">
+		<div class="pt-8 border-t border-black">
 			<div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-				<div class="text-gray-500 text-sm">
+				<div class="text-gray-500 text-sm text-center">
 					<p>&copy; 2025 SikhAid Charitable Trust. All rights reserved. | www.sikhaidindia.com</p>
 				</div>
 				<div class="text-gray-500 text-sm">
