@@ -20,7 +20,7 @@
 	}
 </script>
 
-<header class="bg-white text-navy py-4 px-4 fixed w-full top-0 z-50 shadow-lg border-b border-gray-200">
+<header class="bg-white text-navy px-2 fixed w-full top-0 z-50 shadow-lg border-b border-gray-200">
 	<nav class="max-w-7xl mx-auto grid grid-cols-3 items-center">
 		<!-- Left: Desktop Navigation / Mobile Menu Button -->
 		<div class="flex items-center">
@@ -53,12 +53,12 @@
 
 		<!-- Center: Logo -->
 		<div class="flex justify-center">
-			<img src="/sikhaidLogo.png" alt="SikhAid Logo" class="h-15 sm:h-16 md:h-24 w-auto" />
+			<img src="/sikhaidLogo.png" alt="SikhAid Logo" class="h-20 sm:h-15 md:h-24 w-auto" />
 		</div>
 
 		<!-- Right: Donate Button -->
 		<div class="flex justify-end">
-			<a href="/donate" class="bg-orange-custom hover:bg-orange-dark text-white px-4 py-2 rounded-lg text-sm font-normal transition-colors">
+			<a href="/donate" class="bg-orange-custom hover:bg-orange-dark text-white px-2 py-2 rounded-lg text-sm font-normal transition-colors">
 				Donate Now
 			</a>
 		</div>
@@ -66,39 +66,39 @@
 	
 	<!-- Mobile Navigation Menu -->
 	{#if isMenuOpen}
-		<div class="md:hidden bg-white border-t border-gray-200 shadow-lg">
-			<div class="max-w-7xl mx-auto py-4 px-4 space-y-1">
+		<div class="md:hidden shadow-lg">
+			<div class="max-w-7xl mx-auto">
 				<a
 					href="/"
-					class="block px-4 py-3 font-medium transition-colors {isActivePage('/') ? 'text-orange-custom' : 'text-navy hover:text-orange-custom'}"
+					class="block px-4 py-2 font-medium transition-colors {isActivePage('/') ? 'text-orange-custom font-bold' : 'text-navy hover:text-orange-custom'}"
 					on:click={closeMenu}
 				>
 					Home
 				</a>
 				<a
 					href="/about"
-					class="block px-4 py-3 font-medium transition-colors {isActivePage('/about') ? 'text-orange-custom' : 'text-navy hover:text-orange-custom'}"
+					class="block px-4 py-2 font-medium transition-colors {isActivePage('/about') ? 'text-orange-custom' : 'text-navy hover:text-orange-custom'}"
 					on:click={closeMenu}
 				>
 					About Us
 				</a>
 				<a
 					href="/campaigns"
-					class="block px-4 py-3 font-medium transition-colors {isActivePage('/campaigns') ? 'text-orange-custom' : 'text-navy hover:text-orange-custom'}"
+					class="block px-4 py-2 font-medium transition-colors {isActivePage('/campaigns') ? 'text-orange-custom' : 'text-navy hover:text-orange-custom'}"
 					on:click={closeMenu}
 				>
 					Campaigns
 				</a>
 				<a
 					href="/blog"
-					class="block px-4 py-3 font-medium transition-colors {isActivePage('/blog') ? 'text-orange-custom' : 'text-navy hover:text-orange-custom'}"
+					class="block px-4 py-2 font-medium transition-colors {isActivePage('/blog') ? 'text-orange-custom' : 'text-navy hover:text-orange-custom'}"
 					on:click={closeMenu}
 				>
 					Blog
 				</a>
 				<a
 					href="/contact"
-					class="block px-4 py-3 font-medium transition-colors {isActivePage('/contact') ? 'text-orange-custom' : 'text-navy hover:text-orange-custom'}"
+					class="block px-4 py-2 font-medium transition-colors {isActivePage('/contact') ? 'text-orange-custom' : 'text-navy hover:text-orange-custom'}"
 					on:click={closeMenu}
 				>
 					Contact
