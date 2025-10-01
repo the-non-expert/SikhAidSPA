@@ -2,7 +2,9 @@
 	import Hero from '$lib/components/Hero.svelte';
 	import CampaignCarousel from '$lib/components/CampaignCarousel.svelte';
 	import MissionVisionSection from '$lib/components/home/MissionVisionSection.svelte';
+	import ImpactCounterSection from '$lib/components/home/ImpactCounterSection.svelte';
 	import HowWeRespondSection from '$lib/components/home/HowWeRespondSection.svelte';
+	import OurImpactSection from '$lib/components/home/OurImpactSection.svelte';
 	import PartnersCarousel from '$lib/components/PartnersCarousel.svelte';
 	import SupportSection from '$lib/components/SupportSection.svelte';
 	import CurrentCampaignSection from '$lib/components/home/CurrentCampaignSection.svelte';
@@ -27,6 +29,9 @@
 	<!-- Mission & Vision Section -->
 	<MissionVisionSection />
 
+	<!-- Impact Counter Section -->
+	<ImpactCounterSection />
+
 	<!-- How We Respond Section -->
 	<HowWeRespondSection />
 
@@ -35,6 +40,9 @@
 
 	<!-- Support Section -->
 	<SupportSection />
+
+	<!-- Our Impact Section -->
+	<OurImpactSection />
 
 	<!-- Current Campaign Section -->
 	<CurrentCampaignSection />

@@ -8,11 +8,17 @@
 	let currentSlide = 0;
 	let intervalId: number;
 	let isHovered = false;
+	let carouselElement: HTMLElement;
+
+	// Touch events for mobile swiping
+	let touchStartX = 0;
+	let touchEndX = 0;
+	let isSwiping = false;
 
 	// Auto-slide functionality
 	function startAutoSlide() {
 		intervalId = setInterval(() => {
-			if (!isHovered) {
+			if (!isHovered && !isSwiping) {
 				nextSlide();
 			}
 		}, 5000); // 5 seconds
@@ -42,6 +48,33 @@
 
 	function handleMouseLeave() {
 		isHovered = false;
+	}
+
+	// Touch/Swipe handlers for mobile
+	function handleTouchStart(e: TouchEvent) {
+		touchStartX = e.changedTouches[0].screenX;
+		isSwiping = true;
+	}
+
+	function handleTouchEnd(e: TouchEvent) {
+		touchEndX = e.changedTouches[0].screenX;
+		handleSwipe();
+		isSwiping = false;
+	}
+
+	function handleSwipe() {
+		const swipeThreshold = 50; // Minimum distance for a swipe
+		const difference = touchStartX - touchEndX;
+
+		if (Math.abs(difference) > swipeThreshold) {
+			if (difference > 0) {
+				// Swiped left - go to next slide
+				nextSlide();
+			} else {
+				// Swiped right - go to previous slide
+				prevSlide();
+			}
+		}
 	}
 
 	function getStatusColor(status: string) {
@@ -91,9 +124,12 @@
 		<!-- Carousel Container -->
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div
+			bind:this={carouselElement}
 			class="relative overflow-hidden rounded-xl shadow-2xl"
 			on:mouseenter={handleMouseEnter}
 			on:mouseleave={handleMouseLeave}
+			on:touchstart={handleTouchStart}
+			on:touchend={handleTouchEnd}
 		>
 			<!-- Slides Container -->
 			<div
@@ -102,116 +138,107 @@
 			>
 				{#each allCampaigns as campaign, index}
 					<div class="w-full flex-shrink-0">
-						<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8 lg:p-12 min-h-[500px]">
-							<!-- Campaign Image -->
-							<div class="flex items-center justify-center">
-								<div class="relative">
-									<img
-										src={campaign.image}
-										alt={campaign.title}
-										class="w-64 h-64 object-contain mx-auto"
-									/>
-									<!-- Status Badge -->
-									<div class="absolute top-4 right-4">
-										<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold text-white {getStatusColor(campaign.status)}">
-											{getStatusText(campaign.status)}
+						<!-- Single Card with Image Background and Overlay Content -->
+						<div class="relative h-[500px] overflow-hidden">
+							<!-- Background Image -->
+							<img
+								src={campaign.image}
+								alt={campaign.title}
+								class="w-full h-full object-cover"
+							/>
+
+							<!-- Light Gradient Overlay for Text Readability -->
+							<div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20"></div>
+
+							<!-- Status Badge -->
+							<!-- <div class="absolute top-6 right-6">
+								<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold text-white {getStatusColor(campaign.status)} backdrop-blur-sm">
+									{getStatusText(campaign.status)}
+								</span>
+							</div> -->
+
+							<!-- Content Overlay -->
+							<div class="absolute inset-0 flex flex-col justify-end p-8 lg:p-12">
+								<div class="space-y-4 max-w-2xl">
+									<!-- Category -->
+									<!-- <div class="inline-flex items-center">
+										<span class="bg-orange-custom text-white px-4 py-2 rounded-full text-sm font-semibold backdrop-blur-sm">
+											{campaign.category}
 										</span>
-									</div>
-								</div>
-							</div>
+									</div> -->
 
-							<!-- Campaign Content -->
-							<div class="flex flex-col justify-center space-y-6">
-								<!-- Category -->
-								<div class="inline-flex items-center">
-									<span class="bg-orange-custom text-white px-3 py-1 rounded-full text-sm font-semibold">
-										{campaign.category}
-									</span>
-								</div>
-
-								<!-- Title and Subtitle -->
-								<div>
-									<h3 class="text-3xl md:text-4xl font-bold text-navy mb-3">
+									<!-- Title -->
+									<h3 class="text-3xl md:text-5xl font-bold text-white leading-tight drop-shadow-lg">
 										{campaign.title}
 									</h3>
-									<p class="text-xl text-orange-custom font-semibold mb-4">
-										{campaign.subtitle}
-									</p>
-									<p class="text-gray-700 leading-relaxed">
-										{campaign.shortDescription}
-									</p>
-								</div>
 
-								<!-- Impact Stats -->
-								<!-- <div class="grid grid-cols-2 gap-4">
-									{#each campaign.impactStats.slice(0, 4) as stat}
-										<div class="text-center p-4 bg-gray-50 rounded-lg">
-											<div class="text-2xl mb-2">{stat.icon}</div>
-											<div class="text-lg font-bold text-navy">{stat.value}</div>
-											<div class="text-sm text-gray-600">{stat.label}</div>
-										</div>
-									{/each}
-								</div> -->
-
-								<!-- Call to Action -->
-								<div class="flex space-x-4">
-									<a
-										href="/campaigns/{campaign.slug}"
-										class="bg-orange-custom hover:bg-orange-dark text-white font-semibold px-6 py-3 rounded-lg transition-colors"
-									>
-										Learn More
-									</a>
-									<a
-										href="/donate"
-										class="border-2 border-orange-custom text-orange-custom hover:bg-orange-custom hover:text-white font-semibold px-6 py-3 rounded-lg transition-colors"
-									>
-										Support This Campaign
-									</a>
+									<!-- Call to Action -->
+									<div class="flex flex-col sm:flex-row gap-4 pt-2">
+										<a
+											href="/campaigns/{campaign.slug}"
+											class="bg-white/90 hover:bg-white text-navy font-semibold px-6 py-3 rounded-lg transition-all text-center backdrop-blur-sm hover:scale-105"
+										>
+											Learn More
+										</a>
+										<a
+											href="/donate"
+											class="border-2 border-white/80 text-white hover:bg-white hover:text-navy font-semibold px-6 py-3 rounded-lg transition-all text-center backdrop-blur-sm hover:scale-105"
+										>
+											Support This Campaign
+										</a>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				{/each}
 			</div>
-
-			<!-- Navigation Arrows -->
-			<button
-				on:click={prevSlide}
-				class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-navy p-3 rounded-full shadow-lg transition-all hover:scale-110"
-				aria-label="Previous campaign"
-			>
-				<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-				</svg>
-			</button>
-
-			<button
-				on:click={nextSlide}
-				class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-navy p-3 rounded-full shadow-lg transition-all hover:scale-110"
-				aria-label="Next campaign"
-			>
-				<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-				</svg>
-			</button>
 		</div>
 
-		<!-- Dots Indicator -->
-		<div class="flex justify-center mt-8 space-x-2">
-			{#each allCampaigns as _, index}
+		<!-- Navigation: Arrows + Dots + Counter -->
+		<div class="flex flex-col items-center mt-8 space-y-4">
+			<!-- Arrows and Dots -->
+			<div class="flex items-center space-x-6">
+				<!-- Previous Arrow -->
 				<button
-					on:click={() => goToSlide(index)}
-					class="w-3 h-3 rounded-full transition-colors {index === currentSlide ? 'bg-orange-custom' : 'bg-gray-300 hover:bg-gray-400'}"
-					aria-label="Go to campaign {index + 1}"
-				></button>
-			{/each}
-		</div>
+					on:click={prevSlide}
+					class="bg-gray-100 hover:bg-gray-200 text-navy p-2 rounded-full transition-colors hover:scale-110"
+					aria-label="Previous campaign"
+				>
+					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+					</svg>
+				</button>
 
-		<!-- Campaign Counter -->
-		<div class="text-center mt-4">
-			<span class="text-sm text-gray-600">
-				{currentSlide + 1} of {allCampaigns.length}
-			</span>
+				<!-- Dots Indicator -->
+				<div class="flex space-x-2">
+					{#each allCampaigns as _, index}
+						<button
+							on:click={() => goToSlide(index)}
+							class="w-3 h-3 rounded-full transition-colors {index === currentSlide ? 'bg-orange-custom' : 'bg-gray-300 hover:bg-gray-400'}"
+							aria-label="Go to campaign {index + 1}"
+						></button>
+					{/each}
+				</div>
+
+				<!-- Next Arrow -->
+				<button
+					on:click={nextSlide}
+					class="bg-gray-100 hover:bg-gray-200 text-navy p-2 rounded-full transition-colors hover:scale-110"
+					aria-label="Next campaign"
+				>
+					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+					</svg>
+				</button>
+			</div>
+
+			<!-- Campaign Counter -->
+			<div class="text-center">
+				<span class="text-sm text-gray-600">
+					{currentSlide + 1} of {allCampaigns.length}
+				</span>
+			</div>
 		</div>
 	</div>
 </section>

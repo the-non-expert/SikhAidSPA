@@ -262,7 +262,7 @@ export const campaigns = [
 // Featured campaign for main campaigns page
 export const featuredCampaign = {
 	slug: 'punjab-floods-2025-response',
-	title: 'Punjab Floods 2025: Our Immediate Response Efforts',
+	title: 'Punjab Floods 2025',
 	subtitle: 'Swift Emergency Response to Natural Disaster',
 	shortDescription: 'When devastating floods hit Punjab in January 2025, SikhAid mobilized within hours to provide emergency relief to affected families.',
 	fullDescription: `

@@ -4,13 +4,13 @@
 	<div class="w-1/2 p-8 flex items-center justify-center">
 		<div class="grid grid-cols-1 gap-4 w-full max-w-md">
 			<!-- First image -->
-			<img src="https://i.ibb.co/Ng9wNgP4/IMG-20250930-WA0069.jpg" alt="Punjab Flood Relief" class="w-full h-40 object-cover rounded-lg shadow-lg" />
+			<img src="https://i.ibb.co/Ng9wNgP4/IMG-20250930-WA0069.jpg" alt="Punjab Flood Relief" class="w-full h-60 object-cover rounded-lg shadow-lg" />
 
 			<!-- Second image -->
-			<img src="https://i.ibb.co/B20Q7cBV/Hero1.jpg" alt="Relief Operations" class="w-full h-40 object-cover rounded-lg shadow-lg" />
+			<img src="https://i.ibb.co/B20Q7cBV/Hero1.jpg" alt="Relief Operations" class="w-full h-60 object-cover rounded-lg shadow-lg" />
 
 			<!-- Third image -->
-			<img src="https://i.ibb.co/Gfyr5TNC/Hero4.jpg" alt="Volunteers" class="w-full h-40 object-cover rounded-lg shadow-lg" />
+			<img src="https://i.ibb.co/Gfyr5TNC/Hero4.jpg" alt="Volunteers" class="w-full h-60 object-cover rounded-lg shadow-lg" />
 		</div>
 	</div>
 
