@@ -223,10 +223,10 @@
 					</div>
 
 					<!-- Statistics Grid -->
-					<div class="relative z-10 h-full flex items-center justify-center p-8">
+					<div class="relative z-10 h-full flex items-center justify-center p-4">
 						<div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 w-full max-w-5xl">
 							{#each tab.stats as stat, index}
-								<div class="text-center backdrop-blur-sm bg-white/10 rounded-xl p-4 border border-white/20">
+								<div class="text-center bg-white/10 rounded-xl p-4 border border-white/20">
 									<div class="flex flex-col items-center space-y-3">
 										<!-- Icon -->
 										<div class="flex items-center justify-center w-12 h-12 bg-white/20 rounded-full">
