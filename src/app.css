@@ -21,6 +21,10 @@
   background-color: var(--orange);
 }
 
+.bg-orange-dark {
+  background-color: var(--orange-dark);
+}
+
 .hover\:bg-orange-dark:hover {
   background-color: var(--orange-dark);
 }

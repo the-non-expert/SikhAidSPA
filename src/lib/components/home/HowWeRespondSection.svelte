@@ -45,7 +45,7 @@
 		</div>
 
 		<!-- Interactive Timeline -->
-		<div class="mt-16 bg-gray-50 p-8 rounded-xl">
+		<!-- <div class="mt-16 bg-gray-50 p-8 rounded-xl">
 			<h3 class="text-2xl font-bold text-navy mb-6 text-center">Our Impact Timeline</h3>
 			<div class="flex justify-center items-center space-x-8 overflow-x-auto pb-4">
 				<div class="text-center min-w-max">
@@ -78,7 +78,7 @@
 					<div class="text-sm text-gray-600">Punjab Relief</div>
 				</div>
 			</div>
-		</div>
+		</div> -->
 	</div>
 </section>
 

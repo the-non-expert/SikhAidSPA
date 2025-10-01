@@ -79,7 +79,7 @@
 	});
 </script>
 
-<section class="py-16 px-4 bg-white">
+<section class="py-5 px-4 bg-white">
 	<div class="max-w-6xl mx-auto">
 		<div class="text-center mb-12">
 			<h2 class="text-3xl md:text-4xl font-bold text-navy mb-6">Our Campaigns</h2>
@@ -89,6 +89,7 @@
 		</div>
 
 		<!-- Carousel Container -->
+		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div
 			class="relative overflow-hidden rounded-xl shadow-2xl"
 			on:mouseenter={handleMouseEnter}
@@ -142,7 +143,7 @@
 								</div>
 
 								<!-- Impact Stats -->
-								<div class="grid grid-cols-2 gap-4">
+								<!-- <div class="grid grid-cols-2 gap-4">
 									{#each campaign.impactStats.slice(0, 4) as stat}
 										<div class="text-center p-4 bg-gray-50 rounded-lg">
 											<div class="text-2xl mb-2">{stat.icon}</div>
@@ -150,7 +151,7 @@
 											<div class="text-sm text-gray-600">{stat.label}</div>
 										</div>
 									{/each}
-								</div>
+								</div> -->
 
 								<!-- Call to Action -->
 								<div class="flex space-x-4">

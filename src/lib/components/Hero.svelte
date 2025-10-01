@@ -1,66 +1,73 @@
-<section id="hero" class="min-h-screen flex items-center justify-center bg-white pt-8 pb-16 px-4 relative overflow-hidden">
-	<!-- Background Elements -->
-	<div class="absolute inset-0 bg-gradient-to-r from-gray-50 to-white"></div>
-	<div class="absolute top-20 right-10 w-72 h-72 bg-orange-custom rounded-full opacity-10 animate-pulse"></div>
-	<div class="absolute bottom-20 left-10 w-48 h-48 bg-navy rounded-full opacity-10 animate-pulse delay-1000"></div>
+<!-- Desktop Hero Section -->
+<section id="hero" class="min-h-screen lg:flex hidden bg-white relative overflow-hidden">
+	<!-- Left Side - Photo Gallery -->
+	<div class="w-1/2 p-8 flex items-center justify-center">
+		<div class="grid grid-cols-1 gap-4 w-full max-w-md">
+			<!-- First image -->
+			<img src="https://i.ibb.co/Ng9wNgP4/IMG-20250930-WA0069.jpg" alt="Punjab Flood Relief" class="w-full h-40 object-cover rounded-lg shadow-lg" />
 
-	<div class="max-w-6xl mx-auto text-center relative z-10">
-		<div class="mb-12">
-			<!-- NGO Badge -->
-			<div class="inline-flex items-center bg-orange-custom text-white px-6 py-2 rounded-full text-sm font-semibold mb-6 animate-fade-in">
-				🇮🇳 Serving India Since 2020
-			</div>
+			<!-- Second image -->
+			<img src="https://i.ibb.co/B20Q7cBV/Hero1.jpg" alt="Relief Operations" class="w-full h-40 object-cover rounded-lg shadow-lg" />
 
-			<h1 class="text-5xl md:text-7xl font-bold text-navy mb-6 leading-tight animate-slide-up">
-				<span class="text-orange-custom">SikhAid</span>
-				<span class="block">Charitable Trust</span>
-			</h1>
-			<p class="text-xl md:text-2xl text-gray-700 mb-8 max-w-4xl mx-auto leading-relaxed animate-slide-up delay-200">
-				Compassionate service in times of crisis. From natural disasters to community emergencies,
-				we stand with Indians across the nation, providing immediate relief and long-term support.
+			<!-- Third image -->
+			<img src="https://i.ibb.co/Gfyr5TNC/Hero4.jpg" alt="Volunteers" class="w-full h-40 object-cover rounded-lg shadow-lg" />
+		</div>
+	</div>
+
+	<!-- Right Side - Content -->
+	<div class="w-1/2 flex items-center justify-center p-1">
+		<div class="max-w-xl">
+			<p class="text-gray-600 text-lg italic mb-6 font-light">
+				Delivering Urgent Aid. Restoring Lives.
 			</p>
-		</div>
 
-		<div class="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12 animate-slide-up delay-400">
-			<a href="/donate" class="bg-orange-custom hover:bg-orange-dark text-white px-12 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 shadow-lg">
-				Support Our Mission
-			</a>
-			<a href="/about" class="border-2 border-navy text-navy hover:bg-navy hover:text-white px-12 py-4 rounded-lg text-lg font-semibold transition-all">
-				Our Story
-			</a>
-		</div>
+			<h1 class="text-5xl font-bold text-navy mb-2 leading-tight">
+				Join Us to help
+			</h1>
 
-		<!-- Current Campaign Alert -->
-		<div class="bg-red-50 border border-red-200 rounded-lg p-6 mb-12 max-w-2xl mx-auto animate-slide-up delay-600">
-			<div class="flex items-center justify-center space-x-2 mb-2">
-				<div class="w-2 h-2 bg-red-500 rounded-full animate-ping"></div>
-				<span class="text-red-700 font-semibold text-sm">URGENT: Active Relief Campaign</span>
-			</div>
-			<h3 class="text-lg font-bold text-red-800 mb-2">Punjab Floods 2025</h3>
-			<p class="text-red-700 text-sm mb-3">2000+ families need immediate assistance</p>
-			<a href="/donate" class="inline-block bg-red-600 text-white px-6 py-2 rounded text-sm font-semibold hover:bg-red-700 transition-colors">
-				Help Now →
+			<h2 class="text-5xl font-bold text-orange-custom mb-8 leading-tight">
+				Punjab Rise Again
+			</h2>
+
+			<p class="text-gray-700 text-lg mb-8 leading-relaxed">
+				The floods in Punjab have destroyed homes and displaced thousands of families. SikhAid is on the ground, providing food, water, shelter, and medical aid. Your support can bring hope and relief to those who have lost everything.
+			</p>
+
+			<a href="/donate" class="inline-block bg-orange-custom hover:bg-orange-dark text-white px-8 py-3 rounded-lg font-semibold text-lg transition-colors uppercase tracking-wide shadow-lg">
+				DONATE NOW
 			</a>
 		</div>
+	</div>
+</section>
 
-		<div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-center animate-slide-up delay-800">
-			<div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-orange-custom">
-				<div class="text-3xl font-bold text-navy mb-2">50,000+</div>
-				<div class="text-gray-600 text-sm">Lives Impacted</div>
-			</div>
-			<div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-navy">
-				<div class="text-3xl font-bold text-navy mb-2">15+</div>
-				<div class="text-gray-600 text-sm">States Served</div>
-			</div>
-			<div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-orange-custom">
-				<div class="text-3xl font-bold text-navy mb-2">24/7</div>
-				<div class="text-gray-600 text-sm">Emergency Response</div>
-			</div>
-			<div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-navy">
-				<div class="text-3xl font-bold text-navy mb-2">100%</div>
-				<div class="text-gray-600 text-sm">Transparency</div>
-			</div>
-		</div>
+<!-- Mobile Hero Section -->
+<section id="hero-mobile" class="min-h-screen lg:hidden flex items- justify-center relative overflow-hidden">
+	<!-- Background image with overlay -->
+	<div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url('https://i.ibb.co/B20Q7cBV/Hero1.jpg');">
+		<div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/70"></div>
+	</div>
+
+	<!-- Content -->
+	<div class="relative z-10 px-6 py-20 text-center max-w-lg mx-auto">
+		<p class="text-gray-200 text-base italic mb-4 font-light">
+			Delivering Urgent Aid. Restoring Lives.
+		</p>
+
+		<h1 class="text-3xl font-bold text-white mb-2 leading-tight">
+			Join Us to help
+		</h1>
+
+		<h2 class="text-3xl font-bold text-orange-custom mb-6 leading-tight">
+			Punjab Rise Again
+		</h2>
+
+		<p class="text-gray-100 text-xs mb-8 leading-relaxed">
+			The floods in Punjab have destroyed homes and displaced thousands of families. SikhAid is on the ground, providing food, water, shelter, and medical aid. Your support can bring hope and relief to those who have lost everything.
+		</p>
+
+		<a href="/donate" class="inline-block bg-orange-custom hover:bg-orange-dark text-white px-6 py-3 rounded-lg font-semibold text-base transition-colors uppercase tracking-wide shadow-lg">
+			DONATE NOW
+		</a>
 	</div>
 </section>
 
