@@ -1,47 +1,93 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
-	import { campaigns, featuredCampaign } from '$lib/data/campaigns.js';
+	import { onMount, onDestroy } from "svelte";
+	import { campaigns, featuredCampaign } from "$lib/data/campaigns.js";
+	import CampaignCard from "./CampaignCard.svelte";
+	import type { Campaign } from "$lib/types/campaign";
 
 	// Combine featured campaign with regular campaigns
-	const allCampaigns = [featuredCampaign, ...campaigns];
+	const allCampaigns: Campaign[] = [featuredCampaign, ...campaigns];
+	const totalCampaigns = allCampaigns.length;
 
-	let currentSlide = 0;
-	let intervalId: number;
-	let isHovered = false;
-	let carouselElement: HTMLElement;
+	// State
+	let activeIndex = $state(0);
+	let isHovered = $state(false);
+	let intervalId: number | null = null;
 
-	// Touch events for mobile swiping
-	let touchStartX = 0;
-	let touchEndX = 0;
-	let isSwiping = false;
+	// Touch/Swipe state for mobile
+	let touchStartX = $state(0);
+	let touchEndX = $state(0);
+	let isSwiping = $state(false);
 
-	// Auto-slide functionality
-	function startAutoSlide() {
-		intervalId = setInterval(() => {
-			if (!isHovered && !isSwiping) {
-				nextSlide();
+	// Calculate how many cards to show based on screen width
+	let visibleCards = $state(5); // Default for desktop
+	let windowWidth = $state(1200);
+
+	// Update visible cards based on window size
+	function updateVisibleCards() {
+		if (typeof window !== "undefined") {
+			windowWidth = window.innerWidth;
+			if (windowWidth < 640) {
+				visibleCards = 3; // Mobile: Show 3 cards for stacking effect (center + hints)
+			} else if (windowWidth < 1024) {
+				visibleCards = 3; // Tablet: 3 cards
+			} else {
+				visibleCards = 5; // Desktop: 5 cards
 			}
-		}, 5000); // 5 seconds
-	}
-
-	function stopAutoSlide() {
-		if (intervalId) {
-			clearInterval(intervalId);
 		}
 	}
 
+	// Calculate position of each card relative to active index
+	function getCardPosition(cardIndex: number): number {
+		const diff = cardIndex - activeIndex;
+
+		// Handle wrap-around for infinite loop
+		if (diff > totalCampaigns / 2) {
+			return diff - totalCampaigns;
+		} else if (diff < -totalCampaigns / 2) {
+			return diff + totalCampaigns;
+		}
+
+		return diff;
+	}
+
+	// Check if card should be visible
+	function isCardVisible(cardIndex: number): boolean {
+		const position = getCardPosition(cardIndex);
+		const maxVisible = Math.floor(visibleCards / 2);
+		return Math.abs(position) <= maxVisible;
+	}
+
+	// Navigation functions
 	function nextSlide() {
-		currentSlide = (currentSlide + 1) % allCampaigns.length;
+		activeIndex = (activeIndex + 1) % totalCampaigns;
 	}
 
 	function prevSlide() {
-		currentSlide = currentSlide === 0 ? allCampaigns.length - 1 : currentSlide - 1;
+		activeIndex = activeIndex === 0 ? totalCampaigns - 1 : activeIndex - 1;
 	}
 
 	function goToSlide(index: number) {
-		currentSlide = index;
+		activeIndex = index;
 	}
 
+	// Auto-play functionality
+	function startAutoPlay() {
+		if (intervalId) return;
+		intervalId = window.setInterval(() => {
+			if (!isHovered && !isSwiping) {
+				nextSlide();
+			}
+		}, 2000); // 2 seconds as requested
+	}
+
+	function stopAutoPlay() {
+		if (intervalId) {
+			clearInterval(intervalId);
+			intervalId = null;
+		}
+	}
+
+	// Mouse events
 	function handleMouseEnter() {
 		isHovered = true;
 	}
@@ -50,251 +96,373 @@
 		isHovered = false;
 	}
 
-	// Touch/Swipe handlers for mobile
+	// Touch/Swipe handlers for mobile (panoramic slider effect)
 	function handleTouchStart(e: TouchEvent) {
-		touchStartX = e.changedTouches[0].screenX;
+		touchStartX = e.touches[0].clientX;
 		isSwiping = true;
 	}
 
-	function handleTouchEnd(e: TouchEvent) {
-		touchEndX = e.changedTouches[0].screenX;
-		handleSwipe();
-		isSwiping = false;
+	function handleTouchMove(e: TouchEvent) {
+		if (!isSwiping) return;
+		touchEndX = e.touches[0].clientX;
 	}
 
-	function handleSwipe() {
-		const swipeThreshold = 50; // Minimum distance for a swipe
+	function handleTouchEnd() {
+		if (!isSwiping) return;
+
+		const swipeThreshold = 50;
 		const difference = touchStartX - touchEndX;
 
 		if (Math.abs(difference) > swipeThreshold) {
 			if (difference > 0) {
-				// Swiped left - go to next slide
-				nextSlide();
+				nextSlide(); // Swiped left
 			} else {
-				// Swiped right - go to previous slide
-				prevSlide();
+				prevSlide(); // Swiped right
 			}
 		}
+
+		isSwiping = false;
+		touchStartX = 0;
+		touchEndX = 0;
 	}
 
-	function getStatusColor(status: string) {
-		switch (status) {
-			case 'ongoing':
-				return 'bg-green-500';
-			case 'completed':
-				return 'bg-blue-500';
-			case 'seasonal':
-				return 'bg-orange-500';
-			default:
-				return 'bg-gray-500';
+	// Click on card to make it active
+	function handleCardClick(index: number) {
+		if (index !== activeIndex) {
+			goToSlide(index);
 		}
 	}
 
-	function getStatusText(status: string) {
-		switch (status) {
-			case 'ongoing':
-				return 'Active';
-			case 'completed':
-				return 'Completed';
-			case 'seasonal':
-				return 'Seasonal';
-			default:
-				return 'Unknown';
-		}
-	}
-
+	// Lifecycle
 	onMount(() => {
-		startAutoSlide();
+		updateVisibleCards();
+		window.addEventListener("resize", updateVisibleCards);
+		startAutoPlay();
 	});
 
 	onDestroy(() => {
-		stopAutoSlide();
+		if (typeof window !== "undefined") {
+			window.removeEventListener("resize", updateVisibleCards);
+		}
+		stopAutoPlay();
+	});
+
+	// Reactive auto-play management
+	$effect(() => {
+		if (isHovered || isSwiping) {
+			stopAutoPlay();
+		} else {
+			startAutoPlay();
+		}
+
+		return () => {
+			stopAutoPlay();
+		};
 	});
 </script>
 
-<section class="py-5 px-4 bg-white">
-	<div class="max-w-6xl mx-auto">
-		<div class="text-center mb-12">
-			<h2 class="text-3xl md:text-4xl font-bold text-navy mb-6">Our Campaigns</h2>
-			<p class="text-xl text-gray-700 max-w-3xl mx-auto">
-				Discover our ongoing humanitarian initiatives making a difference across India
-			</p>
+<section class="carousel-section">
+	<div class="carousel-container">
+		<!-- Section Header -->
+		<div class="section-header">
+			<h2 class="section-title">Current Campaigns</h2>
 		</div>
 
-		<!-- Carousel Container -->
+		<!-- Carousel -->
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div
-			bind:this={carouselElement}
-			class="relative overflow-hidden rounded-xl shadow-2xl"
-			on:mouseenter={handleMouseEnter}
-			on:mouseleave={handleMouseLeave}
-			on:touchstart={handleTouchStart}
-			on:touchend={handleTouchEnd}
+			class="carousel-wrapper"
+			onmouseenter={handleMouseEnter}
+			onmouseleave={handleMouseLeave}
+			ontouchstart={handleTouchStart}
+			ontouchmove={handleTouchMove}
+			ontouchend={handleTouchEnd}
 		>
-			<!-- Slides Container -->
-			<div
-				class="flex transition-transform duration-500 ease-in-out"
-				style="transform: translateX(-{currentSlide * 100}%)"
-			>
+			<!-- Cards Container with 3D Perspective -->
+			<div class="cards-container">
 				{#each allCampaigns as campaign, index}
-					<div class="w-full flex-shrink-0">
-						<!-- Single Card with Image Background and Overlay Content -->
-						<div class="relative h-[500px] overflow-hidden">
-							<!-- Background Image -->
-							<img
-								src={campaign.image}
-								alt={campaign.title}
-								class="w-full h-full object-cover"
-							/>
-
-							<!-- Light Gradient Overlay for Text Readability -->
-							<div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20"></div>
-
-							<!-- Status Badge -->
-							<!-- <div class="absolute top-6 right-6">
-								<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold text-white {getStatusColor(campaign.status)} backdrop-blur-sm">
-									{getStatusText(campaign.status)}
-								</span>
-							</div> -->
-
-							<!-- Content Overlay -->
-							<div class="absolute inset-0 flex flex-col justify-end p-8 lg:p-12">
-								<div class="space-y-4 max-w-2xl">
-									<!-- Category -->
-									<!-- <div class="inline-flex items-center">
-										<span class="bg-orange-custom text-white px-4 py-2 rounded-full text-sm font-semibold backdrop-blur-sm">
-											{campaign.category}
-										</span>
-									</div> -->
-
-									<!-- Title -->
-									<h3 class="text-3xl md:text-5xl font-bold text-white leading-tight drop-shadow-lg">
-										{campaign.title}
-									</h3>
-
-									<!-- Call to Action -->
-									<div class="flex flex-col sm:flex-row gap-4 pt-2">
-										<a
-											href="/campaigns/{campaign.slug}"
-											class="bg-white/90 hover:bg-white text-navy font-semibold px-6 py-3 rounded-lg transition-all text-center backdrop-blur-sm hover:scale-105"
-										>
-											Learn More
-										</a>
-										<a
-											href="/donate"
-											class="border-2 border-white/80 text-white hover:bg-white hover:text-navy font-semibold px-6 py-3 rounded-lg transition-all text-center backdrop-blur-sm hover:scale-105"
-										>
-											Support This Campaign
-										</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
+					{#if isCardVisible(index)}
+						<CampaignCard
+							{campaign}
+							position={getCardPosition(index)}
+							isActive={index === activeIndex}
+							onClick={() => handleCardClick(index)}
+						/>
+					{/if}
 				{/each}
 			</div>
 		</div>
 
-		<!-- Navigation: Arrows + Dots + Counter -->
-		<div class="flex flex-col items-center mt-8 space-y-4">
-			<!-- Arrows and Dots -->
-			<div class="flex items-center space-x-6">
-				<!-- Previous Arrow -->
-				<button
-					on:click={prevSlide}
-					class="bg-gray-100 hover:bg-gray-200 text-navy p-2 rounded-full transition-colors hover:scale-110"
-					aria-label="Previous campaign"
+		<!-- Navigation Controls -->
+		<div class="navigation-controls">
+			<!-- Previous Button -->
+			<button
+				type="button"
+				class="nav-button"
+				onclick={prevSlide}
+				aria-label="Previous campaign"
+			>
+				<svg
+					class="nav-icon"
+					fill="none"
+					stroke="currentColor"
+					viewBox="0 0 24 24"
 				>
-					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-					</svg>
-				</button>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2.5"
+						d="M15 19l-7-7 7-7"
+					/>
+				</svg>
+			</button>
 
-				<!-- Dots Indicator -->
-				<div class="flex space-x-2">
-					{#each allCampaigns as _, index}
-						<button
-							on:click={() => goToSlide(index)}
-							class="w-3 h-3 rounded-full transition-colors {index === currentSlide ? 'bg-orange-custom' : 'bg-gray-300 hover:bg-gray-400'}"
-							aria-label="Go to campaign {index + 1}"
-						></button>
-					{/each}
-				</div>
-
-				<!-- Next Arrow -->
-				<button
-					on:click={nextSlide}
-					class="bg-gray-100 hover:bg-gray-200 text-navy p-2 rounded-full transition-colors hover:scale-110"
-					aria-label="Next campaign"
-				>
-					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-					</svg>
-				</button>
+			<!-- Dot Indicators -->
+			<div class="dot-indicators">
+				{#each allCampaigns as _, index}
+					<button
+						type="button"
+						class="dot"
+						class:active={index === activeIndex}
+						onclick={() => goToSlide(index)}
+						aria-label="Go to campaign {index + 1}"
+					></button>
+				{/each}
 			</div>
 
-			<!-- Campaign Counter -->
-			<div class="text-center">
-				<span class="text-sm text-gray-600">
-					{currentSlide + 1} of {allCampaigns.length}
-				</span>
-			</div>
+			<!-- Next Button -->
+			<button
+				type="button"
+				class="nav-button"
+				onclick={nextSlide}
+				aria-label="Next campaign"
+			>
+				<svg
+					class="nav-icon"
+					fill="none"
+					stroke="currentColor"
+					viewBox="0 0 24 24"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2.5"
+						d="M9 5l7 7-7 7"
+					/>
+				</svg>
+			</button>
+		</div>
+
+		<!-- View All Campaigns Button -->
+		<div class="view-all-container">
+			<a href="/campaigns" class="view-all-button">VIEW ALL CAMPAIGNS</a>
 		</div>
 	</div>
 </section>
 
 <style>
-	:global(:root) {
-		--navy: #1a237e;
-		--navy-dark: #0d1660;
-		--orange: #ff6b35;
-		--orange-dark: #e55a2b;
+	/* Section */
+	.carousel-section {
+		padding: 80px 16px;
+		background: linear-gradient(to bottom, #fafafa 0%, #ffffff 100%);
+		overflow: hidden;
 	}
 
-	.text-navy {
-		color: var(--navy);
+	.carousel-container {
+		max-width: 1400px;
+		margin: 0 auto;
 	}
 
-	.bg-navy {
-		background-color: var(--navy);
+	/* Header */
+	.section-header {
+		text-align: center;
+		margin-bottom: 60px;
 	}
 
-	.bg-orange-custom {
-		background-color: var(--orange);
+	.section-title {
+		font-size: 42px;
+		font-weight: 700;
+		color: #1a237e;
+		margin: 0;
+		letter-spacing: -0.5px;
 	}
 
-	.hover\:bg-orange-dark:hover {
-		background-color: var(--orange-dark);
+	/* Carousel Wrapper */
+	.carousel-wrapper {
+		position: relative;
+		width: 100%;
+		margin-bottom: 48px;
+		perspective: 1000px;
+		perspective-origin: center center;
 	}
 
-	.text-orange-custom {
-		color: var(--orange);
+	/* Cards Container */
+	.cards-container {
+		position: relative;
+		width: 100%;
+		height: 350px;
+		transform-style: preserve-3d;
 	}
 
-	.border-orange-custom {
-		border-color: var(--orange);
+	/* Navigation Controls */
+	.navigation-controls {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 24px;
+		margin-bottom: 32px;
 	}
 
-	/* Smooth transitions */
-	.transition-transform {
-		transition-property: transform;
-		transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-		transition-duration: 500ms;
+	.nav-button {
+		width: 48px;
+		height: 48px;
+		border-radius: 50%;
+		background: #ff6b35;
+		border: none;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
 	}
 
-	/* Enhanced hover effects */
-	button:hover {
-		transform: scale(1.05);
+	.nav-button:hover {
+		background: #e55a2b;
+		transform: scale(1.1);
+		box-shadow: 0 6px 16px rgba(255, 107, 53, 0.4);
 	}
 
-	/* Responsive adjustments */
+	.nav-button:active {
+		transform: scale(0.95);
+	}
+
+	.nav-icon {
+		width: 20px;
+		height: 20px;
+		color: white;
+	}
+
+	/* Dot Indicators */
+	.dot-indicators {
+		display: flex;
+		gap: 12px;
+		align-items: center;
+	}
+
+	.dot {
+		width: 10px;
+		height: 10px;
+		border-radius: 50%;
+		background: #d1d5db;
+		border: none;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		padding: 0;
+	}
+
+	.dot:hover {
+		background: #9ca3af;
+		transform: scale(1.2);
+	}
+
+	.dot.active {
+		background: #ff6b35;
+		width: 12px;
+		height: 12px;
+	}
+
+	/* View All Button */
+	.view-all-container {
+		text-align: center;
+	}
+
+	.view-all-button {
+		display: inline-block;
+		background: #1a237e;
+		color: white;
+		font-weight: 600;
+		font-size: 14px;
+		padding: 16px 48px;
+		border-radius: 8px;
+		text-decoration: none;
+		transition: all 0.3s ease;
+		letter-spacing: 1px;
+	}
+
+	.view-all-button:hover {
+		background: #0d1660;
+		transform: translateY(-2px);
+		box-shadow: 0 8px 20px rgba(26, 35, 126, 0.3);
+	}
+
+	/* Responsive Styles */
 	@media (max-width: 1024px) {
-		.grid-cols-1.lg\:grid-cols-2 {
-			grid-template-columns: 1fr;
+		.carousel-section {
+			padding: 60px 16px;
 		}
 
-		.min-h-\[500px\] {
-			min-height: auto;
+		.section-title {
+			font-size: 36px;
+		}
+
+		.cards-container {
+			height: 300px;
+		}
+
+		.section-header {
+			margin-bottom: 48px;
 		}
 	}
+
+	@media (max-width: 640px) {
+		.carousel-section {
+			padding: 48px 16px;
+		}
+
+		.section-title {
+			font-size: 32px;
+		}
+
+		.cards-container {
+			height: 280px;
+		}
+
+		.nav-button {
+			width: 40px;
+			height: 40px;
+		}
+
+		.nav-icon {
+			width: 18px;
+			height: 18px;
+		}
+
+		.dot {
+			width: 8px;
+			height: 8px;
+		}
+
+		.dot.active {
+			width: 10px;
+			height: 10px;
+		}
+
+		.view-all-button {
+			padding: 14px 36px;
+			font-size: 13px;
+		}
+
+		.section-header {
+			margin-bottom: 40px;
+		}
+
+		.navigation-controls {
+			gap: 16px;
+			margin-bottom: 24px;
+		}
+	}
+
+	/* Add Caveat font for subtitle */
+	/* @import url("https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap"); */
 </style>
