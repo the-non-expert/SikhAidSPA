@@ -1,0 +1,16 @@
+# Redirect old domain to new primary domain
+# This ensures all traffic from sikhaidindia.com goes to sikhaid.ngo
+# The 301 status code tells search engines this is a permanent redirect (SEO-friendly)
+# The :splat captures the path and query parameters to preserve them in the redirect
+
+# Redirect HTTPS www subdomain
+https://www.sikhaidindia.com/*  https://sikhaid.ngo/:splat  301!
+
+# Redirect HTTPS root domain
+https://sikhaidindia.com/*  https://sikhaid.ngo/:splat  301!
+
+# Redirect HTTP www subdomain (for any non-HTTPS traffic)
+http://www.sikhaidindia.com/*  https://sikhaid.ngo/:splat  301!
+
+# Redirect HTTP root domain (for any non-HTTPS traffic)
+http://sikhaidindia.com/*  https://sikhaid.ngo/:splat  301!
