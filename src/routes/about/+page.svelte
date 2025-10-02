@@ -239,7 +239,7 @@
 						<strong>Address:</strong> House no. 222, Mangraj Lane, Cuttack Odisha 753001
 					</p>
 					<p class="text-gray-700">
-						<strong>Website:</strong> www.sikhaidindia.com
+						<strong>Website:</strong> www.sikhaid.ngo
 					</p>
 				</div>
 			</div>

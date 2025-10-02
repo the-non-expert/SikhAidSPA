@@ -148,7 +148,7 @@
 				<div class="text-gray-500 text-sm text-center">
 					<p>
 						&copy; 2025 SikhAid Charitable Trust. All rights
-						reserved. | www.sikhaidindia.com
+						reserved. | www.sikhaid.ngo
 					</p>
 				</div>
 				<div class="text-gray-500 text-sm">

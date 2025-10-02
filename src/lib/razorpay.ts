@@ -22,7 +22,7 @@ export interface RazorpayResponse {
 // Environment variables
 const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID;
 const ORGANIZATION_NAME = import.meta.env.VITE_ORGANIZATION_NAME || 'Sikh Aid Charitable Trust';
-const SITE_URL = import.meta.env.VITE_SITE_URL || 'www.sikhaidindia.com';
+const SITE_URL = import.meta.env.VITE_SITE_URL || 'www.sikhaid.ngo';
 const ENVIRONMENT = import.meta.env.VITE_ENVIRONMENT || 'development';
 
 const isProduction = ENVIRONMENT === 'production';
