@@ -1,5 +1,5 @@
 <!-- Desktop Hero Section -->
-<section id="hero" class="min-h-screen lg:flex hidden bg-white relative overflow-hidden">
+<section id="hero" class="min-h-screen lg:flex hidden relative overflow-hidden">
 	<!-- Left Side - Photo Gallery -->
 	<div class="w-1/2 p-8 flex items-center justify-center">
 		<div class="grid grid-cols-1 gap-4 w-full max-w-md">
