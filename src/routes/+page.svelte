@@ -7,7 +7,6 @@
 	import OurImpactSection from '$lib/components/home/OurImpactSection.svelte';
 	import PartnersCarousel from '$lib/components/PartnersCarousel.svelte';
 	import SupportSection from '$lib/components/SupportSection.svelte';
-	import CurrentCampaignSection from '$lib/components/home/CurrentCampaignSection.svelte';
 	import TestimonialsSection from '$lib/components/home/TestimonialsSection.svelte';
 	import PaymentMethodsStrip from '$lib/components/home/PaymentMethodsStrip.svelte';
 	import RecentBlogSection from '$lib/components/home/RecentBlogSection.svelte';
@@ -44,8 +43,6 @@
 	<!-- Our Impact Section -->
 	<OurImpactSection />
 
-	<!-- Current Campaign Section -->
-	<CurrentCampaignSection />
 
 	<!-- Testimonials Section -->
 	<TestimonialsSection />

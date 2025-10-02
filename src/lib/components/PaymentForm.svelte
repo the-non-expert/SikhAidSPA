@@ -1,19 +1,27 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { 
-		openRazorpayCheckout, 
-		validateDonationAmount, 
-		validatePhoneNumber, 
+	import { selectedAmount } from '$lib/stores/donation';
+	import {
+		openRazorpayCheckout,
+		validateDonationAmount,
+		validatePhoneNumber,
 		validateName,
 		type DonationData,
-		type RazorpayResponse 
+		type RazorpayResponse
 	} from '$lib/razorpay';
 
 	// Form data
 	let amount: number = 0;
 	let name: string = '';
 	let phone: string = '';
+
+	// Subscribe to store and update amount when it changes
+	selectedAmount.subscribe(value => {
+		if (value > 0) {
+			amount = value;
+		}
+	});
 	
 	// Form state
 	let isProcessing: boolean = false;

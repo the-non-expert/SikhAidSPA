@@ -1,3 +1,7 @@
+<script lang="ts">
+	import { setDonationAmount } from '$lib/stores/donation';
+</script>
+
 <!-- Current Campaign Section -->
 <section class="py-16 px-4 bg-white">
 	<div class="max-w-6xl mx-auto">
@@ -61,21 +65,21 @@
 					<h3 class="text-2xl font-bold text-orange-800 mb-6">Support Punjab Relief</h3>
 					<div class="space-y-4">
 						<div class="grid grid-cols-2 gap-4">
-							<div class="bg-orange-50 p-4 rounded-lg text-center">
+							<button
+								class="bg-orange-50 p-4 rounded-lg text-center hover:bg-orange-100 transition-colors cursor-pointer"
+								on:click={() => setDonationAmount(500)}
+							>
 								<div class="text-lg font-bold text-orange-800">₹500</div>
 								<div class="text-sm text-orange-600">Feeds family for 3 days</div>
-							</div>
-							<div class="bg-orange-50 p-4 rounded-lg text-center">
+							</button>
+							<button
+								class="bg-orange-50 p-4 rounded-lg text-center hover:bg-orange-100 transition-colors cursor-pointer"
+								on:click={() => setDonationAmount(1500)}
+							>
 								<div class="text-lg font-bold text-orange-800">₹1,500</div>
 								<div class="text-sm text-orange-600">Emergency shelter kit</div>
-							</div>
+							</button>
 						</div>
-						<a
-							href="/donate"
-							class="block w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-4 px-6 rounded-lg text-center transition-colors"
-						>
-							Donate for Punjab Relief →
-						</a>
 						<p class="text-xs text-orange-600 text-center">
 							100% of donations go directly to flood victims
 						</p>

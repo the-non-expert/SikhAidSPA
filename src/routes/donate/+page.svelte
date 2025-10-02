@@ -1,5 +1,6 @@
 <script lang="ts">
 	import PaymentForm from '$lib/components/PaymentForm.svelte';
+	import { setDonationAmount } from '$lib/stores/donation';
 </script>
 
 <svelte:head>
@@ -16,6 +17,27 @@
 				Your contribution powers our humanitarian work across India. From emergency response to community
 				building, every donation creates lasting impact. 100% transparency guaranteed.
 			</p>
+		</div>
+	</section>
+
+	<!-- Payment Form Section -->
+	<section id="payment-form" class="py-16 px-4 bg-white">
+		<div class="max-w-3xl mx-auto">
+			<h2 class="text-3xl md:text-4xl font-bold text-navy mb-12 text-center">Quick Online Payment</h2>
+			<div class="bg-gray-50 p-8 rounded-2xl shadow-xl">
+				<PaymentForm />
+				<!-- Popular Payment Methods -->
+				<div class="text-center mt-6">
+					<p class="text-sm text-gray-600 mb-3">Secure payments powered by Razorpay:</p>
+					<div class="flex justify-center flex-wrap gap-3">
+						<span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">UPI</span>
+						<span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">Cards</span>
+						<span class="bg-red-100 text-red-800 text-xs font-semibold px-3 py-1 rounded-full">Net Banking</span>
+						<span class="bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full">Wallets</span>
+					</div>
+					<p class="text-xs text-gray-500 mt-2">UPI ID for direct transfer: 9340475426@okbiaxis</p>
+				</div>
+			</div>
 		</div>
 	</section>
 
@@ -49,26 +71,35 @@
 						to rescue operations, emergency shelters, and rehabilitation efforts.
 					</p>
 					<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-						<div class="bg-red-50 p-4 rounded-lg text-center border border-red-200">
+						<button
+							class="bg-red-50 p-4 rounded-lg text-center border border-red-200 hover:bg-red-100 hover:border-red-300 transition-colors cursor-pointer"
+							on:click={() => setDonationAmount(500)}
+						>
 							<div class="text-xl font-bold text-red-600">₹500</div>
 							<div class="text-sm text-red-600">Feeds family 3 days</div>
-						</div>
-						<div class="bg-red-50 p-4 rounded-lg text-center border border-red-200">
+						</button>
+						<button
+							class="bg-red-50 p-4 rounded-lg text-center border border-red-200 hover:bg-red-100 hover:border-red-300 transition-colors cursor-pointer"
+							on:click={() => setDonationAmount(1500)}
+						>
 							<div class="text-xl font-bold text-red-600">₹1,500</div>
 							<div class="text-sm text-red-600">Emergency shelter kit</div>
-						</div>
-						<div class="bg-red-50 p-4 rounded-lg text-center border border-red-200">
+						</button>
+						<button
+							class="bg-red-50 p-4 rounded-lg text-center border border-red-200 hover:bg-red-100 hover:border-red-300 transition-colors cursor-pointer"
+							on:click={() => setDonationAmount(3000)}
+						>
 							<div class="text-xl font-bold text-red-600">₹3,000</div>
 							<div class="text-sm text-red-600">Rescue equipment</div>
-						</div>
-						<div class="bg-red-50 p-4 rounded-lg text-center border border-red-200">
+						</button>
+						<button
+							class="bg-red-50 p-4 rounded-lg text-center border border-red-200 hover:bg-red-100 hover:border-red-300 transition-colors cursor-pointer"
+							on:click={() => setDonationAmount(5000)}
+						>
 							<div class="text-xl font-bold text-red-600">₹5,000</div>
 							<div class="text-sm text-red-600">Family rehabilitation</div>
-						</div>
+						</button>
 					</div>
-					<button class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg transition-colors shadow-lg text-lg">
-						Donate for Punjab Relief Now
-					</button>
 				</div>
 			</div>
 
@@ -89,18 +120,21 @@
 						quickly to emergencies and maintain ongoing community programs.
 					</p>
 					<div class="grid grid-cols-2 gap-4 mb-6">
-						<div class="bg-gray-50 p-4 rounded-lg text-center border">
+						<button
+							class="bg-gray-50 p-4 rounded-lg text-center border hover:bg-orange-50 hover:border-orange-300 transition-colors cursor-pointer"
+							on:click={() => setDonationAmount(1000)}
+						>
 							<div class="text-lg font-bold text-orange-custom">₹1,000</div>
 							<div class="text-sm text-gray-600">Monthly impact donor</div>
-						</div>
-						<div class="bg-gray-50 p-4 rounded-lg text-center border">
+						</button>
+						<button
+							class="bg-gray-50 p-4 rounded-lg text-center border hover:bg-orange-50 hover:border-orange-300 transition-colors cursor-pointer"
+							on:click={() => setDonationAmount(5000)}
+						>
 							<div class="text-lg font-bold text-orange-custom">₹5,000</div>
 							<div class="text-sm text-gray-600">Community supporter</div>
-						</div>
+						</button>
 					</div>
-					<button class="w-full bg-orange-custom hover:bg-orange-dark text-white font-semibold py-3 px-6 rounded-lg transition-colors">
-						Donate to General Fund
-					</button>
 				</div>
 
 				<!-- Campaign-Specific Fund -->
@@ -117,49 +151,30 @@
 						Support specific campaigns like Langar Aid, No Spot initiative, Blanket Distribution, and other targeted relief efforts across India.
 					</p>
 					<div class="grid grid-cols-2 gap-4 mb-6">
-						<div class="bg-gray-50 p-4 rounded-lg text-center border">
+						<button
+							class="bg-gray-50 p-4 rounded-lg text-center border hover:bg-blue-50 hover:border-navy transition-colors cursor-pointer"
+							on:click={() => setDonationAmount(2000)}
+						>
 							<div class="text-lg font-bold text-navy">₹2,000</div>
 							<div class="text-sm text-gray-600">Campaign contributor</div>
-						</div>
-						<div class="bg-gray-50 p-4 rounded-lg text-center border">
+						</button>
+						<button
+							class="bg-gray-50 p-4 rounded-lg text-center border hover:bg-blue-50 hover:border-navy transition-colors cursor-pointer"
+							on:click={() => setDonationAmount(10000)}
+						>
 							<div class="text-lg font-bold text-navy">₹10,000</div>
 							<div class="text-sm text-gray-600">Major campaign sponsor</div>
-						</div>
+						</button>
 					</div>
-					<a href="/campaigns" class="w-full bg-navy hover:bg-navy-dark text-white font-semibold py-3 px-6 rounded-lg transition-colors block text-center">
-						Choose Campaign
-					</a>
 				</div>
 			</div>
 		</div>
 	</section>
 
-	<!-- Payment Section -->
+	<!-- Alternative Payment Methods -->
 	<section class="py-16 px-4 bg-gray-50">
 		<div class="max-w-7xl mx-auto">
-			<!-- Online Payment Section - Primary -->
-			<div class="bg-white text-navy p-8 rounded-2xl shadow-xl mb-12 max-w-3xl mx-auto">
-				<h2 class="text-3xl font-bold mb-8 text-center">Quick Online Payment</h2>
-
-				<div class="space-y-6">
-					<!-- Payment Form -->
-					<PaymentForm />
-
-					<!-- Popular Payment Methods -->
-					<div class="text-center">
-						<p class="text-sm text-gray-600 mb-3">Secure payments powered by Razorpay:</p>
-						<div class="flex justify-center flex-wrap gap-3">
-							<span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">UPI</span>
-							<span class="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">Cards</span>
-							<span class="bg-red-100 text-red-800 text-xs font-semibold px-3 py-1 rounded-full">Net Banking</span>
-							<span class="bg-purple-100 text-purple-800 text-xs font-semibold px-3 py-1 rounded-full">Wallets</span>
-						</div>
-						<p class="text-xs text-gray-500 mt-2">UPI ID for direct transfer: 9340475426@okbiaxis</p>
-					</div>
-				</div>
-			</div>
-
-			<!-- Alternative Payment Methods -->
+			<h2 class="text-3xl md:text-4xl font-bold text-navy mb-12 text-center">Alternative Payment Methods</h2>
 			<div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
 				<!-- Bank Details Card -->
 				<div class="bg-white text-navy p-8 rounded-lg shadow-xl">
