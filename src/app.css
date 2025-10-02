@@ -99,3 +99,74 @@
 .delay-1000 {
   animation-delay: 1s;
 }
+
+/* Ensure all content sits above the texture */
+body > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Subtle Paper Texture Background - Pure CSS */
+.paper-texture-bg {
+  /* CRITICAL: position absolute instead of fixed, so it covers entire PAGE not just screen */
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  
+  /* Allow clicks to pass through to content below */
+  pointer-events: none;
+  
+  /* Keep behind all content */
+  z-index: 0;
+
+  /* Subtle paper grain texture using CSS */
+  background-image:
+    /* Fine noise pattern - creates the paper grain */
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 1px,
+      rgba(0, 0, 0, 0.03) 1px,
+      rgba(0, 0, 0, 0.03) 2px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 1px,
+      rgba(0, 0, 0, 0.03) 1px,
+      rgba(0, 0, 0, 0.03) 2px
+    ),
+    /* Small dots for texture depth */
+    radial-gradient(circle at 25% 25%, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+    radial-gradient(circle at 75% 75%, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+    radial-gradient(circle at 50% 100%, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+    /* Larger subtle variations for paper feel */
+    radial-gradient(ellipse at 20% 80%, rgba(0, 0, 0, 0.02) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(0, 0, 0, 0.02) 0%, transparent 50%);
+
+  background-size:
+    2px 2px,
+    2px 2px,
+    20px 20px,
+    30px 30px,
+    25px 25px,
+    200px 200px,
+    300px 300px;
+
+  background-position:
+    0 0,
+    0 0,
+    0 0,
+    10px 10px,
+    5px 5px,
+    0 0,
+    0 0;
+
+  /* Very subtle off-white base for paper feel */
+  background-color: rgba(250, 248, 245, 0.3);
+  
+  /* Blend with page content using multiply for authentic paper effect */
+  mix-blend-mode: multiply;
+}

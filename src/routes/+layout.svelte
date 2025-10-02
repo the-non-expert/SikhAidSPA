@@ -9,6 +9,9 @@
 	<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </svelte:head>
 
+<!-- Subtle Paper Texture Background -->
+<div class="paper-texture-bg"></div>
+
 <Header />
 
 <slot />
