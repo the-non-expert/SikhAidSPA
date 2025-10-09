@@ -1,5 +1,13 @@
 <script lang="ts">
 	import { campaigns, featuredCampaign } from '$lib/data/campaigns.js';
+
+	// Tab state
+	let activeTab = $state<'current' | 'past'>('current');
+
+	// Filtered campaigns based on active tab
+	const currentCampaigns = $derived(activeTab === 'current' ? [featuredCampaign] : []);
+	const pastCampaigns = $derived(activeTab === 'past' ? campaigns : []);
+	const displayedCampaigns = $derived(activeTab === 'current' ? currentCampaigns : pastCampaigns);
 </script>
 
 <svelte:head>
@@ -8,148 +16,109 @@
 </svelte:head>
 
 <main class="pt-32 min-h-screen">
-	<!-- Hero Section -->
-	<section class="py-16 px-4 bg-navy text-white">
-		<div class="max-w-6xl mx-auto text-center">
-			<h1 class="text-4xl md:text-6xl font-bold mb-6">Our Campaigns</h1>
-			<p class="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto leading-relaxed">
-				Discover the diverse humanitarian initiatives that drive our mission to serve India with compassion, dignity, and unwavering commitment to those in need.
-			</p>
+	<!-- Hero Section with Grid Pattern -->
+	<section class="hero-section py-16 px-4 text-white relative overflow-hidden">
+		<!-- Grid Pattern Overlay -->
+		<div class="grid-pattern"></div>
+
+		<div class="max-w-6xl mx-auto text-center relative z-10">
+			<h1 class="text-4xl md:text-6xl font-bold mb-6">{activeTab === 'current' ? 'Current Campaigns' : 'Past Campaigns'}</h1>
+
+			<!-- Breadcrumb -->
+			<nav class="text-sm md:text-base">
+				<a href="/" class="hover:text-orange-custom transition-colors">Home</a>
+				<span class="mx-2">/</span>
+				<span class="text-orange-custom">{activeTab === 'current' ? 'Current Campaign' : 'Past Campaign'}</span>
+			</nav>
 		</div>
 	</section>
 
-	<!-- Featured Campaign -->
-	<section class="py-16 px-4 bg-gray-50">
-		<div class="max-w-6xl mx-auto">
-			<div class="text-center mb-12">
-				<h2 class="text-3xl md:text-4xl font-bold text-navy mb-4">Featured Campaign</h2>
-				<p class="text-lg text-gray-600 max-w-2xl mx-auto">
-					Our current priority response - providing immediate relief and long-term rehabilitation support.
-				</p>
-			</div>
-
-			<div class="bg-white rounded-xl shadow-xl overflow-hidden max-w-4xl mx-auto">
-				<div class="md:flex">
-					<div class="md:w-1/2">
-						<img
-							src={featuredCampaign.image}
-							alt={featuredCampaign.title}
-							class="w-full h-64 md:h-full object-cover"
-						/>
-					</div>
-					<div class="md:w-1/2 p-8">
-						<div class="mb-4">
-							<span class="inline-block bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full mb-3">
-								{featuredCampaign.category}
-							</span>
-							<span class="inline-block bg-orange-custom text-white text-xs font-bold px-3 py-1 rounded-full mb-3 ml-2">
-								{featuredCampaign.status.toUpperCase()}
-							</span>
-						</div>
-						<h3 class="text-2xl md:text-3xl font-bold text-navy mb-4">{featuredCampaign.title}</h3>
-						<p class="text-gray-600 mb-6 leading-relaxed">{featuredCampaign.shortDescription}</p>
-
-						<div class="grid grid-cols-2 gap-4 mb-6">
-							{#each featuredCampaign.impactStats.slice(0, 4) as stat}
-								<div class="text-center">
-									<div class="text-2xl mb-1">{stat.icon}</div>
-									<div class="text-lg font-bold text-navy">{stat.value}</div>
-									<div class="text-xs text-gray-500">{stat.label}</div>
-								</div>
-							{/each}
-						</div>
-
-						<div class="flex flex-col sm:flex-row gap-3">
-							<a
-								href="/campaigns/{featuredCampaign.slug}"
-								class="bg-navy hover:bg-navy-dark text-white font-semibold px-6 py-3 rounded-lg transition-colors text-center"
-							>
-								Learn More
-							</a>
-							<a
-								href="/donate"
-								class="bg-orange-custom hover:bg-orange-dark text-white font-semibold px-6 py-3 rounded-lg transition-colors text-center"
-							>
-								Donate Now
-							</a>
-						</div>
-					</div>
-				</div>
+	<!-- Tabbed Navigation -->
+	<section class="bg-gray-50 border-b border-gray-200">
+		<div class="max-w-6xl mx-auto px-4">
+			<div class="flex justify-center gap-0">
+				<button
+					type="button"
+					class="tab-button {activeTab === 'current' ? 'active' : ''}"
+					onclick={() => activeTab = 'current'}
+				>
+					Current Campaign
+				</button>
+				<button
+					type="button"
+					class="tab-button {activeTab === 'past' ? 'active' : ''}"
+					onclick={() => activeTab = 'past'}
+				>
+					Past Campaign
+				</button>
 			</div>
 		</div>
 	</section>
 
-	<!-- All Campaigns Grid -->
+	<!-- Campaigns Display -->
 	<section class="py-16 px-4 bg-white">
-		<div class="max-w-6xl mx-auto">
-			<div class="text-center mb-12">
-				<h2 class="text-3xl md:text-4xl font-bold text-navy mb-4">Our Core Campaigns</h2>
-				<p class="text-lg text-gray-600 max-w-2xl mx-auto">
-					Ongoing humanitarian initiatives that form the backbone of our service to communities across India.
-				</p>
-			</div>
-
-			<div class="space-y-8">
-				{#each campaigns as campaign}
-					<article class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
-						<div class="flex flex-col lg:flex-row">
+		<div class="max-w-7xl mx-auto">
+			<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+				{#each displayedCampaigns as campaign}
+					<article class="campaign-card bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
+						<div class="flex flex-col sm:flex-row h-full">
 							<!-- Image Section -->
-							<div class="lg:w-2/5 relative overflow-hidden">
+							<div class="sm:w-2/5 relative overflow-hidden">
 								<img
 									src={campaign.image}
 									alt={campaign.title}
-									class="w-full h-64 lg:h-full object-cover transition-transform duration-300 hover:scale-105"
+									class="w-full h-48 sm:h-full object-cover transition-transform duration-300 hover:scale-105"
 								/>
-								<div class="absolute top-4 left-4">
-									<span class="bg-navy text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg">
+								<div class="absolute top-3 left-3">
+									<span class="bg-navy text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-lg">
 										{campaign.category}
 									</span>
 								</div>
-								<div class="absolute top-4 right-4">
-									<span class="bg-{campaign.status === 'ongoing' ? 'green' : campaign.status === 'seasonal' ? 'orange-custom' : 'gray'}-500 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg">
+								<div class="absolute top-3 right-3">
+									<span class="bg-{campaign.status === 'ongoing' ? 'green' : campaign.status === 'seasonal' ? 'orange-custom' : 'gray'}-500 text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-lg">
 										{campaign.status.toUpperCase()}
 									</span>
 								</div>
 							</div>
 
 							<!-- Content Section -->
-							<div class="lg:w-3/5 p-8">
+							<div class="sm:w-3/5 p-5">
 								<div class="h-full flex flex-col">
 									<!-- Header -->
-									<div class="mb-6">
-										<h3 class="text-2xl font-bold text-navy mb-3 hover:text-orange-custom transition-colors">
+									<div class="mb-4">
+										<h3 class="text-xl font-bold text-navy mb-2 hover:text-orange-custom transition-colors line-clamp-2">
 											{campaign.title}
 										</h3>
-										<p class="text-gray-600 leading-relaxed line-clamp-3">
+										<p class="text-sm text-gray-600 leading-relaxed line-clamp-2">
 											{campaign.shortDescription}
 										</p>
 									</div>
 
 									<!-- Impact Stats -->
-									<div class="grid grid-cols-2 gap-4 mb-8">
+									<div class="grid grid-cols-2 gap-3 mb-4">
 										{#each campaign.impactStats.slice(0, 2) as stat}
-											<div class="bg-gray-50 p-4 rounded-lg text-center border">
-												<div class="text-2xl mb-2">{stat.icon}</div>
-												<div class="text-lg font-bold text-navy">{stat.value}</div>
-												<div class="text-sm text-gray-600">{stat.label}</div>
+											<div class="bg-gray-50 p-3 rounded-lg text-center border">
+												<div class="text-xl mb-1">{stat.icon}</div>
+												<div class="text-base font-bold text-navy">{stat.value}</div>
+												<div class="text-xs text-gray-600">{stat.label}</div>
 											</div>
 										{/each}
 									</div>
 
 									<!-- Action Buttons -->
 									<div class="mt-auto">
-										<div class="flex flex-col sm:flex-row gap-3">
+										<div class="flex flex-col sm:flex-row gap-2">
 											<a
 												href="/campaigns/{campaign.slug}"
-												class="bg-navy hover:bg-navy-dark text-white font-semibold px-6 py-3 rounded-lg transition-all duration-200 text-center shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
+												class="bg-navy hover:bg-navy-dark text-white text-sm font-semibold px-4 py-2.5 rounded-lg transition-all duration-200 text-center shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
 											>
 												Know More
 											</a>
 											<a
 												href="/donate"
-												class="border-2 border-orange-custom text-orange-custom hover:bg-orange-custom hover:text-white font-semibold px-6 py-3 rounded-lg transition-all duration-200 text-center shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
+												class="border-2 border-orange-custom text-orange-custom hover:bg-orange-custom hover:text-white text-sm font-semibold px-4 py-2.5 rounded-lg transition-all duration-200 text-center shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
 											>
-												Support This Campaign
+												Support Campaign
 											</a>
 										</div>
 									</div>
@@ -227,6 +196,85 @@
 		color: var(--orange);
 	}
 
+	/* Hero Section with Grid Pattern */
+	.hero-section {
+		background-color: var(--navy);
+		position: relative;
+	}
+
+	.grid-pattern {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		opacity: 0.4;
+		background-image:
+			/* Vertical lines */
+			repeating-linear-gradient(
+				90deg,
+				transparent,
+				transparent 49px,
+				rgba(255, 255, 255, 0.1) 49px,
+				rgba(255, 255, 255, 0.1) 50px
+			),
+			/* Horizontal lines */
+			repeating-linear-gradient(
+				0deg,
+				transparent,
+				transparent 49px,
+				rgba(255, 255, 255, 0.1) 49px,
+				rgba(255, 255, 255, 0.1) 50px
+			);
+		background-size: 50px 50px;
+	}
+
+	/* Tabbed Navigation */
+	.tab-button {
+		padding: 16px 32px;
+		font-size: 16px;
+		font-weight: 500;
+		color: #6b7280;
+		background: transparent;
+		border: none;
+		border-bottom: 3px solid transparent;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		position: relative;
+	}
+
+	.tab-button:hover {
+		color: var(--navy);
+	}
+
+	.tab-button.active {
+		color: var(--orange);
+		border-bottom-color: var(--orange);
+		font-weight: 600;
+	}
+
+	/* Responsive tab buttons */
+	@media (max-width: 640px) {
+		.tab-button {
+			padding: 12px 20px;
+			font-size: 14px;
+		}
+	}
+
+	/* Campaign Cards */
+	.campaign-card {
+		max-height: 320px;
+		min-height: 280px;
+	}
+
+	/* Line clamp utilities */
+	.line-clamp-2 {
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
 	.line-clamp-3 {
 		display: -webkit-box;
 		-webkit-line-clamp: 3;
@@ -234,7 +282,14 @@
 		overflow: hidden;
 	}
 
-	/* Enhanced responsive design */
+	/* Enhanced responsive design for cards */
+	@media (max-width: 640px) {
+		.campaign-card {
+			max-height: none;
+			min-height: auto;
+		}
+	}
+
 	@media (max-width: 1024px) {
 		.lg\:w-2\/5 {
 			width: 100%;

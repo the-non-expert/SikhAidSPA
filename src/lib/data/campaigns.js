@@ -14,7 +14,7 @@ export const campaigns = [
 		`,
 		image: 'https://i.ibb.co/9kkX22Tz/151.png',
 		category: 'Food Security',
-		status: 'ongoing',
+		status: 'completed',
 		impactStats: [
 			{ label: 'Meals Served', value: '100,000+', icon: '🍽️' },
 			{ label: 'Great Volunteers', value: '300+', icon: '👥' },
@@ -66,7 +66,7 @@ export const campaigns = [
 		`,
 		image: 'https://i.ibb.co/7dVCJV2p/No-Spot-Main.png',
 		category: 'Women\'s Health',
-		status: 'ongoing',
+		status: 'completed',
 		impactStats: [
 			{ label: 'Sanitary Pads Distributed', value: '6,000+', icon: '🩸' },
 			{ label: 'Women Beneficiaries', value: '2,500+', icon: '👩' },
@@ -219,7 +219,7 @@ export const campaigns = [
 		`,
 		image: 'https://i.ibb.co/F4YZrjZR/174.png',
 		category: 'Community Welfare',
-		status: 'ongoing',
+		status: 'completed',
 		impactStats: [
 			{ label: 'Students Supported', value: '3,500+', icon: '🎓' },
 			{ label: 'Medical Camps', value: '120+', icon: '🏥' },
