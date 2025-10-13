@@ -11,9 +11,9 @@
 	</div>
 
 	<div class="relative z-10 max-w-6xl mx-auto">
-		<div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
 			<!-- Organization Info -->
-			<div class="md:col-span-2">
+			<div class="lg:col-span-2">
 				<div class="flex items-center mb-6">
 					<a href="/">
 						<img
@@ -83,7 +83,7 @@
 				</div>
 			</div>
 
-			<!-- Quick Links -->
+			<!-- Quick Links Column 1 -->
 			<div>
 				<h4 class="text-lg font-semibold mb-6 text-navy">
 					Quick Links
@@ -100,9 +100,33 @@
 						>About Us</a
 					>
 					<a
+						href="/campaigns"
+						class="block text-gray-600 hover:text-orange-custom transition-colors"
+						>Campaigns</a
+					>
+					<a
 						href="/blog"
 						class="block text-gray-600 hover:text-orange-custom transition-colors"
 						>Blog</a
+					>
+				</div>
+			</div>
+
+			<!-- Quick Links Column 2 / Get Involved -->
+			<div>
+				<h4 class="text-lg font-semibold mb-6 text-navy">
+					Get Involved
+				</h4>
+				<div class="space-y-3">
+					<a
+						href="/volunteering"
+						class="block text-gray-600 hover:text-orange-custom transition-colors"
+						>Volunteering</a
+					>
+					<a
+						href="/csr"
+						class="block text-gray-600 hover:text-orange-custom transition-colors"
+						>CSR Partnerships</a
 					>
 					<a
 						href="/donate"

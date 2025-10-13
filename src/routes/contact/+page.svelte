@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { addContactSubmission } from '$lib/stores/contact';
+
 	let formData = {
 		name: '',
 		email: '',
@@ -14,9 +16,9 @@
 		isSubmitting = true;
 		submitMessage = '';
 
-		// Simulate form submission (in a real app, this would send to a server)
 		try {
-			await new Promise(resolve => setTimeout(resolve, 1000));
+			// Add submission to store (will console log automatically)
+			addContactSubmission(formData);
 
 			// Reset form
 			formData = {
@@ -30,6 +32,7 @@
 			submitMessage = 'Thank you for your message! We will get back to you within 24 hours.';
 		} catch (error) {
 			submitMessage = 'Sorry, there was an error sending your message. Please try again or contact us directly.';
+			console.error('Contact form submission error:', error);
 		} finally {
 			isSubmitting = false;
 		}

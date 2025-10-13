@@ -2,6 +2,8 @@
 	import { page } from "$app/stores";
 
 	let isMenuOpen = false;
+	let isDropdownOpen = false;
+	let closeTimeout;
 
 	function toggleMenu() {
 		isMenuOpen = !isMenuOpen;
@@ -11,12 +13,28 @@
 		isMenuOpen = false;
 	}
 
+	function openDropdown() {
+		clearTimeout(closeTimeout);
+		isDropdownOpen = true;
+	}
+
+	function closeDropdown() {
+		closeTimeout = setTimeout(() => {
+			isDropdownOpen = false;
+		}, 150);
+	}
+
 	// Check if current page matches the link
 	function isActivePage(href: string): boolean {
 		if (href === "/") {
 			return $page.url.pathname === "/";
 		}
 		return $page.url.pathname.startsWith(href);
+	}
+
+	// Check if Get Involved section is active
+	function isGetInvolvedActive(): boolean {
+		return $page.url.pathname.startsWith('/volunteering') || $page.url.pathname.startsWith('/csr');
 	}
 </script>
 
@@ -27,7 +45,7 @@
 		<!-- Left: Desktop Navigation / Mobile Menu Button -->
 		<div class="flex items-center">
 			<!-- Desktop Navigation -->
-			<ul class="hidden md:flex space-x-6">
+			<ul class="hidden md:flex space-x-6 items-center">
 				<li>
 					<a
 						href="/"
@@ -129,11 +147,69 @@
 			>
 		</div>
 
-		<!-- Right: Donate Button -->
-		<div class="flex justify-end">
+		<!-- Right: Get Involved Dropdown + Donate Button -->
+		<div class="flex justify-end items-center gap-3">
+			<!-- Get Involved Dropdown (Desktop Only) -->
+			<!-- svelte-ignore a11y_no_static_element_interactions -->
+			<div class="hidden md:block relative dropdown-container" on:mouseenter={openDropdown} on:mouseleave={closeDropdown}>
+				<button
+					class="text-navy hover:text-orange-custom font-medium transition-colors flex items-center gap-1 {isGetInvolvedActive()
+						? 'text-orange-custom'
+						: ''}"
+				>
+					Get Involved
+					<svg
+						class="w-4 h-4 transition-transform {isDropdownOpen ? 'rotate-180' : ''}"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M19 9l-7 7-7-7"
+						/>
+					</svg>
+				</button>
+
+				<!-- Dropdown Menu -->
+				{#if isDropdownOpen}
+					<div
+						class="absolute top-full right-0 mt-2 w-56 bg-white shadow-xl rounded-lg border border-gray-100 py-2 z-50"
+						on:mouseenter={openDropdown}
+						on:mouseleave={closeDropdown}
+					>
+						<a
+							href="/volunteering"
+							class="block px-4 py-3 text-navy hover:bg-orange-custom hover:text-white font-medium transition-colors {isActivePage(
+								'/volunteering',
+							)
+								? 'bg-orange-custom/10 text-orange-custom'
+								: ''}"
+							on:click={closeDropdown}
+						>
+							Volunteering Opportunities
+						</a>
+						<a
+							href="/csr"
+							class="block px-4 py-3 text-navy hover:bg-orange-custom hover:text-white font-medium transition-colors {isActivePage(
+								'/csr',
+							)
+								? 'bg-orange-custom/10 text-orange-custom'
+								: ''}"
+							on:click={closeDropdown}
+						>
+							CSR Opportunities
+						</a>
+					</div>
+				{/if}
+			</div>
+
+			<!-- Donate Button -->
 			<a
 				href="/donate"
-				class="bg-orange-custom hover:bg-orange-dark text-white px-2 py-2 rounded-lg text-sm font-normal transition-colors"
+				class="bg-orange-custom hover:bg-orange-dark text-white px-4 py-2 rounded-lg text-sm font-normal transition-colors"
 			>
 				Donate Now
 			</a>
@@ -187,6 +263,28 @@
 					on:click={closeMenu}
 				>
 					Blog
+				</a>
+				<a
+					href="/volunteering"
+					class="block px-4 py-2 font-medium transition-colors {isActivePage(
+						'/volunteering',
+					)
+						? 'text-orange-custom'
+						: 'text-navy hover:text-orange-custom'}"
+					on:click={closeMenu}
+				>
+					Volunteering
+				</a>
+				<a
+					href="/csr"
+					class="block px-4 py-2 font-medium transition-colors {isActivePage(
+						'/csr',
+					)
+						? 'text-orange-custom'
+						: 'text-navy hover:text-orange-custom'}"
+					on:click={closeMenu}
+				>
+					CSR Opportunities
 				</a>
 				<a
 					href="/contact"
