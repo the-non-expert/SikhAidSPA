@@ -68,13 +68,17 @@ export async function addContactToFirestore(
 }
 
 export async function getContactSubmissions(): Promise<FirestoreContactSubmission[]> {
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
 	try {
 		const q = query(
-			collection(db, COLLECTIONS.CONTACT), 
+			collection(db, COLLECTIONS.CONTACT),
 			orderBy('firestoreTimestamp', 'desc')
 		);
 		const querySnapshot = await getDocs(q);
-		
+
 		const submissions: FirestoreContactSubmission[] = [];
 		querySnapshot.forEach((doc) => {
 			submissions.push({
@@ -82,7 +86,7 @@ export async function getContactSubmissions(): Promise<FirestoreContactSubmissio
 				...doc.data()
 			} as FirestoreContactSubmission);
 		});
-		
+
 		return submissions;
 	} catch (error) {
 		console.error('❌ Error fetching contact submissions:', error);
@@ -118,13 +122,17 @@ export async function addVolunteerToFirestore(
 }
 
 export async function getVolunteerSubmissions(): Promise<FirestoreVolunteerSubmission[]> {
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
 	try {
 		const q = query(
-			collection(db, COLLECTIONS.VOLUNTEER), 
+			collection(db, COLLECTIONS.VOLUNTEER),
 			orderBy('firestoreTimestamp', 'desc')
 		);
 		const querySnapshot = await getDocs(q);
-		
+
 		const submissions: FirestoreVolunteerSubmission[] = [];
 		querySnapshot.forEach((doc) => {
 			submissions.push({
@@ -132,7 +140,7 @@ export async function getVolunteerSubmissions(): Promise<FirestoreVolunteerSubmi
 				...doc.data()
 			} as FirestoreVolunteerSubmission);
 		});
-		
+
 		return submissions;
 	} catch (error) {
 		console.error('❌ Error fetching volunteer submissions:', error);
@@ -168,13 +176,17 @@ export async function addCSRToFirestore(
 }
 
 export async function getCSRSubmissions(): Promise<FirestoreCSRSubmission[]> {
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
 	try {
 		const q = query(
-			collection(db, COLLECTIONS.CSR), 
+			collection(db, COLLECTIONS.CSR),
 			orderBy('firestoreTimestamp', 'desc')
 		);
 		const querySnapshot = await getDocs(q);
-		
+
 		const submissions: FirestoreCSRSubmission[] = [];
 		querySnapshot.forEach((doc) => {
 			submissions.push({
@@ -182,7 +194,7 @@ export async function getCSRSubmissions(): Promise<FirestoreCSRSubmission[]> {
 				...doc.data()
 			} as FirestoreCSRSubmission);
 		});
-		
+
 		return submissions;
 	} catch (error) {
 		console.error('❌ Error fetching CSR submissions:', error);
@@ -198,6 +210,10 @@ export async function updateSubmissionStatus(
 	documentId: string,
 	status: 'new' | 'read' | 'resolved'
 ): Promise<void> {
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
 	try {
 		const docRef = doc(db, collectionName, documentId);
 		await updateDoc(docRef, { status });

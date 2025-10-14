@@ -2,6 +2,10 @@
 	import '../app.css';
 	import Header from '$lib/components/Header.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import { page } from '$app/stores';
+
+	// Hide normal header/footer on admin routes
+	$: isAdminRoute = $page.url.pathname.startsWith('/admin');
 </script>
 
 <svelte:head>
@@ -10,10 +14,14 @@
 </svelte:head>
 
 <!-- Subtle Paper Texture Background -->
-<div class="paper-texture-bg"></div>
 
-<Header />
+{#if !isAdminRoute}
+<div class="paper-texture-bg"></div>
+	<Header />
+{/if}
 
 <slot />
 
-<Footer />
+{#if !isAdminRoute}
+	<Footer />
+{/if}

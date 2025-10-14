@@ -148,7 +148,7 @@
 		</div>
 
 		<!-- Right: Get Involved Dropdown + Donate Button -->
-		<div class="flex justify-end items-center gap-3">
+		<div class="flex justify-end items-center gap-6">
 			<!-- Get Involved Dropdown (Desktop Only) -->
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
 			<div class="hidden md:block relative dropdown-container" on:mouseenter={openDropdown} on:mouseleave={closeDropdown}>
