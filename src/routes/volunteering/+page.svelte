@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { addVolunteerSubmission } from '$lib/stores/volunteering';
+	import { addVolunteerToFirestore } from '$lib/firestore';
 
 	let formData = {
 		fullName: '',
@@ -24,6 +25,9 @@
 		try {
 			// Add submission to store (will console log automatically)
 			addVolunteerSubmission(formData);
+			
+			// Save to Firestore
+			await addVolunteerToFirestore(formData);
 
 			// Reset form
 			formData = {
@@ -299,7 +303,7 @@
 							</div>
 							<div>
 								<label for="durationYears" class="block text-sm font-semibold text-gray-700 mb-2">
-									Duration (Years)
+									Experience (Years)
 								</label>
 								<select
 									id="durationYears"

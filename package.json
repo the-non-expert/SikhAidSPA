@@ -30,6 +30,7 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"@iconify/svelte": "^5.0.2"
+		"@iconify/svelte": "^5.0.2",
+		"firebase": "^12.4.0"
 	}
 }

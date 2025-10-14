@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { addContactSubmission } from '$lib/stores/contact';
+	import { addContactToFirestore } from '$lib/firestore';
 
 	let formData = {
 		name: '',
@@ -19,6 +20,9 @@
 		try {
 			// Add submission to store (will console log automatically)
 			addContactSubmission(formData);
+			
+			// Save to Firestore
+			await addContactToFirestore(formData);
 
 			// Reset form
 			formData = {

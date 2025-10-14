@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { addCSRSubmission } from '$lib/stores/csr';
+	import { addCSRToFirestore } from '$lib/firestore';
 
 	let formData = {
 		companyName: '',
@@ -23,6 +24,9 @@
 		try {
 			// Add submission to store (will console log automatically)
 			addCSRSubmission(formData);
+			
+			// Save to Firestore
+			await addCSRToFirestore(formData);
 
 			// Reset form
 			formData = {
