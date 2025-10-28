@@ -1,8 +1,21 @@
 <script lang="ts">
-	import { getAllBlogs } from '$lib/data/blogs.js';
+	import { onMount } from 'svelte';
+	import { getPublishedBlogs } from '$lib/firestore';
+	import type { Blog } from '$lib/types/blog';
 
-	// Get all blog posts from data file
-	const blogPosts = getAllBlogs();
+	// Get all published blog posts from Firestore
+	let blogPosts = $state<Blog[]>([]);
+	let loading = $state(true);
+
+	onMount(async () => {
+		try {
+			blogPosts = await getPublishedBlogs();
+		} catch (error) {
+			console.error('Error loading blogs:', error);
+		} finally {
+			loading = false;
+		}
+	});
 
 	function formatDate(dateString: string): string {
 		const date = new Date(dateString);
@@ -33,32 +46,42 @@
 	<!-- Featured Post -->
 	<section class="py-16 px-4 bg-gray-50">
 		<div class="max-w-6xl mx-auto">
-			<div class="bg-white rounded-lg shadow-xl overflow-hidden">
-				<div class="md:flex">
-					<div class="md:w-1/2">
-						<img src={blogPosts[0].image} alt={blogPosts[0].title} class="w-full h-64 md:h-full object-cover" />
-					</div>
-					<div class="md:w-1/2 p-8">
-						<div class="uppercase tracking-wide text-sm text-navy font-semibold mb-2">Featured Post</div>
-						<h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
-							<a href="/blog/{blogPosts[0].slug}" class="hover:text-navy transition-colors">
-								{blogPosts[0].title}
-							</a>
-						</h2>
-						<p class="text-gray-600 mb-4 leading-relaxed">{blogPosts[0].excerpt}</p>
-						<div class="flex items-center justify-between text-sm text-gray-500 mb-4">
-							<span>{formatDate(blogPosts[0].date)}</span>
-							<span>{blogPosts[0].readTime}</span>
+			{#if loading}
+				<div class="bg-white rounded-lg shadow-xl p-12 text-center">
+					<p class="text-gray-600">Loading blog posts...</p>
+				</div>
+			{:else if blogPosts.length > 0}
+				<div class="bg-white rounded-lg shadow-xl overflow-hidden">
+					<div class="md:flex">
+						<div class="md:w-1/2">
+							<img src={blogPosts[0].image} alt={blogPosts[0].title} class="w-full h-64 md:h-full object-cover" />
 						</div>
-						<a
-							href="/blog/{blogPosts[0].slug}"
-							class="inline-block bg-navy text-white px-6 py-3 rounded-lg font-semibold hover:bg-navy-dark transition-colors"
-						>
-							Read More →
-						</a>
+						<div class="md:w-1/2 p-8">
+							<div class="uppercase tracking-wide text-sm text-navy font-semibold mb-2">Featured Post</div>
+							<h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+								<a href="/blog/{blogPosts[0].slug}" class="hover:text-navy transition-colors">
+									{blogPosts[0].title}
+								</a>
+							</h2>
+							<p class="text-gray-600 mb-4 leading-relaxed">{blogPosts[0].excerpt}</p>
+							<div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+								<span>{blogPosts[0].publishedAt ? formatDate(blogPosts[0].publishedAt) : ''}</span>
+								<span>{blogPosts[0].readTime || ''}</span>
+							</div>
+							<a
+								href="/blog/{blogPosts[0].slug}"
+								class="inline-block bg-navy text-white px-6 py-3 rounded-lg font-semibold hover:bg-navy-dark transition-colors"
+							>
+								Read More →
+							</a>
+						</div>
 					</div>
 				</div>
-			</div>
+			{:else}
+				<div class="bg-white rounded-lg shadow-xl p-12 text-center">
+					<p class="text-gray-600">No blog posts available yet.</p>
+				</div>
+			{/if}
 		</div>
 	</section>
 
@@ -67,40 +90,46 @@
 		<div class="max-w-6xl mx-auto">
 			<h2 class="text-3xl md:text-4xl font-bold text-navy mb-12 text-center">Recent Posts</h2>
 
-			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-				{#each blogPosts.slice(1) as post}
-					<article class="bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden">
-						<img src={post.image} alt={post.title} class="w-full h-48 object-cover" />
+			{#if loading}
+				<div class="text-center py-12">
+					<p class="text-gray-600">Loading recent posts...</p>
+				</div>
+			{:else if blogPosts.length > 1}
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+					{#each blogPosts.slice(1) as post}
+						<article class="bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden">
+							<img src={post.image} alt={post.title} class="w-full h-48 object-cover" />
 
-						<div class="p-6">
-							<div class="flex items-center justify-between mb-3">
-								<span class="text-xs font-semibold text-white bg-orange-custom px-2 py-1 rounded">
-									{post.category}
-								</span>
-								<span class="text-xs text-gray-500">{post.readTime}</span>
+							<div class="p-6">
+								<div class="flex items-center justify-between mb-3">
+									<span class="text-xs font-semibold text-white bg-orange-custom px-2 py-1 rounded">
+										{post.category}
+									</span>
+									<span class="text-xs text-gray-500">{post.readTime || ''}</span>
+								</div>
+
+								<h3 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
+									<a href="/blog/{post.slug}" class="hover:text-navy transition-colors">
+										{post.title}
+									</a>
+								</h3>
+
+								<p class="text-gray-600 text-sm mb-4 line-clamp-3">{post.excerpt}</p>
+
+								<div class="flex items-center justify-between">
+									<span class="text-xs text-gray-500">{post.publishedAt ? formatDate(post.publishedAt) : ''}</span>
+									<a
+										href="/blog/{post.slug}"
+										class="text-navy font-semibold text-sm hover:underline"
+									>
+										Read More →
+									</a>
+								</div>
 							</div>
-
-							<h3 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
-								<a href="/blog/{post.slug}" class="hover:text-navy transition-colors">
-									{post.title}
-								</a>
-							</h3>
-
-							<p class="text-gray-600 text-sm mb-4 line-clamp-3">{post.excerpt}</p>
-
-							<div class="flex items-center justify-between">
-								<span class="text-xs text-gray-500">{formatDate(post.date)}</span>
-								<a
-									href="/blog/{post.slug}"
-									class="text-navy font-semibold text-sm hover:underline"
-								>
-									Read More →
-								</a>
-							</div>
-						</div>
-					</article>
-				{/each}
-			</div>
+						</article>
+					{/each}
+				</div>
+			{/if}
 		</div>
 	</section>
 

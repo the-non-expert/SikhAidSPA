@@ -1,4 +1,5 @@
 export interface Campaign {
+	id?: string; // Firestore document ID
 	slug: string;
 	title: string;
 	subtitle: string;
@@ -7,9 +8,13 @@ export interface Campaign {
 	image: string;
 	category: string;
 	status: 'ongoing' | 'completed' | 'seasonal';
+	publishStatus: 'draft' | 'published'; // Admin publish status
 	impactStats: ImpactStat[];
 	howItWorks: HowItWorksStep[];
 	gallery: GalleryImage[];
+	createdAt?: string; // ISO timestamp
+	updatedAt?: string; // ISO timestamp
+	publishedAt?: string; // ISO timestamp - when first published
 }
 
 export interface ImpactStat {

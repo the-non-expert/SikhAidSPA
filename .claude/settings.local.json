@@ -3,7 +3,8 @@
     "allow": [
       "Read(//var/folders/n9/2ls2fhrd0nx4r3b10bkphhnc0000gn/T/TemporaryItems/NSIRD_screencaptureui_ENA9PH/**)",
       "Read(//var/folders/n9/2ls2fhrd0nx4r3b10bkphhnc0000gn/T/TemporaryItems/NSIRD_screencaptureui_ZIwr2p/**)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(npm install:*)"
     ],
     "deny": [],
     "ask": []

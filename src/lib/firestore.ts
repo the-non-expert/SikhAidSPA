@@ -1,18 +1,23 @@
 import { db } from './firebase';
-import { 
-	collection, 
-	addDoc, 
-	getDocs, 
-	query, 
-	orderBy, 
-	updateDoc, 
+import {
+	collection,
+	addDoc,
+	getDocs,
+	query,
+	orderBy,
+	updateDoc,
 	doc,
+	getDoc,
+	deleteDoc,
+	where,
 	type Timestamp,
-	serverTimestamp 
+	serverTimestamp
 } from 'firebase/firestore';
 import type { ContactSubmission } from './stores/contact';
 import type { VolunteerSubmission } from './stores/volunteering';
 import type { CSRSubmission } from './stores/csr';
+import type { Blog } from './types/blog';
+import type { Campaign } from './types/campaign';
 
 // Types for Firestore documents (includes id and status)
 export interface FirestoreContactSubmission extends ContactSubmission {
@@ -37,7 +42,9 @@ export interface FirestoreCSRSubmission extends CSRSubmission {
 const COLLECTIONS = {
 	CONTACT: 'contact_submissions',
 	VOLUNTEER: 'volunteer_submissions',
-	CSR: 'csr_submissions'
+	CSR: 'csr_submissions',
+	BLOGS: 'blogs',
+	CAMPAIGNS: 'campaigns'
 };
 
 /**
@@ -220,6 +227,432 @@ export async function updateSubmissionStatus(
 		console.log(`✅ Updated ${collectionName}/${documentId} status to: ${status}`);
 	} catch (error) {
 		console.error('❌ Error updating status:', error);
+		throw error;
+	}
+}
+
+/**
+ * Blog Functions
+ */
+
+/**
+ * Add a new blog post to Firestore
+ */
+export async function addBlog(blog: Omit<Blog, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		const now = new Date().toISOString();
+		const blogData: Omit<Blog, 'id'> = {
+			...blog,
+			createdAt: now,
+			updatedAt: now,
+			publishedAt: blog.publishStatus === 'published' ? now : undefined
+		};
+
+		const docRef = await addDoc(collection(db, COLLECTIONS.BLOGS), blogData);
+		console.log('✅ Blog post saved to Firestore with ID:', docRef.id);
+		return docRef.id;
+	} catch (error) {
+		console.error('❌ Error adding blog to Firestore:', error);
+		throw error;
+	}
+}
+
+/**
+ * Get all blog posts (for admin panel)
+ */
+export async function getAllBlogs(): Promise<Blog[]> {
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		const q = query(collection(db, COLLECTIONS.BLOGS), orderBy('createdAt', 'desc'));
+		const querySnapshot = await getDocs(q);
+
+		const blogs: Blog[] = [];
+		querySnapshot.forEach((doc) => {
+			blogs.push({
+				id: doc.id,
+				...doc.data()
+			} as Blog);
+		});
+
+		return blogs;
+	} catch (error) {
+		console.error('❌ Error fetching blogs:', error);
+		throw error;
+	}
+}
+
+/**
+ * Get only published blog posts (for public pages)
+ */
+export async function getPublishedBlogs(): Promise<Blog[]> {
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		// Fetch all blogs and filter in memory to avoid needing a composite index
+		const q = query(
+			collection(db, COLLECTIONS.BLOGS),
+			where('publishStatus', '==', 'published')
+		);
+		const querySnapshot = await getDocs(q);
+
+		const blogs: Blog[] = [];
+		querySnapshot.forEach((doc) => {
+			blogs.push({
+				id: doc.id,
+				...doc.data()
+			} as Blog);
+		});
+
+		// Sort by publishedAt in memory
+		return blogs.sort((a, b) => {
+			const dateA = new Date(a.publishedAt || a.createdAt || '');
+			const dateB = new Date(b.publishedAt || b.createdAt || '');
+			return dateB.getTime() - dateA.getTime();
+		});
+	} catch (error) {
+		console.error('❌ Error fetching published blogs:', error);
+		throw error;
+	}
+}
+
+/**
+ * Get a single blog post by ID
+ */
+export async function getBlogById(id: string): Promise<Blog | null> {
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		const docRef = doc(db, COLLECTIONS.BLOGS, id);
+		const docSnap = await getDoc(docRef);
+
+		if (docSnap.exists()) {
+			return {
+				id: docSnap.id,
+				...docSnap.data()
+			} as Blog;
+		} else {
+			return null;
+		}
+	} catch (error) {
+		console.error('❌ Error fetching blog:', error);
+		throw error;
+	}
+}
+
+/**
+ * Get a single published blog post by slug (for public pages)
+ */
+export async function getBlogBySlug(slug: string): Promise<Blog | null> {
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		// Query by slug only, then check publishStatus in memory to avoid composite index
+		const q = query(
+			collection(db, COLLECTIONS.BLOGS),
+			where('slug', '==', slug)
+		);
+		const querySnapshot = await getDocs(q);
+
+		if (querySnapshot.empty) {
+			return null;
+		}
+
+		// Find the first published blog with this slug
+		for (const doc of querySnapshot.docs) {
+			const blog = {
+				id: doc.id,
+				...doc.data()
+			} as Blog;
+
+			if (blog.publishStatus === 'published') {
+				return blog;
+			}
+		}
+
+		return null;
+	} catch (error) {
+		console.error('❌ Error fetching blog by slug:', error);
+		throw error;
+	}
+}
+
+/**
+ * Update a blog post
+ */
+export async function updateBlog(id: string, updates: Partial<Blog>): Promise<void> {
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		const docRef = doc(db, COLLECTIONS.BLOGS, id);
+
+		// Get current blog to check publish status change
+		const currentDoc = await getDoc(docRef);
+		if (!currentDoc.exists()) {
+			throw new Error('Blog not found');
+		}
+
+		const currentData = currentDoc.data() as Blog;
+		const updateData: any = {
+			...updates,
+			updatedAt: new Date().toISOString()
+		};
+
+		// If changing from draft to published, set publishedAt
+		if (currentData.publishStatus === 'draft' && updates.publishStatus === 'published') {
+			updateData.publishedAt = new Date().toISOString();
+		}
+
+		await updateDoc(docRef, updateData);
+		console.log(`✅ Updated blog ${id}`);
+	} catch (error) {
+		console.error('❌ Error updating blog:', error);
+		throw error;
+	}
+}
+
+/**
+ * Delete a blog post
+ */
+export async function deleteBlog(id: string): Promise<void> {
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		const docRef = doc(db, COLLECTIONS.BLOGS, id);
+		await deleteDoc(docRef);
+		console.log(`✅ Deleted blog ${id}`);
+	} catch (error) {
+		console.error('❌ Error deleting blog:', error);
+		throw error;
+	}
+}
+
+/**
+ * Campaign Functions
+ */
+
+/**
+ * Add a new campaign to Firestore
+ */
+export async function addCampaign(
+	campaign: Omit<Campaign, 'id' | 'createdAt' | 'updatedAt'>
+): Promise<string> {
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		const now = new Date().toISOString();
+		const campaignData: Omit<Campaign, 'id'> = {
+			...campaign,
+			createdAt: now,
+			updatedAt: now,
+			publishedAt: campaign.publishStatus === 'published' ? now : undefined
+		};
+
+		const docRef = await addDoc(collection(db, COLLECTIONS.CAMPAIGNS), campaignData);
+		console.log('✅ Campaign saved to Firestore with ID:', docRef.id);
+		return docRef.id;
+	} catch (error) {
+		console.error('❌ Error adding campaign to Firestore:', error);
+		throw error;
+	}
+}
+
+/**
+ * Get all campaigns (for admin panel)
+ */
+export async function getAllCampaigns(): Promise<Campaign[]> {
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		const q = query(collection(db, COLLECTIONS.CAMPAIGNS), orderBy('createdAt', 'desc'));
+		const querySnapshot = await getDocs(q);
+
+		const campaigns: Campaign[] = [];
+		querySnapshot.forEach((doc) => {
+			campaigns.push({
+				id: doc.id,
+				...doc.data()
+			} as Campaign);
+		});
+
+		return campaigns;
+	} catch (error) {
+		console.error('❌ Error fetching campaigns:', error);
+		throw error;
+	}
+}
+
+/**
+ * Get only published campaigns (for public pages)
+ */
+export async function getPublishedCampaigns(): Promise<Campaign[]> {
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		// Fetch all campaigns and filter in memory to avoid needing a composite index
+		const q = query(
+			collection(db, COLLECTIONS.CAMPAIGNS),
+			where('publishStatus', '==', 'published')
+		);
+		const querySnapshot = await getDocs(q);
+
+		const campaigns: Campaign[] = [];
+		querySnapshot.forEach((doc) => {
+			campaigns.push({
+				id: doc.id,
+				...doc.data()
+			} as Campaign);
+		});
+
+		// Sort by publishedAt in memory
+		return campaigns.sort((a, b) => {
+			const dateA = new Date(a.publishedAt || a.createdAt || '');
+			const dateB = new Date(b.publishedAt || b.createdAt || '');
+			return dateB.getTime() - dateA.getTime();
+		});
+	} catch (error) {
+		console.error('❌ Error fetching published campaigns:', error);
+		throw error;
+	}
+}
+
+/**
+ * Get a single campaign by ID
+ */
+export async function getCampaignById(id: string): Promise<Campaign | null> {
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		const docRef = doc(db, COLLECTIONS.CAMPAIGNS, id);
+		const docSnap = await getDoc(docRef);
+
+		if (docSnap.exists()) {
+			return {
+				id: docSnap.id,
+				...docSnap.data()
+			} as Campaign;
+		} else {
+			return null;
+		}
+	} catch (error) {
+		console.error('❌ Error fetching campaign:', error);
+		throw error;
+	}
+}
+
+/**
+ * Get a single published campaign by slug (for public pages)
+ */
+export async function getCampaignBySlug(slug: string): Promise<Campaign | null> {
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		// Query by slug only, then check publishStatus in memory to avoid composite index
+		const q = query(
+			collection(db, COLLECTIONS.CAMPAIGNS),
+			where('slug', '==', slug)
+		);
+		const querySnapshot = await getDocs(q);
+
+		if (querySnapshot.empty) {
+			return null;
+		}
+
+		// Find the first published campaign with this slug
+		for (const doc of querySnapshot.docs) {
+			const campaign = {
+				id: doc.id,
+				...doc.data()
+			} as Campaign;
+
+			if (campaign.publishStatus === 'published') {
+				return campaign;
+			}
+		}
+
+		return null;
+	} catch (error) {
+		console.error('❌ Error fetching campaign by slug:', error);
+		throw error;
+	}
+}
+
+/**
+ * Update a campaign
+ */
+export async function updateCampaign(id: string, updates: Partial<Campaign>): Promise<void> {
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		const docRef = doc(db, COLLECTIONS.CAMPAIGNS, id);
+
+		// Get current campaign to check publish status change
+		const currentDoc = await getDoc(docRef);
+		if (!currentDoc.exists()) {
+			throw new Error('Campaign not found');
+		}
+
+		const currentData = currentDoc.data() as Campaign;
+		const updateData: any = {
+			...updates,
+			updatedAt: new Date().toISOString()
+		};
+
+		// If changing from draft to published, set publishedAt
+		if (currentData.publishStatus === 'draft' && updates.publishStatus === 'published') {
+			updateData.publishedAt = new Date().toISOString();
+		}
+
+		await updateDoc(docRef, updateData);
+		console.log(`✅ Updated campaign ${id}`);
+	} catch (error) {
+		console.error('❌ Error updating campaign:', error);
+		throw error;
+	}
+}
+
+/**
+ * Delete a campaign
+ */
+export async function deleteCampaign(id: string): Promise<void> {
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		const docRef = doc(db, COLLECTIONS.CAMPAIGNS, id);
+		await deleteDoc(docRef);
+		console.log(`✅ Deleted campaign ${id}`);
+	} catch (error) {
+		console.error('❌ Error deleting campaign:', error);
 		throw error;
 	}
 }

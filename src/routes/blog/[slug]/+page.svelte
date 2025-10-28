@@ -2,26 +2,35 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import { getBlogBySlug, getAllBlogs } from '$lib/data/blogs.js';
+	import { getBlogBySlug, getPublishedBlogs } from '$lib/firestore';
+	import type { Blog } from '$lib/types/blog';
 
-	let currentPost = null;
-	let slug = '';
-	let relatedPosts = [];
+	let currentPost = $state<Blog | null>(null);
+	let slug = $state('');
+	let relatedPosts = $state<Blog[]>([]);
+	let loading = $state(true);
 
-	// Get all blogs for related posts
-	const allBlogs = getAllBlogs();
+	onMount(async () => {
+		try {
+			slug = $page.params.slug;
+			currentPost = await getBlogBySlug(slug);
 
-	onMount(() => {
-		slug = $page.params.slug;
-		currentPost = getBlogBySlug(slug);
+			if (!currentPost) {
+				goto('/blog');
+			} else {
+				// Get all published blogs for related posts
+				const allBlogs = await getPublishedBlogs();
 
-		if (!currentPost) {
+				// Get 2 related posts (excluding current one)
+				relatedPosts = allBlogs
+					.filter(post => post.slug !== slug)
+					.slice(0, 2);
+			}
+		} catch (error) {
+			console.error('Error loading blog post:', error);
 			goto('/blog');
-		} else {
-			// Get 2 related posts (excluding current one)
-			relatedPosts = allBlogs
-				.filter(post => post.slug !== slug)
-				.slice(0, 2);
+		} finally {
+			loading = false;
 		}
 	});
 
@@ -40,7 +49,13 @@
 	<meta name="description" content={currentPost ? currentPost.excerpt : 'Blog post from Sikh Aid Charitable Trust'} />
 </svelte:head>
 
-{#if currentPost}
+{#if loading}
+	<div class="min-h-screen flex items-center justify-center pt-32">
+		<div class="text-center">
+			<p class="text-gray-600">Loading blog post...</p>
+		</div>
+	</div>
+{:else if currentPost}
 	<main class="pt-32 min-h-screen">
 		<!-- Hero Section -->
 		<section class="py-16 px-4 bg-gray-50">
@@ -59,8 +74,8 @@
 					<div class="p-8">
 						<div class="flex items-center gap-4 mb-4 text-sm text-gray-600">
 							<span class="bg-navy text-white px-3 py-1 rounded-full text-xs">{currentPost.category}</span>
-							<span>{formatDate(currentPost.date)}</span>
-							<span>{currentPost.readTime}</span>
+							<span>{currentPost.publishedAt ? formatDate(currentPost.publishedAt) : ''}</span>
+							<span>{currentPost.readTime || ''}</span>
 							<span>By {currentPost.author}</span>
 						</div>
 
@@ -114,8 +129,8 @@
 										</h3>
 										<p class="text-gray-600 text-sm mb-3 line-clamp-2">{post.excerpt}</p>
 										<div class="flex items-center justify-between text-sm text-gray-500">
-											<span>{formatDate(post.date)}</span>
-											<span>{post.readTime}</span>
+											<span>{post.publishedAt ? formatDate(post.publishedAt) : ''}</span>
+											<span>{post.readTime || ''}</span>
 										</div>
 									</div>
 								</article>
