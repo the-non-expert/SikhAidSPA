@@ -34,7 +34,10 @@
 
 	// Check if Get Involved section is active
 	function isGetInvolvedActive(): boolean {
-		return $page.url.pathname.startsWith('/volunteering') || $page.url.pathname.startsWith('/csr');
+		return (
+			$page.url.pathname.startsWith("/volunteering") ||
+			$page.url.pathname.startsWith("/csr")
+		);
 	}
 </script>
 
@@ -150,8 +153,22 @@
 		<!-- Right: Get Involved Dropdown + Donate Button -->
 		<div class="flex justify-end items-center gap-6">
 			<!-- Get Involved Dropdown (Desktop Only) -->
+			<button>
+				<a
+					href="/press"
+					class="hidden md:block text-navy hover:text-orange-custom font-medium transition-colors {isActivePage(
+						'/press',
+					)
+						? 'text-orange-custom'
+						: ''}">Press Coverage</a
+				></button
+			>
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
-			<div class="hidden md:block relative dropdown-container" on:mouseenter={openDropdown} on:mouseleave={closeDropdown}>
+			<div
+				class="hidden md:block relative dropdown-container"
+				on:mouseenter={openDropdown}
+				on:mouseleave={closeDropdown}
+			>
 				<button
 					class="text-navy hover:text-orange-custom font-medium transition-colors flex items-center gap-1 {isGetInvolvedActive()
 						? 'text-orange-custom'
@@ -159,7 +176,9 @@
 				>
 					Get Involved
 					<svg
-						class="w-4 h-4 transition-transform {isDropdownOpen ? 'rotate-180' : ''}"
+						class="w-4 h-4 transition-transform {isDropdownOpen
+							? 'rotate-180'
+							: ''}"
 						fill="none"
 						stroke="currentColor"
 						viewBox="0 0 24 24"
@@ -263,6 +282,17 @@
 					on:click={closeMenu}
 				>
 					Blog
+				</a>
+				<a
+					href="/press"
+					class="block px-4 py-2 font-medium transition-colors {isActivePage(
+						'/press',
+					)
+						? 'text-orange-custom'
+						: 'text-navy hover:text-orange-custom'}"
+					on:click={closeMenu}
+				>
+					Press Coverage
 				</a>
 				<a
 					href="/volunteering"
