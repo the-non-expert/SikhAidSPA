@@ -21,10 +21,5 @@ export function addContactSubmission(submission: Omit<ContactSubmission, 'timest
 
 	contactSubmissions.update(submissions => [...submissions, newSubmission]);
 
-	// Console log for debugging
-	console.log('=== NEW CONTACT FORM SUBMISSION ===');
-	console.log(newSubmission);
-	console.log('===================================');
-
 	return newSubmission;
 }

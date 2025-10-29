@@ -25,10 +25,5 @@ export function addCSRSubmission(submission: Omit<CSRSubmission, 'timestamp'>) {
 
 	csrSubmissions.update(submissions => [...submissions, newSubmission]);
 
-	// Console log for debugging
-	console.log('=== NEW CSR PARTNERSHIP INQUIRY ===');
-	console.log(newSubmission);
-	console.log('===================================');
-
 	return newSubmission;
 }

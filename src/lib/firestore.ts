@@ -66,7 +66,6 @@ export async function addContactToFirestore(
 		};
 
 		const docRef = await addDoc(collection(db, COLLECTIONS.CONTACT), contactData);
-		console.log('✅ Contact submission saved to Firestore with ID:', docRef.id);
 		return docRef.id;
 	} catch (error) {
 		console.error('❌ Error adding contact to Firestore:', error);
@@ -120,7 +119,6 @@ export async function addVolunteerToFirestore(
 		};
 
 		const docRef = await addDoc(collection(db, COLLECTIONS.VOLUNTEER), volunteerData);
-		console.log('✅ Volunteer submission saved to Firestore with ID:', docRef.id);
 		return docRef.id;
 	} catch (error) {
 		console.error('❌ Error adding volunteer to Firestore:', error);

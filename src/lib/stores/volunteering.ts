@@ -26,10 +26,5 @@ export function addVolunteerSubmission(submission: Omit<VolunteerSubmission, 'ti
 
 	volunteerSubmissions.update(submissions => [...submissions, newSubmission]);
 
-	// Console log for debugging
-	console.log('=== NEW VOLUNTEER SUBMISSION ===');
-	console.log(newSubmission);
-	console.log('================================');
-
 	return newSubmission;
 }
