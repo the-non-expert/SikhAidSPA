@@ -55,25 +55,25 @@
 			id: 'strategic-philanthropy',
 			title: 'Strategic Philanthropy',
 			description: 'Through funds and in-kind contributions',
-			image: 'https://i.ibb.co/chXkRPDx/147.png'
+			image: '/csr-page-pictures/strategic-philanthropy-through-funds-and-in-kind-contributions.png'
 		},
 		{
 			id: 'cause-marketing',
 			title: 'Cause Marketing Initiatives',
 			description: 'Co-branded campaigns for social impact',
-			image: 'https://i.ibb.co/8gRBfkV5/148.png'
+			image: '/csr-page-pictures/cause-marketing-initiatives.png'
 		},
 		{
 			id: 'events-sponsorship',
 			title: 'Events and Sponsorship',
 			description: 'Support our community programs',
-			image: 'https://i.ibb.co/1tXPdK2m/149.png'
+			image: '/csr-page-pictures/events-and-sponsorship.png'
 		},
 		{
 			id: 'innovations',
 			title: 'Innovations and Project Solutions',
 			description: 'For children and communities',
-			image: 'https://i.ibb.co/F42y3Z90/150.png'
+			image: '/csr-page-pictures/innovations-and-project-solutions-for-children.png'
 		}
 	];
 </script>
