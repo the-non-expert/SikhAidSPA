@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 
 	let isAuthenticated = false;
@@ -31,8 +32,9 @@
 
 	onMount(() => {
 		isAuthenticated = checkAuthentication();
-		if (!isAuthenticated) {
-			goto('/');
+		if (!isAuthenticated && $page.url.pathname !== '/admin') {
+			// Redirect child routes to /admin for login
+			goto('/admin');
 		}
 	});
 </script>
@@ -42,7 +44,7 @@
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-{#if isAuthenticated}
+{#if isAuthenticated || $page.url.pathname === '/admin'}
 	<!-- Main Content - No Header -->
 	<slot />
 {/if}

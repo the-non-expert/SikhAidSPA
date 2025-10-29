@@ -1,19 +1,64 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
+	import Icon from '@iconify/svelte';
 
 	const adminName = 'Raunak';
+
+	// Auth state
+	let isAuthenticated = $state(false);
+	let adminPassword = $state('');
+	let adminError = $state('');
+	let isLoading = $state(false);
+
+	onMount(() => {
+		isAuthenticated = checkAuthentication();
+	});
+
+	function checkAuthentication() {
+		if (!browser) return false;
+		const cookies = document.cookie.split(';');
+		const adminSession = cookies.find(c => c.trim().startsWith('admin_session='));
+		if (adminSession) {
+			const sessionValue = adminSession.split('=')[1];
+			return sessionValue && sessionValue.startsWith('raunak_');
+		}
+		return false;
+	}
+
+	async function handleLogin(event: SubmitEvent) {
+		event.preventDefault();
+
+		if (!adminPassword.trim()) {
+			adminError = 'Please enter password';
+			return;
+		}
+
+		isLoading = true;
+		adminError = '';
+
+		if (adminPassword === 'Raunak@123') {
+			document.cookie = `admin_session=raunak_${Date.now()}; max-age=3600; path=/; samesite=strict`;
+			isAuthenticated = true;
+			adminPassword = '';
+		} else {
+			adminError = 'Invalid password';
+			isLoading = false;
+		}
+	}
 
 	function navigateTo(path: string) {
 		goto(path);
 	}
 
 	function handleLogout() {
-		// Clear the session cookie
 		document.cookie = 'admin_session=; max-age=0; path=/';
 		goto('/');
 	}
 </script>
 
+{#if isAuthenticated}
 <div class="admin-landing">
 	<!-- Background with grid -->
 	<div class="gradient-bg">
@@ -23,7 +68,7 @@
 	<!-- Content container -->
 	<div class="content-container">
 		<!-- Logout Button - Above badge -->
-		<button on:click={handleLogout} class="logout-btn">
+		<button onclick={handleLogout} class="logout-btn">
 			<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<path
 					stroke-linecap="round"
@@ -66,16 +111,63 @@
 
 		<!-- Action buttons -->
 		<div class="button-grid animate-fade-in delay-800">
-			<button on:click={() => navigateTo('/admin/formsubmissions')} class="action-btn">
+			<button onclick={() => navigateTo('/admin/formsubmissions')} class="action-btn">
 				Form Submissions
 			</button>
-			<button on:click={() => navigateTo('/admin/blogs')} class="action-btn"> Blogs </button>
-			<button on:click={() => navigateTo('/admin/campaigns')} class="action-btn">
+			<button onclick={() => navigateTo('/admin/blogs')} class="action-btn"> Blogs </button>
+			<button onclick={() => navigateTo('/admin/campaigns')} class="action-btn">
 				Campaigns
 			</button>
 		</div>
 	</div>
 </div>
+{:else}
+<!-- Login Dialog -->
+<div class="login-container">
+	<div class="gradient-bg">
+		<div class="grid-overlay"></div>
+	</div>
+
+	<div class="login-card">
+		<Icon icon="mdi:lock" width="48" class="lock-icon-large" />
+		<h1 class="login-title">Admin Access</h1>
+		<p class="login-subtitle">Enter your password to continue</p>
+
+		<form onsubmit={handleLogin} class="login-form">
+			<input
+				type="password"
+				bind:value={adminPassword}
+				placeholder="Enter password"
+				class="password-input"
+				autofocus
+				required
+			/>
+
+			{#if adminError}
+				<div class="error-message">
+					<Icon icon="mdi:alert-circle" width="18" />
+					{adminError}
+				</div>
+			{/if}
+
+			<button
+				type="submit"
+				disabled={isLoading}
+				class="submit-btn"
+			>
+				{#if isLoading}
+					<Icon icon="mdi:loading" class="spinner" width="20" />
+					Verifying...
+				{:else}
+					Access Admin Panel
+				{/if}
+			</button>
+		</form>
+
+		<p class="session-info">Session will expire in 1 hour</p>
+	</div>
+</div>
+{/if}
 
 <style>
 	.admin-landing {
@@ -343,5 +435,140 @@
 	.animate-slide-up {
 		opacity: 0;
 		animation-fill-mode: forwards;
+	}
+
+	/* Login Container - Full Screen */
+	.login-container {
+		min-height: 100vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		position: relative;
+		padding: 2rem;
+	}
+
+	/* Login Card - Centered Dialog */
+	.login-card {
+		position: relative;
+		z-index: 10;
+		background: white;
+		border-radius: 16px;
+		box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+		padding: 3rem 2.5rem;
+		max-width: 420px;
+		width: 100%;
+		text-align: center;
+	}
+
+	.lock-icon-large {
+		color: var(--navy);
+		margin: 0 auto 1.5rem;
+	}
+
+	.login-title {
+		font-size: 2rem;
+		font-weight: 700;
+		color: var(--navy);
+		margin-bottom: 0.5rem;
+	}
+
+	.login-subtitle {
+		font-size: 0.95rem;
+		color: #64748b;
+		margin-bottom: 2rem;
+	}
+
+	.login-form {
+		margin-bottom: 1.5rem;
+	}
+
+	.password-input {
+		width: 100%;
+		padding: 0.875rem 1rem;
+		border: 2px solid #e2e8f0;
+		border-radius: 8px;
+		font-size: 1rem;
+		transition: all 0.2s;
+		margin-bottom: 1rem;
+	}
+
+	.password-input:focus {
+		outline: none;
+		border-color: var(--navy);
+		box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
+	}
+
+	.error-message {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		padding: 0.75rem 1rem;
+		background: #fef2f2;
+		border: 1px solid #fecaca;
+		border-radius: 8px;
+		color: #dc2626;
+		font-size: 0.875rem;
+		margin-bottom: 1rem;
+	}
+
+	.submit-btn {
+		width: 100%;
+		padding: 0.875rem 1.5rem;
+		background: var(--navy);
+		color: white;
+		border: none;
+		border-radius: 8px;
+		font-size: 1rem;
+		font-weight: 600;
+		cursor: pointer;
+		transition: all 0.3s;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+	}
+
+	.submit-btn:hover:not(:disabled) {
+		background: var(--navy-dark);
+		transform: translateY(-1px);
+		box-shadow: 0 4px 12px rgba(26, 35, 126, 0.3);
+	}
+
+	.submit-btn:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+
+	.spinner {
+		animation: spin 1s linear infinite;
+	}
+
+	@keyframes spin {
+		from { transform: rotate(0deg); }
+		to { transform: rotate(360deg); }
+	}
+
+	.session-info {
+		font-size: 0.75rem;
+		color: #94a3b8;
+		margin-top: 1.5rem;
+	}
+
+	/* Mobile adjustments for login */
+	@media (max-width: 640px) {
+		.login-card {
+			padding: 2rem 1.5rem;
+		}
+
+		.login-title {
+			font-size: 1.75rem;
+		}
+
+		.password-input,
+		.submit-btn {
+			padding: 0.75rem 1rem;
+			font-size: 0.95rem;
+		}
 	}
 </style>

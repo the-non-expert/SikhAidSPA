@@ -172,12 +172,6 @@
 			contactSubmissions = contacts;
 			volunteerSubmissions = volunteers;
 			csrSubmissions = csr;
-
-			console.log('✅ Loaded all submissions:', {
-				contacts: contacts.length,
-				volunteers: volunteers.length,
-				csr: csr.length
-			});
 		} catch (error) {
 			console.error('❌ Error loading data:', error);
 			errorMessage = 'Failed to load data. Please check your connection and try again.';

@@ -484,7 +484,8 @@ export async function getAllCampaigns(): Promise<Campaign[]> {
 	}
 
 	try {
-		const q = query(collection(db, COLLECTIONS.CAMPAIGNS), orderBy('createdAt', 'desc'));
+		// Fetch all campaigns without orderBy to avoid needing Firestore index
+		const q = query(collection(db, COLLECTIONS.CAMPAIGNS));
 		const querySnapshot = await getDocs(q);
 
 		const campaigns: Campaign[] = [];
@@ -495,7 +496,12 @@ export async function getAllCampaigns(): Promise<Campaign[]> {
 			} as Campaign);
 		});
 
-		return campaigns;
+		// Sort by createdAt in JavaScript memory
+		return campaigns.sort((a, b) => {
+			const dateA = new Date(a.createdAt || '').getTime();
+			const dateB = new Date(b.createdAt || '').getTime();
+			return dateB - dateA; // desc order (newest first)
+		});
 	} catch (error) {
 		console.error('❌ Error fetching campaigns:', error);
 		throw error;

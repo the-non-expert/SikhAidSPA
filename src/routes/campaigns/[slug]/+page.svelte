@@ -2,27 +2,39 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import { getCampaignBySlug, campaigns } from '$lib/data/campaigns.js';
+	import { getCampaignBySlug, getPublishedCampaigns } from '$lib/firestore';
+	import type { Campaign } from '$lib/types/campaign';
 
-	let currentCampaign = null;
-	let slug = '';
-	let relatedCampaigns = [];
+	let currentCampaign = $state<Campaign | null>(null);
+	let slug = $state('');
+	let relatedCampaigns = $state<Campaign[]>([]);
+	let loading = $state(true);
 
-	onMount(() => {
-		slug = $page.params.slug;
-		currentCampaign = getCampaignBySlug(slug);
+	onMount(async () => {
+		try {
+			slug = $page.params.slug;
+			currentCampaign = await getCampaignBySlug(slug);
 
-		if (!currentCampaign) {
+			if (!currentCampaign) {
+				goto('/campaigns');
+			} else {
+				// Get all published campaigns for related campaigns
+				const allCampaigns = await getPublishedCampaigns();
+
+				// Get 2 related campaigns (excluding current one)
+				relatedCampaigns = allCampaigns
+					.filter(campaign => campaign.slug !== slug)
+					.slice(0, 2);
+			}
+		} catch (error) {
+			console.error('Error loading campaign:', error);
 			goto('/campaigns');
-		} else {
-			// Get 2 related campaigns (excluding current one)
-			relatedCampaigns = campaigns
-				.filter(campaign => campaign.slug !== slug)
-				.slice(0, 2);
+		} finally {
+			loading = false;
 		}
 	});
 
-	function getStatusColor(status) {
+	function getStatusColor(status: string) {
 		switch (status) {
 			case 'ongoing':
 				return 'bg-green-500';
@@ -41,7 +53,13 @@
 	<meta name="description" content={currentCampaign?.shortDescription || 'SikhAid Charitable Trust humanitarian campaign'} />
 </svelte:head>
 
-{#if currentCampaign}
+{#if loading}
+	<div class="min-h-screen flex items-center justify-center pt-32">
+		<div class="text-center">
+			<p class="text-gray-600">Loading campaign...</p>
+		</div>
+	</div>
+{:else if currentCampaign}
 
 	<main class="pt-32 min-h-screen">
 		<!-- Hero Section -->

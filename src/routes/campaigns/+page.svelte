@@ -1,13 +1,36 @@
 <script lang="ts">
-	import { campaigns, featuredCampaign } from '$lib/data/campaigns.js';
+	import { onMount } from 'svelte';
+	import { getPublishedCampaigns } from '$lib/firestore';
+	import type { Campaign } from '$lib/types/campaign';
 
 	// Tab state
 	let activeTab = $state<'current' | 'past'>('current');
 
+	// Campaign data
+	let campaigns = $state<Campaign[]>([]);
+	let loading = $state(true);
+
+	onMount(async () => {
+		try {
+			loading = true;
+			campaigns = await getPublishedCampaigns();
+		} catch (error) {
+			console.error('Error loading campaigns:', error);
+		} finally {
+			loading = false;
+		}
+	});
+
 	// Filtered campaigns based on active tab
-	const currentCampaigns = $derived(activeTab === 'current' ? [featuredCampaign] : []);
-	const pastCampaigns = $derived(activeTab === 'past' ? campaigns : []);
-	const displayedCampaigns = $derived(activeTab === 'current' ? currentCampaigns : pastCampaigns);
+	const currentCampaigns = $derived(
+		campaigns.filter((c) => c.status === 'ongoing')
+	);
+	const pastCampaigns = $derived(
+		campaigns.filter((c) => c.status === 'completed' || c.status === 'seasonal')
+	);
+	const displayedCampaigns = $derived(
+		activeTab === 'current' ? currentCampaigns : pastCampaigns
+	);
 </script>
 
 <svelte:head>
@@ -58,8 +81,17 @@
 	<!-- Campaigns Display -->
 	<section class="py-16 px-4 bg-white">
 		<div class="max-w-7xl mx-auto">
-			<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-				{#each displayedCampaigns as campaign}
+			{#if loading}
+				<div class="text-center py-12">
+					<p class="text-gray-600">Loading campaigns...</p>
+				</div>
+			{:else if displayedCampaigns.length === 0}
+				<div class="text-center py-12">
+					<p class="text-gray-600">No {activeTab} campaigns available at the moment.</p>
+				</div>
+			{:else}
+				<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+					{#each displayedCampaigns as campaign}
 					<article class="campaign-card bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
 						<div class="flex flex-col sm:flex-row h-full">
 							<!-- Image Section -->
@@ -126,8 +158,9 @@
 							</div>
 						</div>
 					</article>
-				{/each}
-			</div>
+					{/each}
+				</div>
+			{/if}
 		</div>
 	</section>
 
