@@ -11,6 +11,7 @@
 	let adminPassword = $state('');
 	let adminError = $state('');
 	let isLoading = $state(false);
+	let showPassword = $state(false);
 
 	onMount(() => {
 		isAuthenticated = checkAuthentication();
@@ -129,19 +130,34 @@
 	</div>
 
 	<div class="login-card">
-		<Icon icon="mdi:lock" width="48" class="lock-icon-large" />
+		<!-- Lock Icon with Gradient Circle -->
+		<div class="lock-icon-wrapper">
+			<Icon icon="mdi:lock" width="32" class="lock-icon-large" />
+		</div>
+
 		<h1 class="login-title">Admin Access</h1>
 		<p class="login-subtitle">Enter your password to continue</p>
 
 		<form onsubmit={handleLogin} class="login-form">
-			<input
-				type="password"
-				bind:value={adminPassword}
-				placeholder="Enter password"
-				class="password-input"
-				autofocus
-				required
-			/>
+			<!-- Password Input with Toggle -->
+			<div class="password-input-wrapper">
+				<input
+					type={showPassword ? 'text' : 'password'}
+					bind:value={adminPassword}
+					placeholder="Enter password"
+					class="password-input"
+					autofocus
+					required
+				/>
+				<button
+					type="button"
+					class="password-toggle"
+					onclick={() => showPassword = !showPassword}
+					aria-label={showPassword ? 'Hide password' : 'Show password'}
+				>
+					<Icon icon={showPassword ? 'mdi:eye-off' : 'mdi:eye'} width="20" />
+				</button>
+			</div>
 
 			{#if adminError}
 				<div class="error-message">
@@ -159,12 +175,16 @@
 					<Icon icon="mdi:loading" class="spinner" width="20" />
 					Verifying...
 				{:else}
+					<Icon icon="mdi:shield-check" width="20" />
 					Access Admin Panel
 				{/if}
 			</button>
 		</form>
 
-		<p class="session-info">Session will expire in 1 hour</p>
+		<div class="session-info">
+			<Icon icon="mdi:clock-outline" width="16" />
+			<span>Session expires in 1 hour</span>
+		</div>
 	</div>
 </div>
 {/if}
@@ -452,50 +472,131 @@
 		position: relative;
 		z-index: 10;
 		background: white;
-		border-radius: 16px;
-		box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-		padding: 3rem 2.5rem;
-		max-width: 420px;
+		border-radius: 24px;
+		box-shadow: 0 25px 80px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.1);
+		padding: 3.5rem 3rem;
+		max-width: 460px;
 		width: 100%;
 		text-align: center;
+		animation: slideUp 0.5s ease-out;
+	}
+
+	@keyframes slideUp {
+		from {
+			opacity: 0;
+			transform: translateY(30px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	/* Lock Icon Wrapper with Gradient */
+	.lock-icon-wrapper {
+		width: 80px;
+		height: 80px;
+		margin: 0 auto 1.5rem;
+		background: linear-gradient(135deg, var(--navy) 0%, #3949ab 100%);
+		border-radius: 20px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		box-shadow: 0 8px 24px rgba(26, 35, 126, 0.3);
+		position: relative;
+	}
+
+	.lock-icon-wrapper::before {
+		content: '';
+		position: absolute;
+		inset: -2px;
+		background: linear-gradient(135deg, var(--orange) 0%, #ffd54f 100%);
+		border-radius: 22px;
+		z-index: -1;
+		opacity: 0;
+		transition: opacity 0.3s;
+	}
+
+	.login-card:hover .lock-icon-wrapper::before {
+		opacity: 0.15;
 	}
 
 	.lock-icon-large {
-		color: var(--navy);
-		margin: 0 auto 1.5rem;
+		color: white;
+		filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 	}
 
 	.login-title {
-		font-size: 2rem;
+		font-size: 2.25rem;
 		font-weight: 700;
 		color: var(--navy);
-		margin-bottom: 0.5rem;
+		margin-bottom: 0.75rem;
+		letter-spacing: -0.5px;
 	}
 
 	.login-subtitle {
-		font-size: 0.95rem;
+		font-size: 1rem;
 		color: #64748b;
-		margin-bottom: 2rem;
+		margin-bottom: 2.5rem;
+		font-weight: 400;
 	}
 
 	.login-form {
 		margin-bottom: 1.5rem;
 	}
 
+	/* Password Input Wrapper */
+	.password-input-wrapper {
+		position: relative;
+		margin-bottom: 1rem;
+	}
+
 	.password-input {
 		width: 100%;
-		padding: 0.875rem 1rem;
+		padding: 1rem 3rem 1rem 1.25rem;
 		border: 2px solid #e2e8f0;
-		border-radius: 8px;
+		border-radius: 12px;
 		font-size: 1rem;
-		transition: all 0.2s;
-		margin-bottom: 1rem;
+		transition: all 0.3s;
+		background: #f8fafc;
 	}
 
 	.password-input:focus {
 		outline: none;
 		border-color: var(--navy);
-		box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
+		background: white;
+		box-shadow: 0 0 0 4px rgba(26, 35, 126, 0.08);
+	}
+
+	.password-input::placeholder {
+		color: #94a3b8;
+	}
+
+	/* Password Toggle Button */
+	.password-toggle {
+		position: absolute;
+		right: 12px;
+		top: 50%;
+		transform: translateY(-50%);
+		background: transparent;
+		border: none;
+		color: #64748b;
+		cursor: pointer;
+		padding: 0.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 6px;
+		transition: all 0.2s;
+	}
+
+	.password-toggle:hover {
+		color: var(--navy);
+		background: rgba(26, 35, 126, 0.05);
+	}
+
+	.password-toggle:active {
+		transform: translateY(-50%) scale(0.95);
 	}
 
 	.error-message {
@@ -503,41 +604,71 @@
 		align-items: center;
 		justify-content: center;
 		gap: 0.5rem;
-		padding: 0.75rem 1rem;
-		background: #fef2f2;
-		border: 1px solid #fecaca;
-		border-radius: 8px;
+		padding: 0.875rem 1.25rem;
+		background: linear-gradient(135deg, #fef2f2 0%, #fff5f5 100%);
+		border: 1.5px solid #fecaca;
+		border-radius: 12px;
 		color: #dc2626;
 		font-size: 0.875rem;
+		font-weight: 500;
 		margin-bottom: 1rem;
+		animation: shake 0.4s ease-in-out;
+	}
+
+	@keyframes shake {
+		0%, 100% { transform: translateX(0); }
+		25% { transform: translateX(-10px); }
+		75% { transform: translateX(10px); }
 	}
 
 	.submit-btn {
 		width: 100%;
-		padding: 0.875rem 1.5rem;
-		background: var(--navy);
+		padding: 1rem 1.5rem;
+		background: linear-gradient(135deg, var(--navy) 0%, #3949ab 100%);
 		color: white;
 		border: none;
-		border-radius: 8px;
-		font-size: 1rem;
+		border-radius: 12px;
+		font-size: 1.05rem;
 		font-weight: 600;
 		cursor: pointer;
 		transition: all 0.3s;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		gap: 0.5rem;
+		gap: 0.625rem;
+		box-shadow: 0 4px 16px rgba(26, 35, 126, 0.25);
+		position: relative;
+		overflow: hidden;
+	}
+
+	.submit-btn::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: -100%;
+		width: 100%;
+		height: 100%;
+		background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+		transition: left 0.5s;
+	}
+
+	.submit-btn:hover::before {
+		left: 100%;
 	}
 
 	.submit-btn:hover:not(:disabled) {
-		background: var(--navy-dark);
-		transform: translateY(-1px);
-		box-shadow: 0 4px 12px rgba(26, 35, 126, 0.3);
+		transform: translateY(-2px);
+		box-shadow: 0 8px 24px rgba(26, 35, 126, 0.35);
+	}
+
+	.submit-btn:active:not(:disabled) {
+		transform: translateY(0);
 	}
 
 	.submit-btn:disabled {
-		opacity: 0.6;
+		opacity: 0.7;
 		cursor: not-allowed;
+		transform: none;
 	}
 
 	.spinner {
@@ -550,25 +681,56 @@
 	}
 
 	.session-info {
-		font-size: 0.75rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		font-size: 0.8rem;
 		color: #94a3b8;
-		margin-top: 1.5rem;
+		margin-top: 1.75rem;
+		padding: 0.75rem;
+		background: #f8fafc;
+		border-radius: 8px;
+		font-weight: 500;
 	}
 
 	/* Mobile adjustments for login */
 	@media (max-width: 640px) {
 		.login-card {
-			padding: 2rem 1.5rem;
+			padding: 2.5rem 1.75rem;
+			border-radius: 20px;
+		}
+
+		.lock-icon-wrapper {
+			width: 70px;
+			height: 70px;
+			border-radius: 18px;
+		}
+
+		.lock-icon-large {
+			width: 28px;
 		}
 
 		.login-title {
-			font-size: 1.75rem;
+			font-size: 1.875rem;
 		}
 
-		.password-input,
-		.submit-btn {
-			padding: 0.75rem 1rem;
+		.login-subtitle {
+			font-size: 0.9rem;
+		}
+
+		.password-input {
+			padding: 0.875rem 3rem 0.875rem 1rem;
 			font-size: 0.95rem;
+		}
+
+		.submit-btn {
+			padding: 0.875rem 1.25rem;
+			font-size: 0.975rem;
+		}
+
+		.session-info {
+			font-size: 0.75rem;
 		}
 	}
 </style>
