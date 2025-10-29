@@ -172,7 +172,6 @@ export async function addCSRToFirestore(
 		};
 
 		const docRef = await addDoc(collection(db, COLLECTIONS.CSR), csrData);
-		console.log('✅ CSR submission saved to Firestore with ID:', docRef.id);
 		return docRef.id;
 	} catch (error) {
 		console.error('❌ Error adding CSR to Firestore:', error);
@@ -222,7 +221,6 @@ export async function updateSubmissionStatus(
 	try {
 		const docRef = doc(db, collectionName, documentId);
 		await updateDoc(docRef, { status });
-		console.log(`✅ Updated ${collectionName}/${documentId} status to: ${status}`);
 	} catch (error) {
 		console.error('❌ Error updating status:', error);
 		throw error;
@@ -251,7 +249,6 @@ export async function addBlog(blog: Omit<Blog, 'id' | 'createdAt' | 'updatedAt'>
 		};
 
 		const docRef = await addDoc(collection(db, COLLECTIONS.BLOGS), blogData);
-		console.log('✅ Blog post saved to Firestore with ID:', docRef.id);
 		return docRef.id;
 	} catch (error) {
 		console.error('❌ Error adding blog to Firestore:', error);
@@ -416,7 +413,6 @@ export async function updateBlog(id: string, updates: Partial<Blog>): Promise<vo
 		}
 
 		await updateDoc(docRef, updateData);
-		console.log(`✅ Updated blog ${id}`);
 	} catch (error) {
 		console.error('❌ Error updating blog:', error);
 		throw error;
@@ -434,7 +430,6 @@ export async function deleteBlog(id: string): Promise<void> {
 	try {
 		const docRef = doc(db, COLLECTIONS.BLOGS, id);
 		await deleteDoc(docRef);
-		console.log(`✅ Deleted blog ${id}`);
 	} catch (error) {
 		console.error('❌ Error deleting blog:', error);
 		throw error;
@@ -465,7 +460,6 @@ export async function addCampaign(
 		};
 
 		const docRef = await addDoc(collection(db, COLLECTIONS.CAMPAIGNS), campaignData);
-		console.log('✅ Campaign saved to Firestore with ID:', docRef.id);
 		return docRef.id;
 	} catch (error) {
 		console.error('❌ Error adding campaign to Firestore:', error);
@@ -636,7 +630,6 @@ export async function updateCampaign(id: string, updates: Partial<Campaign>): Pr
 		}
 
 		await updateDoc(docRef, updateData);
-		console.log(`✅ Updated campaign ${id}`);
 	} catch (error) {
 		console.error('❌ Error updating campaign:', error);
 		throw error;
@@ -654,7 +647,6 @@ export async function deleteCampaign(id: string): Promise<void> {
 	try {
 		const docRef = doc(db, COLLECTIONS.CAMPAIGNS, id);
 		await deleteDoc(docRef);
-		console.log(`✅ Deleted campaign ${id}`);
 	} catch (error) {
 		console.error('❌ Error deleting campaign:', error);
 		throw error;

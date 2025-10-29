@@ -30,9 +30,6 @@ if (typeof window !== 'undefined') {
 		db = getFirestore(app);
 		auth = getAuth(app);
 		storage = getStorage(app);
-
-		console.log('✅ Firebase initialized successfully');
-		console.log('📊 Project ID:', firebaseConfig.projectId);
 	} catch (error) {
 		console.error('❌ Firebase initialization failed:', error);
 		console.error('Please check your .env file and ensure all VITE_FIREBASE_* variables are set correctly.');

@@ -26,7 +26,6 @@
 	}
 
 	function handleImageError(event) {
-		console.log('Image failed to load:', event.target.src);
 		// Fallback to default logo if partner logo fails
 		event.target.src = fallbackLogo;
 	}

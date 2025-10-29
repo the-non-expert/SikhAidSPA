@@ -57,10 +57,6 @@ export function validateImageURL(url: string): string | null {
 	const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
 	const hasImageExtension = imageExtensions.some((ext) => url.toLowerCase().includes(ext));
 
-	if (!hasImageExtension) {
-		console.warn('URL may not be an image file');
-	}
-
 	return null;
 }
 
@@ -172,8 +168,6 @@ export async function deleteImage(imageUrl: string): Promise<void> {
 		// Create reference and delete
 		const imageRef = ref(storage, path);
 		await deleteObject(imageRef);
-
-		console.log('Image deleted successfully:', path);
 	} catch (error) {
 		console.error('Error deleting image:', error);
 		throw new Error('Failed to delete image');

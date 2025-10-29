@@ -66,8 +66,7 @@
 
 	function handlePaymentSuccess(response: RazorpayResponse) {
 		isProcessing = false;
-		console.log('Payment successful:', response);
-		
+
 		// Redirect to success page with payment ID
 		goto(`/payment/success?payment_id=${response.razorpay_payment_id}&amount=${amount}&name=${encodeURIComponent(name)}`);
 	}
