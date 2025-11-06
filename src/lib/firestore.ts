@@ -48,6 +48,16 @@ const COLLECTIONS = {
 };
 
 /**
+ * Remove undefined fields from an object
+ * Firestore does not accept undefined values - only null or omitted fields
+ */
+function removeUndefinedFields<T extends Record<string, any>>(obj: T): Partial<T> {
+	return Object.fromEntries(
+		Object.entries(obj).filter(([_, value]) => value !== undefined)
+	) as Partial<T>;
+}
+
+/**
  * Contact Form Functions
  */
 export async function addContactToFirestore(
@@ -452,14 +462,23 @@ export async function addCampaign(
 
 	try {
 		const now = new Date().toISOString();
-		const campaignData: Omit<Campaign, 'id'> = {
+
+		// Build campaign data, only including publishedAt if campaign is published
+		const campaignData: any = {
 			...campaign,
 			createdAt: now,
-			updatedAt: now,
-			publishedAt: campaign.publishStatus === 'published' ? now : undefined
+			updatedAt: now
 		};
 
-		const docRef = await addDoc(collection(db, COLLECTIONS.CAMPAIGNS), campaignData);
+		// Only set publishedAt for published campaigns (omit for drafts, not undefined)
+		if (campaign.publishStatus === 'published') {
+			campaignData.publishedAt = now;
+		}
+
+		// Remove any undefined fields as a safety measure (Firestore doesn't accept undefined)
+		const cleanedData = removeUndefinedFields(campaignData);
+
+		const docRef = await addDoc(collection(db, COLLECTIONS.CAMPAIGNS), cleanedData);
 		return docRef.id;
 	} catch (error) {
 		console.error('❌ Error adding campaign to Firestore:', error);
@@ -629,7 +648,10 @@ export async function updateCampaign(id: string, updates: Partial<Campaign>): Pr
 			updateData.publishedAt = new Date().toISOString();
 		}
 
-		await updateDoc(docRef, updateData);
+		// Remove any undefined fields (Firestore doesn't accept undefined values)
+		const cleanedData = removeUndefinedFields(updateData);
+
+		await updateDoc(docRef, cleanedData);
 	} catch (error) {
 		console.error('❌ Error updating campaign:', error);
 		throw error;

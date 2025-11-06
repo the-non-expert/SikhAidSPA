@@ -12,9 +12,9 @@ export interface Campaign {
 	impactStats: ImpactStat[];
 	howItWorks: HowItWorksStep[];
 	gallery: GalleryImage[];
-	createdAt?: string; // ISO timestamp
-	updatedAt?: string; // ISO timestamp
-	publishedAt?: string; // ISO timestamp - when first published
+	createdAt?: string | null; // ISO timestamp
+	updatedAt?: string | null; // ISO timestamp
+	publishedAt?: string | null; // ISO timestamp - when first published (null for drafts)
 }
 
 export interface ImpactStat {
