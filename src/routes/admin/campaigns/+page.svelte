@@ -673,9 +673,9 @@
 									<!-- Input (Right) -->
 									<div class="flex-1">
 										<input
-											type="url"
+											type="text"
 											bind:value={formData.image}
-											placeholder="Image URL (leave empty for default SikhAid logo)"
+											placeholder="Image URL or path (e.g., /logo.png or https://...)"
 											class="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-navy focus:border-transparent"
 										/>
 										<p class="text-xs text-gray-500 mt-1">
@@ -843,9 +843,9 @@
 										<!-- Inputs (Right) -->
 										<div class="flex-1 space-y-2">
 											<input
-												type="url"
+												type="text"
 												bind:value={image.src}
-												placeholder="Image URL"
+												placeholder="Image URL or path"
 												class="w-full px-3 py-1.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 											/>
 											<input
