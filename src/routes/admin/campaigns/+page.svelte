@@ -12,7 +12,6 @@
 	import type { Campaign, ImpactStat, HowItWorksStep, GalleryImage } from '$lib/types/campaign';
 	import RichTextEditor from '$lib/components/admin/RichTextEditor.svelte';
 	import SlugInput from '$lib/components/admin/SlugInput.svelte';
-	import URLOnlyImageInput from '$lib/components/admin/URLOnlyImageInput.svelte';
 
 	onMount(() => {
 		loadCampaigns();
@@ -35,7 +34,7 @@
 		subtitle: '',
 		shortDescription: '',
 		fullDescription: '',
-		image: '',
+		image: '/sikhaidLogo.png',
 		category: '',
 		status: 'ongoing',
 		publishStatus: 'draft',
@@ -143,7 +142,7 @@
 			subtitle: '',
 			shortDescription: '',
 			fullDescription: '',
-			image: '',
+			image: '/sikhaidLogo.png',
 			category: '',
 			status: 'ongoing',
 			publishStatus: 'draft',
@@ -639,12 +638,52 @@
 								</div>
 							</div>
 
-							<URLOnlyImageInput
-								bind:value={formData.image}
-								onchange={(url) => (formData.image = url)}
-								label="Main Campaign Image"
-								required={true}
-							/>
+						<!-- Main Campaign Image with Preview -->
+						<div>
+							<label class="block text-sm font-medium text-gray-700 mb-2">
+								Main Campaign Image
+							</label>
+							<div class="p-3 border border-gray-200 rounded-lg">
+								<!-- Content: Preview + Input -->
+								<div class="flex gap-3">
+									<!-- Image Preview (Left) -->
+									<div class="flex-shrink-0">
+										{#if formData.image && formData.image.trim()}
+											<div class="relative w-20 h-20">
+												<img
+													src={formData.image}
+													alt="Main campaign preview"
+													class="w-20 h-20 object-cover rounded border border-gray-300"
+													onerror={(e) => {
+														e.currentTarget.style.display = 'none';
+														e.currentTarget.nextElementSibling.style.display = 'flex';
+													}}
+												/>
+												<div class="w-20 h-20 bg-red-50 rounded border border-red-300 hidden items-center justify-center absolute top-0 left-0">
+													<Icon icon="mdi:image-broken" class="text-red-400" width="24" />
+												</div>
+											</div>
+										{:else}
+											<div class="w-20 h-20 bg-gray-50 rounded border border-gray-200 flex items-center justify-center">
+												<Icon icon="mdi:image-outline" class="text-gray-300" width="24" />
+											</div>
+										{/if}
+									</div>
+
+									<!-- Input (Right) -->
+									<div class="flex-1">
+										<input
+											type="url"
+											bind:value={formData.image}
+											placeholder="Image URL (leave empty for default SikhAid logo)"
+											class="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-navy focus:border-transparent"
+										/>
+										<p class="text-xs text-gray-500 mt-1">
+											Default: SikhAid logo will be used if left empty
+										</p>
+									</div>
+								</div>
+							</div>
 						</div>
 
 						<!-- Full Description -->
