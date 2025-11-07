@@ -9,7 +9,7 @@
 		updateBlog,
 		deleteBlog
 	} from '$lib/firestore';
-	import ImageUploader from '$lib/components/admin/ImageUploader.svelte';
+	// import ImageUploader from '$lib/components/admin/ImageUploader.svelte'; // No longer needed - using direct input
 	import RichTextEditor from '$lib/components/admin/RichTextEditor.svelte';
 	import SlugInput from '$lib/components/admin/SlugInput.svelte';
 
@@ -615,7 +615,50 @@
 
 					<!-- Featured Image -->
 					<div class="md:col-span-2">
-						<ImageUploader bind:imageUrl={formData.image} folder="blogs" label="Featured Image" required={true} />
+						<label class="block text-sm font-medium text-gray-700 mb-2">
+							Featured Image <span class="text-red-500">*</span>
+						</label>
+						<div class="p-3 border border-gray-200 rounded-lg">
+							<!-- Content: Preview + Input -->
+							<div class="flex gap-3">
+								<!-- Image Preview (Left) -->
+								<div class="flex-shrink-0">
+									{#if formData.image && formData.image.trim()}
+										<div class="relative w-20 h-20">
+											<img
+												src={formData.image}
+												alt="Featured image preview"
+												class="w-20 h-20 object-cover rounded border border-gray-300"
+												onerror={(e) => {
+													e.currentTarget.style.display = 'none';
+													e.currentTarget.nextElementSibling.style.display = 'flex';
+												}}
+											/>
+											<div class="w-20 h-20 bg-red-50 rounded border border-red-300 hidden items-center justify-center absolute top-0 left-0">
+												<Icon icon="mdi:image-broken" class="text-red-400" width="24" />
+											</div>
+										</div>
+									{:else}
+										<div class="w-20 h-20 bg-gray-50 rounded border border-gray-200 flex items-center justify-center">
+											<Icon icon="mdi:image-outline" class="text-gray-300" width="24" />
+										</div>
+									{/if}
+								</div>
+
+								<!-- Input (Right) -->
+								<div class="flex-1">
+									<input
+										type="text"
+										bind:value={formData.image}
+										placeholder="Image URL or path (e.g., /logo.png or https://...)"
+										class="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-navy"
+									/>
+									<p class="text-xs text-gray-500 mt-1">
+										Default: SikhAid logo will be used if left empty
+									</p>
+								</div>
+							</div>
+						</div>
 					</div>
 
 					<!-- Content -->

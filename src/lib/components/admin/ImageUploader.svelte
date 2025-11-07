@@ -118,7 +118,8 @@
 	{:else}
 		<!-- Tab Navigation -->
 		<div class="flex border-b border-gray-300 mb-4">
-			<button
+			<!-- Upload Tab - COMMENTED OUT (Upload functionality disabled) -->
+			<!-- <button
 				type="button"
 				class="px-4 py-2 text-sm font-medium transition-colors {activeTab === 'upload'
 					? 'border-b-2 border-navy text-navy'
@@ -127,7 +128,7 @@
 			>
 				<Icon icon="mdi:upload" class="inline mr-1" />
 				Upload
-			</button>
+			</button> -->
 			<button
 				type="button"
 				class="px-4 py-2 text-sm font-medium transition-colors {activeTab === 'url'
@@ -140,8 +141,8 @@
 			</button>
 		</div>
 
-		<!-- Upload Tab -->
-		{#if activeTab === 'upload'}
+		<!-- Upload Tab - COMMENTED OUT (Upload functionality disabled) -->
+		<!-- {#if activeTab === 'upload'}
 			<div>
 				<input
 					type="file"
@@ -175,7 +176,7 @@
 					{/if}
 				</button>
 			</div>
-		{/if}
+		{/if} -->
 
 		<!-- External URL Tab -->
 		{#if activeTab === 'url'}

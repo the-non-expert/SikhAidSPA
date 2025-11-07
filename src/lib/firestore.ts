@@ -251,12 +251,16 @@ export async function addBlog(blog: Omit<Blog, 'id' | 'createdAt' | 'updatedAt'>
 
 	try {
 		const now = new Date().toISOString();
-		const blogData: Omit<Blog, 'id'> = {
+		const blogData: any = {
 			...blog,
 			createdAt: now,
-			updatedAt: now,
-			publishedAt: blog.publishStatus === 'published' ? now : undefined
+			updatedAt: now
 		};
+
+		// Only add publishedAt if the blog is published (avoid undefined values in Firestore)
+		if (blog.publishStatus === 'published') {
+			blogData.publishedAt = now;
+		}
 
 		const docRef = await addDoc(collection(db, COLLECTIONS.BLOGS), blogData);
 		return docRef.id;
