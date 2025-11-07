@@ -60,7 +60,7 @@
 					class="lg:col-span-2 space-y-6 text-gray-700 leading-relaxed"
 				>
 					<p>
-						In 2020, when COVID-19 hit India, Raunak Singh couldn't
+						In 2020, when COVID-19 hit India, we couldn't
 						stand by and watch. Driven by the Sikh principles of
 						unconditional love and selfless service, he founded
 						SikhAid Charitable Trust—a non-profit organization
