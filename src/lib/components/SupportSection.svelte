@@ -36,7 +36,7 @@
 	}
 </script>
 
-<section class="py-16 px-4 bg-white">
+<section class="py-10 px-4 bg-white">
 	<div class="max-w-6xl mx-auto">
 		<!-- Section Header -->
 		<div class="text-center mb-12">

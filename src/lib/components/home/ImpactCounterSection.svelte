@@ -173,7 +173,7 @@
 </script>
 
 <!-- Impact Counter Section -->
-<section bind:this={sectionElement} class="py-16 px-4 bg-white">
+<section bind:this={sectionElement} class="py-10 px-4 bg-white">
 	<div class="max-w-4xl mx-auto text-center">
 		<h2 class="text-lg md:text-xl font-medium text-orange-custom mb-2 italic">
 			Our Focus Areas

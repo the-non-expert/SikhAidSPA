@@ -392,15 +392,17 @@
 					</div>
 				{:else if error}
 					<div class="p-12 text-center">
-						<p class="text-red-600 font-semibold mb-2">Error loading campaigns</p>
-						<p class="text-gray-600 text-sm mb-4">{error}</p>
+						<Icon icon="mdi:alert-circle" class="mx-auto mb-4 text-red-500" width="48" />
+						<p class="text-red-600 font-semibold mb-2">Failed to load campaigns</p>
+						<p class="text-gray-600 mb-4">{error}</p>
 						<button
 							onclick={loadCampaigns}
 							style="background-color: var(--navy);"
-							class="px-4 py-2 text-white rounded-lg"
+							class="px-4 py-2 text-white rounded-lg transition-colors"
 							onmouseover={(e) => (e.currentTarget.style.backgroundColor = 'var(--navy-dark)')}
 							onmouseout={(e) => (e.currentTarget.style.backgroundColor = 'var(--navy)')}
 						>
+							<Icon icon="mdi:refresh" class="inline mr-1" />
 							Retry
 						</button>
 					</div>

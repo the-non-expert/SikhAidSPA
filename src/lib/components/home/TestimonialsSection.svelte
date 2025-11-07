@@ -57,7 +57,7 @@
 </script>
 
 <!-- Testimonials Section -->
-<section class="py-16 px-4 bg-gray-50">
+<section class="py-10 px-4 bg-gray-50">
 	<div class="max-w-6xl mx-auto">
 		<div class="text-center mb-12">
 			<h2 class="text-3xl md:text-4xl font-bold text-navy mb-6">What People Say About Us</h2>

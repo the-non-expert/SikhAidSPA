@@ -17,7 +17,7 @@
 </script>
 
 <!-- Payment Methods Strip -->
-<section class="py-8 px-4 bg-white border-t border-b border-gray-200">
+<section class="py-6 px-4 bg-white border-t border-b border-gray-200">
 	<div class="max-w-6xl mx-auto">
 		<div class="text-center">
 			<h3 class="text-lg font-semibold text-navy mb-6">Ways to Donate</h3>

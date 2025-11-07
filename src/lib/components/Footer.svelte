@@ -3,7 +3,7 @@
 </script>
 
 <footer
-	class="relative text-gray-800 py-16 px-4 border-t border-gray-200 overflow-hidden min-h-[600px] md:min-h-[400px]"
+	class="relative text-gray-800 py-12 px-4 border-t border-gray-200 overflow-hidden min-h-[600px] md:min-h-[400px]"
 >
 	<!-- Background Image -->
 	<div

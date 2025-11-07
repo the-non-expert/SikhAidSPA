@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import Icon from '@iconify/svelte';
 	import {
 		getContactSubmissions,
 		getVolunteerSubmissions,
@@ -371,7 +372,7 @@
 	<!-- Back to Dashboard Button -->
 	<div class="mb-6">
 		<button
-			on:click={() => goto('/admin')}
+			onclick={() => goto('/admin')}
 			class="inline-flex items-center gap-2 px-4 py-2 bg-navy hover:bg-navy-dark text-white rounded-lg transition-colors font-medium"
 		>
 			<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -391,7 +392,7 @@
 		<div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
 			<p class="text-red-700 font-medium">⚠️ {errorMessage}</p>
 			<button
-				on:click={loadAllData}
+				onclick={loadAllData}
 				class="mt-2 text-sm text-red-600 hover:text-red-800 underline"
 			>
 				Try Again
@@ -404,6 +405,22 @@
 		<div class="flex flex-col items-center justify-center py-20">
 			<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-navy mb-4"></div>
 			<p class="text-gray-600">Loading submissions...</p>
+		</div>
+	{:else if errorMessage}
+		<div class="flex flex-col items-center justify-center py-20">
+			<Icon icon="mdi:alert-circle" class="mx-auto mb-4 text-red-500" width="48" />
+			<p class="text-red-600 font-semibold mb-2">Failed to load submissions</p>
+			<p class="text-gray-600 mb-4">{errorMessage}</p>
+			<button
+				onclick={loadAllData}
+				style="background-color: var(--navy);"
+				class="px-4 py-2 text-white rounded-lg transition-colors"
+				onmouseover={(e) => (e.currentTarget.style.backgroundColor = 'var(--navy-dark)')}
+				onmouseout={(e) => (e.currentTarget.style.backgroundColor = 'var(--navy)')}
+			>
+				<Icon icon="mdi:refresh" class="inline mr-1" />
+				Retry
+			</button>
 		</div>
 	{:else}
 		<!-- Statistics Cards -->
@@ -457,7 +474,7 @@
 				<!-- Left side: Refresh + Status Filter -->
 				<div class="flex items-center gap-3 w-full lg:w-auto">
 					<button
-						on:click={loadAllData}
+						onclick={loadAllData}
 						class="px-4 py-2 bg-navy hover:bg-navy-dark text-white rounded-lg transition-colors font-medium flex items-center"
 					>
 						<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -493,7 +510,7 @@
 
 				<!-- Right side: Export -->
 				<button
-					on:click={exportToCSV}
+					onclick={exportToCSV}
 					class="px-4 py-2 bg-orange-custom hover:bg-orange-dark text-white rounded-lg transition-colors font-medium flex items-center w-full lg:w-auto justify-center"
 				>
 					<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -513,7 +530,7 @@
 		<div class="bg-white rounded-t-xl shadow-md">
 			<div class="flex border-b border-gray-200">
 				<button
-					on:click={() => (activeTab = 'contact')}
+					onclick={() => (activeTab = 'contact')}
 					class="flex-1 px-6 py-4 text-sm font-medium transition-colors {activeTab === 'contact'
 						? 'bg-navy text-white border-b-2 border-navy'
 						: 'text-gray-600 hover:text-navy'}"
@@ -521,7 +538,7 @@
 					📧 Contact ({filteredContacts.length})
 				</button>
 				<button
-					on:click={() => (activeTab = 'volunteer')}
+					onclick={() => (activeTab = 'volunteer')}
 					class="flex-1 px-6 py-4 text-sm font-medium transition-colors {activeTab === 'volunteer'
 						? 'bg-navy text-white border-b-2 border-navy'
 						: 'text-gray-600 hover:text-navy'}"
@@ -529,7 +546,7 @@
 					👥 Volunteer ({filteredVolunteers.length})
 				</button>
 				<button
-					on:click={() => (activeTab = 'csr')}
+					onclick={() => (activeTab = 'csr')}
 					class="flex-1 px-6 py-4 text-sm font-medium transition-colors {activeTab === 'csr'
 						? 'bg-navy text-white border-b-2 border-navy'
 						: 'text-gray-600 hover:text-navy'}"
@@ -552,7 +569,7 @@
 							<!-- Status Column -->
 							<th
 								class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100"
-								on:click={() => handleSort('status')}
+								onclick={() => handleSort('status')}
 							>
 								<div class="flex items-center gap-1">
 									Status
@@ -567,7 +584,7 @@
 							<!-- Date Column -->
 							<th
 								class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100"
-								on:click={() => handleSort('date')}
+								onclick={() => handleSort('date')}
 							>
 								<div class="flex items-center gap-1">
 									Date
@@ -582,7 +599,7 @@
 							<!-- Name Column -->
 							<th
 								class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:bg-gray-100"
-								on:click={() => handleSort('name')}
+								onclick={() => handleSort('name')}
 							>
 								<div class="flex items-center gap-1">
 									Name
@@ -637,7 +654,7 @@
 							{@const badge = getStatusBadge(submission.status)}
 							<tr
 								class="hover:bg-gray-50 cursor-pointer"
-								on:click={() => openModal(submission, activeTab)}
+								onclick={() => openModal(submission, activeTab)}
 							>
 								<td class="px-4 py-4">
 									<span
@@ -692,10 +709,10 @@
 									</td>
 								{/if}
 
-								<td class="px-4 py-4" on:click={(e) => e.stopPropagation()}>
+								<td class="px-4 py-4" onclick={(e) => e.stopPropagation()}>
 									<select
 										value={submission.status}
-										on:change={(e) =>
+										onchange={(e) =>
 											handleStatusUpdate(
 												activeTab === 'contact'
 													? 'contact_submissions'
@@ -764,7 +781,7 @@
 
 						<!-- Previous button -->
 						<button
-							on:click={prevPage}
+							onclick={prevPage}
 							disabled={currentPage === 1}
 							class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
 						>
@@ -787,7 +804,7 @@
 								return pageNum;
 							}) as pageNum}
 								<button
-									on:click={() => goToPage(pageNum)}
+									onclick={() => goToPage(pageNum)}
 									class="px-3 py-1 border rounded text-sm {currentPage === pageNum
 										? 'bg-navy text-white border-navy'
 										: 'border-gray-300 hover:bg-gray-50'}"
@@ -799,7 +816,7 @@
 
 						<!-- Next button -->
 						<button
-							on:click={nextPage}
+							onclick={nextPage}
 							disabled={currentPage === totalPages}
 							class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
 						>

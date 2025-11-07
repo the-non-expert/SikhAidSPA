@@ -1,4 +1,4 @@
-import { db } from './firebase';
+import { db, ensureFirebaseInitialized } from './firebaseInit';
 import {
 	collection,
 	addDoc,
@@ -63,6 +63,8 @@ function removeUndefinedFields<T extends Record<string, any>>(obj: T): Partial<T
 export async function addContactToFirestore(
 	submission: Omit<ContactSubmission, 'timestamp'>
 ): Promise<string> {
+	await ensureFirebaseInitialized();
+
 	if (!db) {
 		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
 	}
@@ -84,6 +86,8 @@ export async function addContactToFirestore(
 }
 
 export async function getContactSubmissions(): Promise<FirestoreContactSubmission[]> {
+	await ensureFirebaseInitialized();
+
 	if (!db) {
 		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
 	}
@@ -116,6 +120,8 @@ export async function getContactSubmissions(): Promise<FirestoreContactSubmissio
 export async function addVolunteerToFirestore(
 	submission: Omit<VolunteerSubmission, 'timestamp'>
 ): Promise<string> {
+	await ensureFirebaseInitialized();
+
 	if (!db) {
 		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
 	}
@@ -137,6 +143,8 @@ export async function addVolunteerToFirestore(
 }
 
 export async function getVolunteerSubmissions(): Promise<FirestoreVolunteerSubmission[]> {
+	await ensureFirebaseInitialized();
+
 	if (!db) {
 		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
 	}
@@ -169,6 +177,8 @@ export async function getVolunteerSubmissions(): Promise<FirestoreVolunteerSubmi
 export async function addCSRToFirestore(
 	submission: Omit<CSRSubmission, 'timestamp'>
 ): Promise<string> {
+	await ensureFirebaseInitialized();
+
 	if (!db) {
 		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
 	}
@@ -190,6 +200,8 @@ export async function addCSRToFirestore(
 }
 
 export async function getCSRSubmissions(): Promise<FirestoreCSRSubmission[]> {
+	await ensureFirebaseInitialized();
+
 	if (!db) {
 		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
 	}
@@ -224,6 +236,8 @@ export async function updateSubmissionStatus(
 	documentId: string,
 	status: 'new' | 'read' | 'resolved'
 ): Promise<void> {
+	await ensureFirebaseInitialized();
+
 	if (!db) {
 		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
 	}
@@ -245,6 +259,8 @@ export async function updateSubmissionStatus(
  * Add a new blog post to Firestore
  */
 export async function addBlog(blog: Omit<Blog, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
+	await ensureFirebaseInitialized();
+
 	if (!db) {
 		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
 	}
@@ -274,6 +290,8 @@ export async function addBlog(blog: Omit<Blog, 'id' | 'createdAt' | 'updatedAt'>
  * Get all blog posts (for admin panel)
  */
 export async function getAllBlogs(): Promise<Blog[]> {
+	await ensureFirebaseInitialized();
+
 	if (!db) {
 		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
 	}
@@ -301,6 +319,8 @@ export async function getAllBlogs(): Promise<Blog[]> {
  * Get only published blog posts (for public pages)
  */
 export async function getPublishedBlogs(): Promise<Blog[]> {
+	await ensureFirebaseInitialized();
+
 	if (!db) {
 		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
 	}
@@ -337,6 +357,8 @@ export async function getPublishedBlogs(): Promise<Blog[]> {
  * Get a single blog post by ID
  */
 export async function getBlogById(id: string): Promise<Blog | null> {
+	await ensureFirebaseInitialized();
+
 	if (!db) {
 		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
 	}
@@ -363,6 +385,8 @@ export async function getBlogById(id: string): Promise<Blog | null> {
  * Get a single published blog post by slug (for public pages)
  */
 export async function getBlogBySlug(slug: string): Promise<Blog | null> {
+	await ensureFirebaseInitialized();
+
 	if (!db) {
 		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
 	}
@@ -402,6 +426,8 @@ export async function getBlogBySlug(slug: string): Promise<Blog | null> {
  * Update a blog post
  */
 export async function updateBlog(id: string, updates: Partial<Blog>): Promise<void> {
+	await ensureFirebaseInitialized();
+
 	if (!db) {
 		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
 	}
@@ -437,6 +463,8 @@ export async function updateBlog(id: string, updates: Partial<Blog>): Promise<vo
  * Delete a blog post
  */
 export async function deleteBlog(id: string): Promise<void> {
+	await ensureFirebaseInitialized();
+
 	if (!db) {
 		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
 	}
@@ -460,6 +488,8 @@ export async function deleteBlog(id: string): Promise<void> {
 export async function addCampaign(
 	campaign: Omit<Campaign, 'id' | 'createdAt' | 'updatedAt'>
 ): Promise<string> {
+	await ensureFirebaseInitialized();
+
 	if (!db) {
 		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
 	}
@@ -494,6 +524,8 @@ export async function addCampaign(
  * Get all campaigns (for admin panel)
  */
 export async function getAllCampaigns(): Promise<Campaign[]> {
+	await ensureFirebaseInitialized();
+
 	if (!db) {
 		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
 	}
@@ -527,6 +559,8 @@ export async function getAllCampaigns(): Promise<Campaign[]> {
  * Get only published campaigns (for public pages)
  */
 export async function getPublishedCampaigns(): Promise<Campaign[]> {
+	await ensureFirebaseInitialized();
+
 	if (!db) {
 		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
 	}
@@ -563,6 +597,8 @@ export async function getPublishedCampaigns(): Promise<Campaign[]> {
  * Get a single campaign by ID
  */
 export async function getCampaignById(id: string): Promise<Campaign | null> {
+	await ensureFirebaseInitialized();
+
 	if (!db) {
 		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
 	}
@@ -589,6 +625,8 @@ export async function getCampaignById(id: string): Promise<Campaign | null> {
  * Get a single published campaign by slug (for public pages)
  */
 export async function getCampaignBySlug(slug: string): Promise<Campaign | null> {
+	await ensureFirebaseInitialized();
+
 	if (!db) {
 		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
 	}
@@ -628,6 +666,8 @@ export async function getCampaignBySlug(slug: string): Promise<Campaign | null> 
  * Update a campaign
  */
 export async function updateCampaign(id: string, updates: Partial<Campaign>): Promise<void> {
+	await ensureFirebaseInitialized();
+
 	if (!db) {
 		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
 	}
@@ -666,6 +706,8 @@ export async function updateCampaign(id: string, updates: Partial<Campaign>): Pr
  * Delete a campaign
  */
 export async function deleteCampaign(id: string): Promise<void> {
+	await ensureFirebaseInitialized();
+
 	if (!db) {
 		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
 	}

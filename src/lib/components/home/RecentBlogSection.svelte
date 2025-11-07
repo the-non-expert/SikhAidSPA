@@ -6,7 +6,7 @@
 </script>
 
 <!-- Recent Blog Posts -->
-<section class="py-16 px-4 bg-white">
+<section class="py-10 px-4 bg-white">
 	<div class="max-w-6xl mx-auto">
 		<div class="flex items-center justify-between mb-12">
 			<h2 class="text-3xl md:text-4xl font-bold text-navy">Latest Updates</h2>

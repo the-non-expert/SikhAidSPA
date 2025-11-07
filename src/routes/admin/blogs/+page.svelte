@@ -357,6 +357,22 @@
 					<Icon icon="mdi:loading" class="animate-spin mx-auto mb-4" width="48" />
 					<p class="text-gray-600">Loading blogs...</p>
 				</div>
+			{:else if error}
+				<div class="p-12 text-center">
+					<Icon icon="mdi:alert-circle" class="mx-auto mb-4 text-red-500" width="48" />
+					<p class="text-red-600 font-semibold mb-2">Failed to load blogs</p>
+					<p class="text-gray-600 mb-4">{error}</p>
+					<button
+						onclick={loadBlogs}
+						style="background-color: var(--navy);"
+						class="px-4 py-2 text-white rounded-lg transition-colors"
+						onmouseover={(e) => (e.currentTarget.style.backgroundColor = 'var(--navy-dark)')}
+						onmouseout={(e) => (e.currentTarget.style.backgroundColor = 'var(--navy)')}
+					>
+						<Icon icon="mdi:refresh" class="inline mr-1" />
+						Retry
+					</button>
+				</div>
 			{:else if paginatedBlogs().length === 0}
 				<div class="p-12 text-center">
 					<Icon icon="mdi:post-outline" class="mx-auto mb-4 text-gray-400" width="64" />

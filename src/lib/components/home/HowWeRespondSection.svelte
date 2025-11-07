@@ -30,7 +30,7 @@
 </script>
 
 <!-- How We Respond Section -->
-<section id="how-we-respond-section" class="py-16 px-4 bg-gray-50">
+<section id="how-we-respond-section" class="py-10 px-4 bg-gray-50">
 	<div class="max-w-6xl mx-auto">
 		<div class="text-center mb-16">
 			<h2 class="text-3xl md:text-4xl font-bold text-navy mb-6">How We Respond to Crisis</h2>

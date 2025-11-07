@@ -263,7 +263,7 @@
 <style>
 	/* Section */
 	.carousel-section {
-		padding: 20px 16px;
+		padding: 16px 16px;
 		background: linear-gradient(to bottom, #fafafa 0%, #ffffff 100%);
 		overflow: hidden;
 	}
@@ -399,7 +399,7 @@
 	/* Responsive Styles */
 	@media (max-width: 1024px) {
 		.carousel-section {
-			padding: 60px 16px;
+			padding: 40px 16px;
 		}
 
 		.section-title {
