@@ -1,5 +1,5 @@
 <!-- Call to Action -->
-<section class="py-16 px-4 bg-gradient-to-r from-navy to-orange-custom text-white" style="background: linear-gradient(to right, var(--navy), var(--orange));">
+<section class="py-16 px-4 bg-[#183378] text-white">
 	<div class="max-w-4xl mx-auto text-center">
 		<h2 class="text-3xl md:text-4xl font-bold mb-6">Join Us in Serving India</h2>
 		<p class="text-xl mb-8">
