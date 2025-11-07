@@ -49,17 +49,17 @@ export const pressArticles = [
     category: 'Flood Relief',
     tags: ['hardy-sandhu', 'home-adoption', 'rebuild-punjab', 'celebrity-support']
   },
-  // {
-  //   id: 5,
-  //   slug: 'sikhaid-duramix-rath-yatra-2025',
-  //   title: 'SikhAid Trust & Duramix Unite to Serve 1.5 Lakh Devotees at Rath Yatra 2025',
-  //   description: "In partnership with Duramix Concrete, SikhAid Charitable Trust served refreshments to over 1.5 lakh devotees during the grand Rath Yatra 2025 in Puri, providing hydration and nourishment to pilgrims witnessing Lord Jagannath's divine journey.",
-  //   link: 'https://mynation.asianetnews.com/india-news/sikhaid-trust-and-duramix-unite-to-serve-1-5-lakh-devotees-at-rath-yatra-2025-articleshow-szhmz94',
-  //   image: '/sikhaidLogo.png',
-  //   publishedDate: '2025-07-10',
-  //   category: 'Religious Service',
-  //   tags: ['rath-yatra', 'puri', 'devotee-service', 'duramix-partnership']
-  // },
+  {
+    id: 5,
+    slug: 'sikhaid-duramix-rath-yatra-2025',
+    title: 'SikhAid Trust & Duramix Unite to Serve 1.5 Lakh Devotees at Rath Yatra 2025',
+    description: 'In partnership with Duramix Concrete, SikhAid served refreshments to over 1.5 lakh devotees during Rath Yatra 2025 in Puri, distributing water, buttermilk, glucose drinks and snacks to pilgrims during Lord Jagannath\'s divine journey.',
+    link: 'https://www.mynation.com/india-news/sikhaid-trust-and-duramix-unite-to-serve-1-5-lakh-devotees-at-rath-yatra-2025-articleshow-szhmz94',
+    image: '/sikhaidLogo.png',
+    publishedDate: '2025-07-10',
+    category: 'Religious Service',
+    tags: ['rath-yatra', 'puri', 'devotee-service', 'duramix']
+  },
   {
     id: 6,
     slug: 'raunak-singh-rath-yatra-seva',
@@ -92,14 +92,36 @@ export const pressArticles = [
     publishedDate: '2021-09-27',
     category: 'COVID Relief',
     tags: ['covid-19', 'oxygen-support', 'medical-aid', 'pandemic-response']
-  }
+  },
+  {
+    id: 9,
+    slug: 'sikh-youths-bhubaneswar-cuttack',
+    title: 'Sikh Youths Help COVID Patients Breathe Life in Bhubaneswar and Cuttack',
+    description: 'SikhAid volunteers provided oxygen cylinders, pulse oximeters, and medical assistance to COVID-19 patients in Bhubaneswar and Cuttack, receiving 400-500 calls daily with most being critical cases requiring immediate oxygen support.',
+    link: 'https://www.newindianexpress.com/cities/bhubaneswar/2021/Apr/25/sikh-youths-help-covid-patients-breathe-life-in-bhubaneswar-and-cuttack-2294567.html',
+    image: 'https://bsmedia.business-standard.com/_media/bs/img/article/2021-09/27/full/1632737004-1315.jpg',
+    publishedDate: '2021-04-25',
+    category: 'COVID Relief',
+    tags: ['covid-19', 'oxygen-cylinders', 'bhubaneswar', 'cuttack']
+  },
+  {
+    id: 10,
+    slug: 'oxygen-vehicles-street-temple',
+    title: 'Sikh Aid Group Offers Oxygen to COVID Patients in Vehicles Outside Temple',
+    description: 'As COVID-19 cases surged and overwhelmed Indian hospitals, Khalsa Help International offered oxygen to people in cars, vans and rickshaws lined up outside the Sikh temple in Ghaziabad, buying oxygen supplies to help those in urgent need.',
+    link: 'https://www.karunanews.org/story/3765/sikh-aid-group-offers-oxygen-to-covid-patients-in-vehicles-in-the-street-outside-temple-in-india',
+    image: 'https://www.servicespace.org/images/dist/2021/3765/871x497.jpg',
+    publishedDate: '2021-04-25',
+    category: 'COVID Relief',
+    tags: ['covid-19', 'oxygen-langar', 'ghaziabad', 'khalsa-help']
+  },
 ];
 
 /**
  * Press coverage metadata
  */
 export const pressMetadata = {
-  totalArticles: 8,
+  totalArticles: 10,
   categories: ['Flood Relief', 'Religious Service', 'Profile', 'COVID Relief'],
   dateRange: '2021-2025',
   organization: 'Sikh Aid Charitable Trust',
