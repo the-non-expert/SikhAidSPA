@@ -263,7 +263,7 @@
 <style>
 	/* Section */
 	.carousel-section {
-		padding: 80px 16px;
+		padding: 20px 16px;
 		background: linear-gradient(to bottom, #fafafa 0%, #ffffff 100%);
 		overflow: hidden;
 	}
@@ -276,7 +276,7 @@
 	/* Header */
 	.section-header {
 		text-align: center;
-		margin-bottom: 60px;
+		margin-bottom: 24px;
 	}
 
 	.section-title {
@@ -291,7 +291,7 @@
 	.carousel-wrapper {
 		position: relative;
 		width: 100%;
-		margin-bottom: 48px;
+		margin-bottom: 4px;
 		perspective: 1000px;
 		perspective-origin: center center;
 	}
@@ -310,7 +310,7 @@
 		align-items: center;
 		justify-content: center;
 		gap: 24px;
-		margin-bottom: 32px;
+		margin-bottom: 16px;
 	}
 
 	.nav-button {
@@ -338,15 +338,15 @@
 	}
 
 	.nav-icon {
-		width: 20px;
-		height: 20px;
+		width: 10px;
+		height: 10px;
 		color: white;
 	}
 
 	/* Dot Indicators */
 	.dot-indicators {
 		display: flex;
-		gap: 12px;
+		gap: 8px;
 		align-items: center;
 	}
 
@@ -383,7 +383,7 @@
 		color: white;
 		font-weight: 600;
 		font-size: 14px;
-		padding: 16px 48px;
+		padding: 16px 40px;
 		border-radius: 8px;
 		text-decoration: none;
 		transition: all 0.3s ease;
@@ -417,7 +417,7 @@
 
 	@media (max-width: 640px) {
 		.carousel-section {
-			padding: 48px 16px;
+			padding: 16px 16px;
 		}
 
 		.section-title {
@@ -454,12 +454,12 @@
 		}
 
 		.section-header {
-			margin-bottom: 40px;
+			margin-bottom: 10px;
 		}
 
 		.navigation-controls {
 			gap: 16px;
-			margin-bottom: 24px;
+			margin-bottom: 12px;
 		}
 	}
 
