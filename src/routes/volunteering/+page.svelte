@@ -118,7 +118,7 @@
 
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
 				{#each opportunities as opportunity}
-					<div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
+					<div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 card-solid-bg">
 						<!-- Image Section -->
 						<div class="h-48 overflow-hidden">
 							<img

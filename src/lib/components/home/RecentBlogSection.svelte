@@ -15,7 +15,7 @@
 
 		<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 			{#each recentPosts as post}
-				<article class="bg-gray-50 rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden">
+				<article class="rounded-lg bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden card-solid-bg">
 					<div class="p-6">
 						<div class="text-xs font-semibold text-white bg-orange-custom px-2 py-1 rounded mb-3 inline-block">
 							{post.category}

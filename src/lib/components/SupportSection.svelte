@@ -47,7 +47,7 @@
 		<!-- Support Options Grid -->
 		<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
 			<!-- Donation Section -->
-			<div class="bg-white p-8 lg:p-10 rounded-xl shadow-xl border border-gray-100 hover:shadow-2xl transition-shadow">
+			<div class="bg-white p-8 lg:p-10 rounded-xl shadow-xl border border-gray-100 hover:shadow-2xl transition-shadow card-solid-bg">
 				<div class="text-center">
 					<!-- Donation Icon -->
 					<div class="flex justify-center mb-6">
@@ -77,7 +77,7 @@
 			</div>
 
 			<!-- CSR Section -->
-			<div class="bg-white p-8 lg:p-10 rounded-xl shadow-xl border border-gray-100 hover:shadow-2xl transition-shadow">
+			<div class="bg-white p-8 lg:p-10 rounded-xl shadow-xl border border-gray-100 hover:shadow-2xl transition-shadow card-solid-bg">
 				<div class="text-center">
 					<!-- CSR Icon -->
 					<div class="flex justify-center mb-6">

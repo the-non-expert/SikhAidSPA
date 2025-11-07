@@ -47,11 +47,11 @@
 	<section class="py-16 px-4 bg-gray-50">
 		<div class="max-w-6xl mx-auto">
 			{#if loading}
-				<div class="bg-white rounded-lg shadow-xl p-12 text-center">
+				<div class="bg-white rounded-lg shadow-xl p-12 text-center card-solid-bg">
 					<p class="text-gray-600">Loading blog posts...</p>
 				</div>
 			{:else if blogPosts.length > 0}
-				<div class="bg-white rounded-lg shadow-xl overflow-hidden">
+				<div class="bg-white rounded-lg shadow-xl overflow-hidden card-solid-bg">
 					<div class="md:flex">
 						<div class="md:w-1/2">
 							<img src={blogPosts[0].image} alt={blogPosts[0].title} class="w-full h-64 md:h-full object-cover" />
@@ -78,7 +78,7 @@
 					</div>
 				</div>
 			{:else}
-				<div class="bg-white rounded-lg shadow-xl p-12 text-center">
+				<div class="bg-white rounded-lg shadow-xl p-12 text-center card-solid-bg">
 					<p class="text-gray-600">No blog posts available yet.</p>
 				</div>
 			{/if}
@@ -97,7 +97,7 @@
 			{:else if blogPosts.length > 1}
 				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 					{#each blogPosts.slice(1) as post}
-						<article class="bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden">
+						<article class="bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden card-solid-bg">
 							<img src={post.image} alt={post.title} class="w-full h-48 object-cover" />
 
 							<div class="p-6">

@@ -106,6 +106,14 @@ body > * {
   z-index: 1;
 }
 
+/* Card Solid Background - Prevents texture bleed-through */
+.card-solid-bg {
+  background-color: rgb(255, 255, 255) !important;
+  position: relative;
+  z-index: 10;
+  isolation: isolate;
+}
+
 /* Subtle Paper Texture Background - Pure CSS */
 .paper-texture-bg {
   /* CRITICAL: position absolute instead of fixed, so it covers entire PAGE not just screen */

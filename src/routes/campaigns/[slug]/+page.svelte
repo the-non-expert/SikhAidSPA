@@ -74,7 +74,7 @@
 					<span class="text-gray-900">{currentCampaign.title}</span>
 				</nav>
 
-				<div class="bg-white rounded-xl shadow-xl overflow-hidden">
+				<div class="bg-white rounded-xl shadow-xl overflow-hidden card-solid-bg">
 					<div class="relative">
 						<img
 							src={currentCampaign.image}

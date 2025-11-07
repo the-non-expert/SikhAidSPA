@@ -66,7 +66,7 @@
 
 		<!-- Testimonial Carousel -->
 		<div class="relative">
-			<div class="bg-white rounded-xl shadow-xl p-8 md:p-12 max-w-4xl mx-auto">
+			<div class="bg-white rounded-xl shadow-xl p-8 md:p-12 max-w-4xl mx-auto card-solid-bg">
 				<div class="text-center">
 					<!-- Profile Circle -->
 					<div class="flex justify-center mb-6">
@@ -91,7 +91,7 @@
 			<!-- Navigation Arrows -->
 			<button
 				on:click={prevTestimonial}
-				class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-3 shadow-lg hover:bg-gray-50 transition-colors"
+				class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-3 shadow-lg hover:bg-gray-50 transition-colors card-solid-bg"
 				aria-label="Previous testimonial"
 			>
 				<svg class="w-6 h-6 text-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -101,7 +101,7 @@
 
 			<button
 				on:click={nextTestimonial}
-				class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-3 shadow-lg hover:bg-gray-50 transition-colors"
+				class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-3 shadow-lg hover:bg-gray-50 transition-colors card-solid-bg"
 				aria-label="Next testimonial"
 			>
 				<svg class="w-6 h-6 text-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">

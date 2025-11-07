@@ -182,7 +182,7 @@
 			</div>
 
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-				<div class="bg-white p-8 rounded-lg shadow-md">
+				<div class="bg-white p-8 rounded-lg shadow-md card-solid-bg">
 					<div class="flex items-center justify-center mb-6">
 						<div class="bg-navy text-white p-4 rounded-full">
 							<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
@@ -194,7 +194,7 @@
 					<p class="text-gray-600 text-center">Across Odisha and beyond through diverse initiatives</p>
 				</div>
 
-				<div class="bg-white p-8 rounded-lg shadow-md">
+				<div class="bg-white p-8 rounded-lg shadow-md card-solid-bg">
 					<div class="flex items-center justify-center mb-6">
 						<div class="bg-navy text-white p-4 rounded-full">
 							<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
@@ -206,7 +206,7 @@
 					<p class="text-gray-600 text-center">Dedicated volunteers and kind-hearted donors</p>
 				</div>
 
-				<div class="bg-white p-8 rounded-lg shadow-md">
+				<div class="bg-white p-8 rounded-lg shadow-md card-solid-bg">
 					<div class="flex items-center justify-center mb-6">
 						<div class="bg-navy text-white p-4 rounded-full">
 							<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">

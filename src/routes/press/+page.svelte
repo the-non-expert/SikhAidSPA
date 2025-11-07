@@ -79,7 +79,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-6 lg:gap-6">
       {#each pressArticles as article, index}
         <article
-          class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl animate-fade-in"
+          class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl animate-fade-in card-solid-bg"
           style="animation-delay: {index * 100}ms"
         >
           <!-- Article Image -->

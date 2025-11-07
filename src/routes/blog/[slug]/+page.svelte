@@ -68,7 +68,7 @@
 					<span class="text-gray-900">{currentPost.title}</span>
 				</nav>
 
-				<div class="bg-white rounded-lg shadow-xl overflow-hidden">
+				<div class="bg-white rounded-lg shadow-xl overflow-hidden card-solid-bg">
 					<img src={currentPost.image} alt={currentPost.title} class="w-full h-64 md:h-96 object-cover" />
 
 					<div class="p-8">
@@ -88,7 +88,7 @@
 		<!-- Article Content -->
 		<section class="py-16 px-4">
 			<div class="max-w-4xl mx-auto">
-				<div class="bg-white rounded-lg shadow-lg p-8">
+				<div class="bg-white rounded-lg shadow-lg p-8 card-solid-bg">
 					<article class="prose prose-lg max-w-none">
 						{@html currentPost.content}
 					</article>
@@ -116,7 +116,7 @@
 						<h2 class="text-2xl font-bold text-gray-900 mb-8">More from Our Blog</h2>
 						<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 							{#each relatedPosts as post}
-								<article class="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden">
+								<article class="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden card-solid-bg">
 									<img src={post.image} alt={post.title} class="w-full h-48 object-cover" />
 									<div class="p-6">
 										<span class="text-xs font-semibold text-white bg-orange-custom px-2 py-1 rounded">

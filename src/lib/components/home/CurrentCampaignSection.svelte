@@ -61,7 +61,7 @@
 					</div>
 				</div>
 
-				<div class="bg-white p-8 rounded-lg shadow-xl border-2 border-orange-200">
+				<div class="bg-white p-8 rounded-lg shadow-xl border-2 border-orange-200 card-solid-bg">
 					<h3 class="text-2xl font-bold text-orange-800 mb-6">Support Punjab Relief</h3>
 					<div class="space-y-4">
 						<div class="grid grid-cols-2 gap-4">

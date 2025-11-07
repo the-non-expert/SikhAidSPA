@@ -92,7 +92,7 @@
 			{:else}
 				<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 					{#each displayedCampaigns as campaign}
-					<article class="campaign-card bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
+					<article class="campaign-card bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 card-solid-bg">
 						<div class="flex flex-col sm:flex-row h-full">
 							<!-- Image Section -->
 							<div class="sm:w-2/5 relative overflow-hidden">

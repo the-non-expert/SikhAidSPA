@@ -69,7 +69,7 @@
 
 					<div class="space-y-8">
 						<!-- Office Address -->
-						<div class="bg-white p-6 rounded-lg shadow-md">
+						<div class="bg-white p-6 rounded-lg shadow-md card-solid-bg">
 							<div class="flex items-start space-x-4">
 								<div class="bg-navy text-white p-3 rounded-full">
 									<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -88,7 +88,7 @@
 						</div>
 
 						<!-- Phone & Email -->
-						<div class="bg-white p-6 rounded-lg shadow-md">
+						<div class="bg-white p-6 rounded-lg shadow-md card-solid-bg">
 							<div class="flex items-start space-x-4">
 								<div class="bg-navy text-white p-3 rounded-full">
 									<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -103,7 +103,7 @@
 							</div>
 						</div>
 
-						<div class="bg-white p-6 rounded-lg shadow-md">
+						<div class="bg-white p-6 rounded-lg shadow-md card-solid-bg">
 							<div class="flex items-start space-x-4">
 								<div class="bg-navy text-white p-3 rounded-full">
 									<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -120,7 +120,7 @@
 						</div>
 
 						<!-- Social Media -->
-						<div class="bg-white p-6 rounded-lg shadow-md">
+						<div class="bg-white p-6 rounded-lg shadow-md card-solid-bg">
 							<h3 class="text-lg font-semibold text-gray-900 mb-4">Follow Our Work</h3>
 							<div class="flex space-x-4">
 								<a
@@ -165,7 +165,7 @@
 				<div>
 					<h2 class="text-3xl font-bold text-navy mb-8">Send us a Message</h2>
 
-					<form on:submit|preventDefault={handleSubmit} class="bg-white p-8 rounded-lg shadow-xl">
+					<form on:submit|preventDefault={handleSubmit} class="bg-white p-8 rounded-lg shadow-xl card-solid-bg">
 						<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
 							<div>
 								<label for="name" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>

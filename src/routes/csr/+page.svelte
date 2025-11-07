@@ -138,7 +138,7 @@
 			</div>
 
 			<!-- Additional Info -->
-			<div class="mt-12 bg-white rounded-xl p-8 shadow-md text-center">
+			<div class="mt-12 bg-white rounded-xl p-8 shadow-md text-center card-solid-bg">
 				<p class="text-lg text-gray-700 mb-4">
 					Want to delve deeper into our CSR activities and find out how you can contribute towards the betterment of your country?
 				</p>
