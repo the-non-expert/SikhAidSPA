@@ -1,6 +1,79 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import PaymentForm from '$lib/components/PaymentForm.svelte';
 	import { setDonationAmount } from '$lib/stores/donation';
+
+	// Transparency section animation
+	let transparencySection: HTMLElement;
+	let animationTriggered = false;
+	let animatedWidths = $state({
+		food: 0,
+		shelter: 0,
+		medical: 0,
+		rehab: 0,
+		ops: 0
+	});
+
+	onMount(() => {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting && !animationTriggered) {
+						animationTriggered = true;
+						animateBars();
+					}
+				});
+			},
+			{ threshold: 0.3 }
+		);
+
+		if (transparencySection) {
+			observer.observe(transparencySection);
+		}
+
+		return () => {
+			if (transparencySection) {
+				observer.unobserve(transparencySection);
+			}
+		};
+	});
+
+	function animateBars() {
+		const targets = {
+			food: 40,
+			shelter: 25,
+			medical: 20,
+			rehab: 10,
+			ops: 5
+		};
+
+		const duration = 1500; // 1.5 seconds
+		const startTime = Date.now();
+
+		function updateWidths() {
+			const elapsed = Date.now() - startTime;
+			const progress = Math.min(elapsed / duration, 1);
+
+			// Easing function for smooth animation
+			const easeOutCubic = 1 - Math.pow(1 - progress, 3);
+
+			animatedWidths = {
+				food: Math.floor(targets.food * easeOutCubic),
+				shelter: Math.floor(targets.shelter * easeOutCubic),
+				medical: Math.floor(targets.medical * easeOutCubic),
+				rehab: Math.floor(targets.rehab * easeOutCubic),
+				ops: Math.floor(targets.ops * easeOutCubic)
+			};
+
+			if (progress < 1) {
+				requestAnimationFrame(updateWidths);
+			} else {
+				animatedWidths = targets;
+			}
+		}
+
+		requestAnimationFrame(updateWidths);
+	}
 </script>
 
 <svelte:head>
@@ -73,28 +146,28 @@
 					<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
 						<button
 							class="bg-red-50 p-4 rounded-lg text-center border border-red-200 hover:bg-red-100 hover:border-red-300 transition-colors cursor-pointer"
-							on:click={() => setDonationAmount(500)}
+							onclick={() => setDonationAmount(500)}
 						>
 							<div class="text-xl font-bold text-red-600">₹500</div>
 							<div class="text-sm text-red-600">Feeds family 3 days</div>
 						</button>
 						<button
 							class="bg-red-50 p-4 rounded-lg text-center border border-red-200 hover:bg-red-100 hover:border-red-300 transition-colors cursor-pointer"
-							on:click={() => setDonationAmount(1500)}
+							onclick={() => setDonationAmount(1500)}
 						>
 							<div class="text-xl font-bold text-red-600">₹1,500</div>
 							<div class="text-sm text-red-600">Emergency shelter kit</div>
 						</button>
 						<button
 							class="bg-red-50 p-4 rounded-lg text-center border border-red-200 hover:bg-red-100 hover:border-red-300 transition-colors cursor-pointer"
-							on:click={() => setDonationAmount(3000)}
+							onclick={() => setDonationAmount(3000)}
 						>
 							<div class="text-xl font-bold text-red-600">₹3,000</div>
 							<div class="text-sm text-red-600">Rescue equipment</div>
 						</button>
 						<button
 							class="bg-red-50 p-4 rounded-lg text-center border border-red-200 hover:bg-red-100 hover:border-red-300 transition-colors cursor-pointer"
-							on:click={() => setDonationAmount(5000)}
+							onclick={() => setDonationAmount(5000)}
 						>
 							<div class="text-xl font-bold text-red-600">₹5,000</div>
 							<div class="text-sm text-red-600">Family rehabilitation</div>
@@ -122,14 +195,14 @@
 					<div class="grid grid-cols-2 gap-4 mb-6">
 						<button
 							class="bg-gray-50 p-4 rounded-lg text-center border hover:bg-orange-50 hover:border-orange-300 transition-colors cursor-pointer"
-							on:click={() => setDonationAmount(1000)}
+							onclick={() => setDonationAmount(1000)}
 						>
 							<div class="text-lg font-bold text-orange-custom">₹1,000</div>
 							<div class="text-sm text-gray-600">Monthly impact donor</div>
 						</button>
 						<button
 							class="bg-gray-50 p-4 rounded-lg text-center border hover:bg-orange-50 hover:border-orange-300 transition-colors cursor-pointer"
-							on:click={() => setDonationAmount(5000)}
+							onclick={() => setDonationAmount(5000)}
 						>
 							<div class="text-lg font-bold text-orange-custom">₹5,000</div>
 							<div class="text-sm text-gray-600">Community supporter</div>
@@ -153,14 +226,14 @@
 					<div class="grid grid-cols-2 gap-4 mb-6">
 						<button
 							class="bg-gray-50 p-4 rounded-lg text-center border hover:bg-blue-50 hover:border-navy transition-colors cursor-pointer"
-							on:click={() => setDonationAmount(2000)}
+							onclick={() => setDonationAmount(2000)}
 						>
 							<div class="text-lg font-bold text-navy">₹2,000</div>
 							<div class="text-sm text-gray-600">Campaign contributor</div>
 						</button>
 						<button
 							class="bg-gray-50 p-4 rounded-lg text-center border hover:bg-blue-50 hover:border-navy transition-colors cursor-pointer"
-							on:click={() => setDonationAmount(10000)}
+							onclick={() => setDonationAmount(10000)}
 						>
 							<div class="text-lg font-bold text-navy">₹10,000</div>
 							<div class="text-sm text-gray-600">Major campaign sponsor</div>
@@ -312,33 +385,67 @@
 	</section>
 
 	<!-- Transparency Section -->
-	<section class="py-16 px-4 bg-gray-50">
+	<section bind:this={transparencySection} class="py-16 px-4 bg-gray-50">
 		<div class="max-w-6xl mx-auto">
 			<h2 class="text-3xl md:text-4xl font-bold text-navy mb-12 text-center">Complete Transparency</h2>
 
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
 				<div class="bg-white p-8 rounded-lg shadow-xl">
 					<h3 class="text-2xl font-bold text-navy mb-6">How We Use Your Donations</h3>
-					<div class="space-y-4">
-						<div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
-							<span class="font-semibold">Emergency Food & Water</span>
-							<span class="text-navy font-bold">40%</span>
+					<div class="space-y-6">
+						<!-- Emergency Food & Water -->
+						<div class="progress-item">
+							<div class="flex justify-between items-center mb-2">
+								<span class="font-semibold text-gray-800">Emergency Food & Water</span>
+								<span class="text-navy font-bold">{animatedWidths.food}%</span>
+							</div>
+							<div class="progress-bar-container">
+								<div class="progress-bar progress-bar-orange" style="width: {animatedWidths.food}%"></div>
+							</div>
 						</div>
-						<div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
-							<span class="font-semibold">Shelter & Accommodation</span>
-							<span class="text-navy font-bold">25%</span>
+
+						<!-- Shelter & Accommodation -->
+						<div class="progress-item">
+							<div class="flex justify-between items-center mb-2">
+								<span class="font-semibold text-gray-800">Shelter & Accommodation</span>
+								<span class="text-navy font-bold">{animatedWidths.shelter}%</span>
+							</div>
+							<div class="progress-bar-container">
+								<div class="progress-bar progress-bar-blue" style="width: {animatedWidths.shelter}%"></div>
+							</div>
 						</div>
-						<div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
-							<span class="font-semibold">Medical Aid & Supplies</span>
-							<span class="text-navy font-bold">20%</span>
+
+						<!-- Medical Aid & Supplies -->
+						<div class="progress-item">
+							<div class="flex justify-between items-center mb-2">
+								<span class="font-semibold text-gray-800">Medical Aid & Supplies</span>
+								<span class="text-navy font-bold">{animatedWidths.medical}%</span>
+							</div>
+							<div class="progress-bar-container">
+								<div class="progress-bar progress-bar-green" style="width: {animatedWidths.medical}%"></div>
+							</div>
 						</div>
-						<div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
-							<span class="font-semibold">Rehabilitation Support</span>
-							<span class="text-navy font-bold">10%</span>
+
+						<!-- Rehabilitation Support -->
+						<div class="progress-item">
+							<div class="flex justify-between items-center mb-2">
+								<span class="font-semibold text-gray-800">Rehabilitation Support</span>
+								<span class="text-navy font-bold">{animatedWidths.rehab}%</span>
+							</div>
+							<div class="progress-bar-container">
+								<div class="progress-bar progress-bar-purple" style="width: {animatedWidths.rehab}%"></div>
+							</div>
 						</div>
-						<div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
-							<span class="font-semibold">Operations & Logistics</span>
-							<span class="text-navy font-bold">5%</span>
+
+						<!-- Operations & Logistics -->
+						<div class="progress-item">
+							<div class="flex justify-between items-center mb-2">
+								<span class="font-semibold text-gray-800">Operations & Logistics</span>
+								<span class="text-navy font-bold">{animatedWidths.ops}%</span>
+							</div>
+							<div class="progress-bar-container">
+								<div class="progress-bar progress-bar-navy" style="width: {animatedWidths.ops}%"></div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -429,6 +536,7 @@
 	:global(:root) {
 		--navy: #1a237e;
 		--navy-dark: #0d1660;
+		--orange: #ff6b35;
 	}
 
 	.text-navy {
@@ -441,5 +549,77 @@
 
 	.hover\:bg-navy-dark:hover {
 		background-color: var(--navy-dark);
+	}
+
+	/* Progress Bar Styles */
+	.progress-item {
+		position: relative;
+	}
+
+	.progress-bar-container {
+		width: 100%;
+		height: 12px;
+		background-color: #e5e7eb;
+		border-radius: 999px;
+		overflow: hidden;
+		box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+	}
+
+	.progress-bar {
+		height: 100%;
+		border-radius: 999px;
+		transition: width 0.3s ease-out;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.progress-bar::after {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: linear-gradient(
+			90deg,
+			rgba(255, 255, 255, 0) 0%,
+			rgba(255, 255, 255, 0.3) 50%,
+			rgba(255, 255, 255, 0) 100%
+		);
+		animation: shimmer 2s infinite;
+	}
+
+	@keyframes shimmer {
+		0% {
+			transform: translateX(-100%);
+		}
+		100% {
+			transform: translateX(100%);
+		}
+	}
+
+	.progress-bar-orange {
+		background: linear-gradient(90deg, #ff6b35 0%, #ff8c5a 100%);
+		box-shadow: 0 2px 8px rgba(255, 107, 53, 0.4);
+	}
+
+	.progress-bar-blue {
+		background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 100%);
+		box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+	}
+
+	.progress-bar-green {
+		background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+		box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+	}
+
+	.progress-bar-purple {
+		background: linear-gradient(90deg, #8b5cf6 0%, #a78bfa 100%);
+		box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
+	}
+
+	.progress-bar-navy {
+		background: linear-gradient(90deg, #1a237e 0%, #283593 100%);
+		box-shadow: 0 2px 8px rgba(26, 35, 126, 0.4);
 	}
 </style>
