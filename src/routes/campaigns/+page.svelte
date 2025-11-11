@@ -102,13 +102,8 @@
 									class="w-full h-48 sm:h-full object-cover transition-transform duration-300 hover:scale-105"
 								/>
 								<div class="absolute top-3 left-3">
-									<span class="bg-navy text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-lg">
+									<span class="bg-navy text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-lg inline-flex items-center whitespace-nowrap ">
 										{campaign.category}
-									</span>
-								</div>
-								<div class="absolute top-3 right-3">
-									<span class="bg-{campaign.status === 'ongoing' ? 'green' : campaign.status === 'seasonal' ? 'orange-custom' : 'gray'}-500 text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-lg">
-										{campaign.status.toUpperCase()}
 									</span>
 								</div>
 							</div>
@@ -118,9 +113,14 @@
 								<div class="h-full flex flex-col">
 									<!-- Header -->
 									<div class="mb-4">
-										<h3 class="text-xl font-bold text-navy mb-2 hover:text-orange-custom transition-colors line-clamp-2">
-											{campaign.title}
-										</h3>
+										<div class="flex items-center gap-2 mb-2">
+											<h3 class="text-lg font-bold text-navy hover:text-orange-custom transition-colors line-clamp-2">
+												{campaign.title}
+											</h3>
+											<span class="bg-{campaign.status === 'ongoing' ? 'green' : campaign.status === 'seasonal' ? 'orange-custom' : 'gray'}-500 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full shadow">
+												{campaign.status.toUpperCase()}
+											</span>
+										</div>
 										<p class="text-sm text-gray-600 leading-relaxed line-clamp-2">
 											{campaign.shortDescription}
 										</p>
