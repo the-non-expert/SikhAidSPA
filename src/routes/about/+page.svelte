@@ -60,63 +60,44 @@
 					class="lg:col-span-2 space-y-6 text-gray-700 leading-relaxed"
 				>
 					<p>
-						In 2020, when COVID-19 hit India, we couldn't
-						stand by and watch. Driven by the Sikh principles of
-						unconditional love and selfless service, he founded
-						SikhAid Charitable Trust—a non-profit organization
-						dedicated to serving humanity in its most vulnerable
-						moments.
-					</p>
+	In 2020, when COVID-19 hit India, SikhAid Charitable Trust was founded with a simple yet powerful intention—guided by the Sikh principles of compassion, equality, and selfless service (sewa). What began as an immediate response to the pandemic quickly grew into a nationwide humanitarian movement.
+</p>
 
-					<p>
-						During the lockdown, SikhAid got to work immediately.
-						The organization provided free oxygen tanks, pulse
-						oximeters, masks, and whatever else was needed to help
-						people survive the pandemic. When the devastating second
-						wave struck, the team rose to the challenge, delivering
-						oxygen to nearly 40,000 people across Odisha. Raunak
-						became known as the "oxygen man of Odisha"—a humble
-						recognition of the trust's life-saving efforts.
-					</p>
+<p>
+	During the lockdown, the team worked relentlessly to deliver free oxygen tanks, pulse oximeters, masks, and other critical supplies to families in distress. During the second wave, SikhAid expanded its operations and provided life-saving oxygen support to tens of thousands across Odisha and other states. The trust became known for its on-ground efficiency, compassion-driven approach, and commitment to serving people in their most vulnerable moments.
+</p>
 
-					<p>
-						Today, SikhAid's work spans five critical areas: <strong
-							>Disaster Relief</strong
-						>
-						during natural calamities like floods and earthquakes;
-						<strong>Education</strong>
-						support through scholarships and school supplies for
-						underprivileged children; <strong>Healthcare</strong>
-						assistance including medical treatments and access to
-						facilities; <strong>Food and Nutrition</strong> programs
-						providing meals and groceries to families in need; and
-						<strong>Women Empowerment</strong> through vocational training
-						and health support.
-					</p>
+<p>
+	Over the years, SikhAid has broadened its impact far beyond Punjab, building a strong network of volunteers and partners across India. Today, the organization works across multiple verticals to uplift communities and ensure holistic development and relief wherever it’s needed most.
+</p>
 
-					<p>
-						The organization's work has been recognized with the
-						Covid Warrior Award, and Raunak was honored with the
-						Best CEO Award for an NGO in 2022. But the real reward
-						comes from knowing that SikhAid is making a tangible
-						difference in people's lives.
-					</p>
+<p>
+	<strong>Disaster Relief & Rehabilitation:</strong> SikhAid responds swiftly to natural calamities such as floods, landslides, and storms. From providing emergency food, water, and medical aid to long-term rehabilitation—including rebuilding homes, restoring schools, and supporting livelihoods—the trust has carried out major relief missions in Punjab, Himachal Pradesh, Odisha, and the North-East.
+</p>
 
-					<p
-						class="italic text-gray-800 border-l-4 border-orange-custom pl-4"
-					>
-						"Every bit of support helps us make a bigger impact.
-						Remember, your actions matter—whether big or small, we
-						all have the power to make a positive change. Let's work
-						together to create a better world."
-					</p>
+<p>
+	<strong>Education & Child Development:</strong> Recognizing education as a pathway to empowerment, SikhAid supports underprivileged children through scholarships, digital learning tools, school supplies, and community-led learning programs. The aim is simple: to give every child a fair chance at a brighter future.
+</p>
 
-					<p class="font-semibold text-navy">
-						Raunak Singh<br />
-						<span class="text-sm text-gray-600"
-							>Founder & CEO, SikhAid Charitable Trust</span
-						>
-					</p>
+<p>
+	<strong>Women Empowerment:</strong> Through stitching centers, vocational training programs, and awareness drives, the trust helps women gain financial independence, confidence, and leadership opportunities within their communities.
+</p>
+
+<p>
+	<strong>Healthcare & Medical Support:</strong> SikhAid conducts free medical camps, blood donation drives, health check-ups, and awareness campaigns in rural and underserved areas. The organization remains actively involved in providing medicines, oxygen support, and medical assistance during health crises.
+</p>
+
+<p>
+	<strong>Livelihood Support:</strong> Families affected by crises receive vocational tools, skills training, and financial support to rebuild their livelihoods sustainably—with dignity and stability at the core of every initiative.
+</p>
+
+<p>
+	<strong>Community Development & Welfare:</strong> From langar (community kitchens) and clean drinking water projects to sanitation initiatives and clothing drives, SikhAid works wherever there is a need, ensuring no individual is left behind—regardless of caste, creed, or region.
+</p>
+
+<p class="italic text-gray-800 border-l-4 border-orange-custom pl-4">
+	“Every act of sewa contributes to a kinder, stronger, more compassionate world. Together, we can bring meaningful change—one step at a time.”
+</p>
 				</div>
 			</div>
 		</div>
