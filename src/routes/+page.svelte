@@ -5,6 +5,7 @@
 	import ImpactCounterSection from '$lib/components/home/ImpactCounterSection.svelte';
 	import HowWeRespondSection from '$lib/components/home/HowWeRespondSection.svelte';
 	import OurImpactSection from '$lib/components/home/OurImpactSection.svelte';
+	import CelebrityEndorsementsSection from '$lib/components/home/CelebrityEndorsementsSection.svelte';
 	import PartnersCarousel from '$lib/components/PartnersCarousel.svelte';
 	import SupportSection from '$lib/components/SupportSection.svelte';
 	import TestimonialsSection from '$lib/components/home/TestimonialsSection.svelte';
@@ -39,6 +40,9 @@
 
 	<!-- Support Section -->
 	<SupportSection />
+
+	<!-- Celebrity Endorsements Section -->
+	<CelebrityEndorsementsSection />
 
 	<!-- Our Impact Section -->
 	<OurImpactSection />
