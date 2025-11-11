@@ -236,7 +236,7 @@
 				<!-- Left Column: Work Areas -->
 				<div class="space-y-6">
 					<!-- Medical Aid Camps -->
-					<div class="flex gap-6 p-6 bg-gray-50 rounded-xl hover:shadow-lg transition-shadow duration-300">
+					<div class="flex gap-6 p-6 bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100">
 						<div class="flex-shrink-0">
 							<div class="w-14 h-14 bg-navy rounded-full flex items-center justify-center">
 								<svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -253,7 +253,7 @@
 					</div>
 
 					<!-- Educational Support -->
-					<div class="flex gap-6 p-6 bg-gray-50 rounded-xl hover:shadow-lg transition-shadow duration-300">
+					<div class="flex gap-6 p-6 bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100">
 						<div class="flex-shrink-0">
 							<div class="w-14 h-14 bg-navy rounded-full flex items-center justify-center">
 								<svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -270,7 +270,7 @@
 					</div>
 
 					<!-- Emergency Response -->
-					<div class="flex gap-6 p-6 bg-gray-50 rounded-xl hover:shadow-lg transition-shadow duration-300">
+					<div class="flex gap-6 p-6 bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100">
 						<div class="flex-shrink-0">
 							<div class="w-14 h-14 bg-navy rounded-full flex items-center justify-center">
 								<svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -289,14 +289,14 @@
 
 				<!-- Right Column: Our Approach -->
 				<div class="lg:pl-8">
-					<div class="bg-gradient-to-br from-orange-custom/10 to-orange-custom/5 rounded-2xl p-8 h-full border-l-4 border-orange-custom">
+					<div class="bg-white rounded-2xl p-8 h-full border border-orange-custom/40 shadow-md hover:shadow-xl transition-all duration-300">
 						<h3 class="text-2xl font-bold text-navy mb-8">Our Approach</h3>
 
 						<div class="space-y-8">
 							<!-- Compassionate Service -->
-							<div class="relative pl-6">
+							<div class="relative pl-6 py-3 hover:bg-orange-custom/5 rounded-lg transition-colors duration-200">
 								<div class="absolute left-0 top-0 w-1 h-full bg-orange-custom/30 rounded"></div>
-								<div class="absolute left-0 top-1 w-3 h-3 bg-orange-custom rounded-full -translate-x-1"></div>
+								<div class="absolute left-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-orange-custom rounded-full -translate-x-1"></div>
 								<h4 class="font-bold text-lg text-navy mb-2">Compassionate Service</h4>
 								<p class="text-gray-700 leading-relaxed">
 									Rooted in the spirit of seva with dignity, education, and healthcare for all
@@ -304,9 +304,9 @@
 							</div>
 
 							<!-- Community Engagement -->
-							<div class="relative pl-6">
+							<div class="relative pl-6 py-3 hover:bg-orange-custom/5 rounded-lg transition-colors duration-200">
 								<div class="absolute left-0 top-0 w-1 h-full bg-orange-custom/30 rounded"></div>
-								<div class="absolute left-0 top-1 w-3 h-3 bg-orange-custom rounded-full -translate-x-1"></div>
+								<div class="absolute left-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-orange-custom rounded-full -translate-x-1"></div>
 								<h4 class="font-bold text-lg text-navy mb-2">Community Engagement</h4>
 								<p class="text-gray-700 leading-relaxed">
 									Working closely with local communities to understand and address their needs
@@ -314,9 +314,9 @@
 							</div>
 
 							<!-- Sustainable Impact -->
-							<div class="relative pl-6">
+							<div class="relative pl-6 py-3 hover:bg-orange-custom/5 rounded-lg transition-colors duration-200">
 								<div class="absolute left-0 top-0 w-1 h-full bg-orange-custom/30 rounded"></div>
-								<div class="absolute left-0 top-1 w-3 h-3 bg-orange-custom rounded-full -translate-x-1"></div>
+								<div class="absolute left-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-orange-custom rounded-full -translate-x-1"></div>
 								<h4 class="font-bold text-lg text-navy mb-2">Sustainable Impact</h4>
 								<p class="text-gray-700 leading-relaxed">
 									Creating lasting change that empowers communities to thrive independently
