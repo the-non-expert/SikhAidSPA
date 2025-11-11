@@ -119,6 +119,9 @@
 			<button onclick={() => navigateTo('/admin/campaigns')} class="action-btn">
 				Campaigns
 			</button>
+			<button onclick={() => navigateTo('/admin/donations')} class="action-btn">
+				Donations
+			</button>
 		</div>
 	</div>
 </div>

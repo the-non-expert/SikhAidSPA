@@ -7,6 +7,7 @@
 		validateDonationAmount,
 		validatePhoneNumber,
 		validateName,
+		validatePanCard,
 		type DonationData,
 		type RazorpayResponse
 	} from '$lib/razorpay';
@@ -15,6 +16,7 @@
 	let amount: number = 0;
 	let name: string = '';
 	let phone: string = '';
+	let panCard: string = '';
 
 	// Subscribe to store and update amount when it changes
 	selectedAmount.subscribe(value => {
@@ -31,16 +33,19 @@
 	// Validation
 	function validateForm(): boolean {
 		errors = {};
-		
+
 		const amountError = validateDonationAmount(amount);
 		if (amountError) errors.amount = amountError;
-		
+
 		const nameError = validateName(name);
 		if (nameError) errors.name = nameError;
-		
+
 		const phoneError = validatePhoneNumber(phone);
 		if (phoneError) errors.phone = phoneError;
-		
+
+		const panError = validatePanCard(panCard, amount);
+		if (panError) errors.panCard = panError;
+
 		return Object.keys(errors).length === 0;
 	}
 
@@ -54,7 +59,8 @@
 		const donationData: DonationData = {
 			amount,
 			name: name.trim(),
-			phone: phone.trim()
+			phone: phone.trim(),
+			panCard: panCard.trim().toUpperCase()
 		};
 
 		openRazorpayCheckout(
@@ -67,8 +73,16 @@
 	function handlePaymentSuccess(response: RazorpayResponse) {
 		isProcessing = false;
 
-		// Redirect to success page with payment ID
-		goto(`/payment/success?payment_id=${response.razorpay_payment_id}&amount=${amount}&name=${encodeURIComponent(name)}`);
+		// Redirect to success page with payment details
+		const params = new URLSearchParams({
+			payment_id: response.razorpay_payment_id,
+			amount: amount.toString(),
+			name: name,
+			phone: phone,
+			...(panCard && { pan_card: panCard.trim().toUpperCase() })
+		});
+
+		goto(`/payment/success?${params.toString()}`);
 	}
 
 	function handlePaymentError(error: any) {
@@ -170,6 +184,35 @@
 		{/if}
 	</div>
 
+	<!-- PAN Card Input (Required for donations >= ₹2,000) -->
+	{#if amount >= 2000}
+		<div class="animate-fadeIn">
+			<label for="panCard" class="block text-sm font-medium text-gray-700 mb-2">
+				PAN Card Number <span class="text-red-500">*</span>
+			</label>
+			<input
+				id="panCard"
+				type="text"
+				bind:value={panCard}
+				on:input={(e) => {
+					panCard = e.currentTarget.value.toUpperCase().slice(0, 10);
+					clearError('panCard');
+				}}
+				placeholder="ABCDE1234F"
+				maxlength="10"
+				class="block w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy focus:border-navy uppercase font-mono tracking-wide"
+				class:border-red-300={errors.panCard}
+				disabled={isProcessing}
+			/>
+			{#if errors.panCard}
+				<p class="mt-1 text-sm text-red-600">{errors.panCard}</p>
+			{/if}
+			<p class="mt-1 text-xs text-gray-500">
+				⚠️ PAN Card is required for donations of ₹2,000 or more
+			</p>
+		</div>
+	{/if}
+
 	<!-- Payment Error -->
 	{#if errors.payment}
 		<div class="bg-red-50 border border-red-200 rounded-lg p-4">
@@ -227,16 +270,31 @@
 	.bg-navy {
 		background-color: var(--navy);
 	}
-	
+
 	.hover\:bg-navy-dark:hover {
 		background-color: var(--navy-dark);
 	}
-	
+
 	.focus\:ring-navy:focus {
 		ring-color: var(--navy);
 	}
-	
+
 	.focus\:border-navy:focus {
 		border-color: var(--navy);
+	}
+
+	.animate-fadeIn {
+		animation: fadeIn 0.3s ease-in;
+	}
+
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: translateY(-10px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
 	}
 </style>

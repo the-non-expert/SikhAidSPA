@@ -38,13 +38,27 @@ export interface FirestoreCSRSubmission extends CSRSubmission {
 	firestoreTimestamp?: Timestamp;
 }
 
+// Donation interface
+export interface Donation {
+	id?: string;
+	donorName: string;
+	phone: string;
+	panCard?: string;
+	amount: number;
+	razorpayPaymentId: string;
+	razorpayOrderId?: string;
+	timestamp: string;
+	firestoreTimestamp?: Timestamp;
+}
+
 // Collection names
 const COLLECTIONS = {
 	CONTACT: 'contact_submissions',
 	VOLUNTEER: 'volunteer_submissions',
 	CSR: 'csr_submissions',
 	BLOGS: 'blogs',
-	CAMPAIGNS: 'campaigns'
+	CAMPAIGNS: 'campaigns',
+	DONATIONS: 'donations'
 };
 
 /**
@@ -717,6 +731,70 @@ export async function deleteCampaign(id: string): Promise<void> {
 		await deleteDoc(docRef);
 	} catch (error) {
 		console.error('❌ Error deleting campaign:', error);
+		throw error;
+	}
+}
+
+/**
+ * Donation Functions
+ */
+
+/**
+ * Add a donation to Firestore
+ */
+export async function addDonationToFirestore(
+	donation: Omit<Donation, 'id' | 'timestamp' | 'firestoreTimestamp'>
+): Promise<string> {
+	await ensureFirebaseInitialized();
+
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		const donationData: Omit<Donation, 'id'> = {
+			...donation,
+			timestamp: new Date().toISOString(),
+			firestoreTimestamp: serverTimestamp() as any
+		};
+
+		// Remove undefined fields (Firestore doesn't accept undefined values)
+		const cleanedData = removeUndefinedFields(donationData);
+
+		const docRef = await addDoc(collection(db, COLLECTIONS.DONATIONS), cleanedData);
+		console.log('✅ Donation saved to Firestore with ID:', docRef.id);
+		return docRef.id;
+	} catch (error) {
+		console.error('❌ Error adding donation to Firestore:', error);
+		throw error;
+	}
+}
+
+/**
+ * Get all donations (for admin panel)
+ */
+export async function getDonations(): Promise<Donation[]> {
+	await ensureFirebaseInitialized();
+
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		const q = query(collection(db, COLLECTIONS.DONATIONS), orderBy('firestoreTimestamp', 'desc'));
+		const querySnapshot = await getDocs(q);
+
+		const donations: Donation[] = [];
+		querySnapshot.forEach((doc) => {
+			donations.push({
+				id: doc.id,
+				...doc.data()
+			} as Donation);
+		});
+
+		return donations;
+	} catch (error) {
+		console.error('❌ Error fetching donations:', error);
 		throw error;
 	}
 }

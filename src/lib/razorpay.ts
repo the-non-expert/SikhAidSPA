@@ -11,6 +11,7 @@ export interface DonationData {
 	name: string;
 	phone: string;
 	email?: string;
+	panCard?: string; // Required for amounts >= 2000
 }
 
 export interface RazorpayResponse {
@@ -131,6 +132,23 @@ export function validateName(name: string): string | null {
 	if (!name || name.trim().length < 2) {
 		return 'Please enter a valid name';
 	}
+	return null;
+}
+
+export function validatePanCard(panCard: string, amount: number): string | null {
+	// PAN is required for donations >= 2000
+	if (amount >= 2000) {
+		if (!panCard || panCard.trim().length === 0) {
+			return 'PAN Card is required for donations of ₹2,000 or more';
+		}
+
+		// PAN format: 5 letters, 4 digits, 1 letter (e.g., ABCDE1234F)
+		const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
+		if (!panRegex.test(panCard.toUpperCase())) {
+			return 'Invalid PAN format (e.g., ABCDE1234F)';
+		}
+	}
+
 	return null;
 }
 
