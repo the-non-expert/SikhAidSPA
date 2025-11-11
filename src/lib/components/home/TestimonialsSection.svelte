@@ -54,6 +54,27 @@
 	function prevTestimonial() {
 		currentTestimonial = currentTestimonial === 0 ? testimonials.length - 1 : currentTestimonial - 1;
 	}
+
+	let touchStartX = 0;
+	let touchEndX = 0;
+
+	function handleTouchStart(e: TouchEvent) {
+		touchStartX = e.changedTouches[0].clientX;
+	}
+
+	function handleTouchEnd(e: TouchEvent) {
+		touchEndX = e.changedTouches[0].clientX;
+		const diff = touchEndX - touchStartX;
+
+		// basic threshold
+		if (Math.abs(diff) > 50) {
+			if (diff < 0) {
+				nextTestimonial();
+			} else {
+				prevTestimonial();
+			}
+		}
+	}
 </script>
 
 <!-- Testimonials Section -->
@@ -64,34 +85,16 @@
 			<p class="text-xl text-gray-700 max-w-3xl mx-auto">Hear from the communities we serve and partners who support our mission</p>
 		</div>
 
-		<!-- Testimonial Carousel -->
-		<div class="relative">
-			<div class="bg-white rounded-xl shadow-xl p-8 md:p-12 max-w-4xl mx-auto card-solid-bg">
-				<div class="text-center">
-					<!-- Profile Circle -->
-					<div class="flex justify-center mb-6">
-						<div class="{testimonials[currentTestimonial].color} w-20 h-20 rounded-full flex items-center justify-center text-white font-bold text-2xl">
-							{testimonials[currentTestimonial].initials}
-						</div>
-					</div>
+		<div
+			class="relative flex items-center justify-center"
+			on:touchstart={handleTouchStart}
+			on:touchend={handleTouchEnd}
+		>
 
-					<!-- Testimonial Text -->
-					<blockquote class="text-lg md:text-xl text-gray-700 mb-6 leading-relaxed italic">
-						"{testimonials[currentTestimonial].text}"
-					</blockquote>
-
-					<!-- Author Info -->
-					<div class="text-center">
-						<h4 class="font-bold text-navy text-lg">{testimonials[currentTestimonial].name}</h4>
-						<p class="text-gray-600">{testimonials[currentTestimonial].location}</p>
-					</div>
-				</div>
-			</div>
-
-			<!-- Navigation Arrows -->
+			<!-- LEFT ARROW -->
 			<button
 				on:click={prevTestimonial}
-				class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-3 shadow-lg hover:bg-gray-50 transition-colors card-solid-bg"
+				class="absolute left-0 md:-left-12 top-1/2 -translate-y-1/2 bg-white rounded-full p-3 shadow-lg hover:bg-gray-50 transition-colors card-solid-bg"
 				aria-label="Previous testimonial"
 			>
 				<svg class="w-6 h-6 text-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -99,15 +102,37 @@
 				</svg>
 			</button>
 
+			<!-- CARD -->
+			<div class="max-w-4xl w-full bg-white rounded-xl shadow-xl p-8 md:p-12 card-solid-bg">
+				<div class="text-center">
+					<div class="flex justify-center mb-6">
+						<div class="{testimonials[currentTestimonial].color} w-20 h-20 rounded-full flex items-center justify-center text-white font-bold text-2xl">
+							{testimonials[currentTestimonial].initials}
+						</div>
+					</div>
+
+					<blockquote class="text-lg md:text-xl text-gray-700 mb-6 leading-relaxed italic">
+						"{testimonials[currentTestimonial].text}"
+					</blockquote>
+
+					<div class="text-center">
+						<h4 class="font-bold text-navy text-lg">{testimonials[currentTestimonial].name}</h4>
+						<p class="text-gray-600">{testimonials[currentTestimonial].location}</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- RIGHT ARROW -->
 			<button
 				on:click={nextTestimonial}
-				class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-3 shadow-lg hover:bg-gray-50 transition-colors card-solid-bg"
+				class="absolute right-0 md:-right-12 top-1/2 -translate-y-1/2 bg-white rounded-full p-3 shadow-lg hover:bg-gray-50 transition-colors card-solid-bg"
 				aria-label="Next testimonial"
 			>
 				<svg class="w-6 h-6 text-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
 				</svg>
 			</button>
+
 		</div>
 
 		<!-- Dots Indicator -->
@@ -139,26 +164,28 @@
 
 	/* Responsive adjustments */
 	@media (max-width: 768px) {
-		.absolute.left-4,
-		.absolute.right-4 {
-			position: static;
-			transform: none;
-			margin: 1rem auto;
-			display: block;
+		/* Pull arrows closer to the card */
+		button.absolute {
+			width: 40px;
+			height: 40px;
+			padding: 0.5rem !important;
+			top: 50% !important;
+			transform: translateY(-50%) !important;
 		}
 
+		/* Left arrow */
+		button.absolute.left-0 {
+			left: -10px !important;
+		}
+
+		/* Right arrow */
+		button.absolute.right-0 {
+			right: -10px !important;
+		}
+
+		/* Prevent the wrapper from adding extra padding */
 		.relative {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-		}
-
-		.absolute.left-4 {
-			order: 3;
-		}
-
-		.absolute.right-4 {
-			order: 4;
+			padding: 0;
 		}
 	}
 </style>
