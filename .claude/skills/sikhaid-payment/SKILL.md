@@ -66,10 +66,11 @@ export const razorpayConfig = {
 ### DonationData Interface
 ```typescript
 export interface DonationData {
-  amount: number;  // Amount in INR
-  name: string;    // Donor name
-  phone: string;   // 10-digit mobile number
-  email?: string;  // Optional email
+  amount: number;   // Amount in INR
+  name: string;     // Donor name
+  phone: string;    // 10-digit mobile number
+  email?: string;   // Optional email
+  panCard?: string; // Required for amounts >= ₹2,000 (uppercase, 10 chars)
 }
 ```
 
@@ -169,6 +170,59 @@ export function validateName(name: string): {
 
   return { valid: true, error: '' };
 }
+```
+
+### PAN Card Validation
+**Added:** Nov 2024 - PAN required for donations >= ₹2,000
+
+```typescript
+export function validatePanCard(panCard: string, amount: number): string | null {
+  // PAN is required for donations >= 2000
+  if (amount >= 2000) {
+    if (!panCard || panCard.trim().length === 0) {
+      return 'PAN Card is required for donations of ₹2,000 or more';
+    }
+
+    // PAN format: 5 letters, 4 digits, 1 letter (e.g., ABCDE1234F)
+    const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
+    if (!panRegex.test(panCard.toUpperCase())) {
+      return 'Invalid PAN format (e.g., ABCDE1234F)';
+    }
+  }
+
+  return null;
+}
+```
+
+**PAN Input Implementation:**
+```svelte
+<!-- PAN Card Input (Conditional) -->
+{#if amount >= 2000}
+  <div class="animate-fadeIn">
+    <label for="panCard" class="block text-sm font-medium text-gray-700 mb-2">
+      PAN Card Number <span class="text-red-500">*</span>
+    </label>
+    <input
+      id="panCard"
+      type="text"
+      bind:value={panCard}
+      on:input={(e) => {
+        panCard = e.currentTarget.value.toUpperCase().slice(0, 10);
+        clearError('panCard');
+      }}
+      placeholder="ABCDE1234F"
+      maxlength="10"
+      class="block w-full px-3 py-3 border border-gray-300 rounded-lg uppercase font-mono"
+      class:border-red-300={errors.panCard}
+    />
+    {#if errors.panCard}
+      <p class="mt-1 text-sm text-red-600">{errors.panCard}</p>
+    {/if}
+    <p class="mt-1 text-xs text-gray-500">
+      ⚠️ PAN Card is required for donations of ₹2,000 or more
+    </p>
+  </div>
+{/if}
 ```
 
 ### Complete Validation Check
@@ -559,6 +613,179 @@ export function openRazorpayCheckout(
 </div>
 ```
 
+## Firestore Integration for Donations
+
+### Saving Donations to Firebase
+**Added:** Nov 2024 - Auto-save donation records
+
+**Collection:** `donations`
+**File:** `src/lib/firestore.ts`
+
+```typescript
+export interface Donation {
+  id?: string;
+  donorName: string;
+  phone: string;
+  panCard?: string;
+  amount: number;
+  razorpayPaymentId: string;
+  razorpayOrderId?: string;
+  timestamp: string;
+  firestoreTimestamp?: Timestamp;
+}
+
+export async function addDonationToFirestore(
+  donation: Omit<Donation, 'id' | 'timestamp' | 'firestoreTimestamp'>
+): Promise<string> {
+  await ensureFirebaseInitialized();
+
+  if (!db) {
+    throw new Error('Firestore is not initialized');
+  }
+
+  try {
+    const donationData: Omit<Donation, 'id'> = {
+      ...donation,
+      timestamp: new Date().toISOString(),
+      firestoreTimestamp: serverTimestamp() as any
+    };
+
+    const cleanedData = removeUndefinedFields(donationData);
+    const docRef = await addDoc(collection(db, 'donations'), cleanedData);
+
+    console.log('✅ Donation saved to Firestore with ID:', docRef.id);
+    return docRef.id;
+  } catch (error) {
+    console.error('❌ Error adding donation to Firestore:', error);
+    throw error;
+  }
+}
+
+export async function getDonations(): Promise<Donation[]> {
+  await ensureFirebaseInitialized();
+
+  if (!db) {
+    throw new Error('Firestore is not initialized');
+  }
+
+  try {
+    const q = query(collection(db, 'donations'), orderBy('firestoreTimestamp', 'desc'));
+    const querySnapshot = await getDocs(q);
+
+    const donations: Donation[] = [];
+    querySnapshot.forEach((doc) => {
+      donations.push({
+        id: doc.id,
+        ...doc.data()
+      } as Donation);
+    });
+
+    return donations;
+  } catch (error) {
+    console.error('❌ Error fetching donations:', error);
+    throw error;
+  }
+}
+```
+
+### Payment Success with Firestore Save
+**File:** `src/routes/payment/success/+page.svelte`
+
+```svelte
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import { page } from '$app/stores';
+  import { goto } from '$app/navigation';
+  import { addDonationToFirestore } from '$lib/firestore';
+
+  let paymentId: string = '';
+  let amount: string = '';
+  let donorName: string = '';
+  let phone: string = '';
+  let panCard: string = '';
+
+  let isSaving: boolean = false;
+  let saveError: string = '';
+  let savedSuccessfully: boolean = false;
+
+  onMount(async () => {
+    // Extract URL parameters
+    paymentId = $page.url.searchParams.get('payment_id') || '';
+    amount = $page.url.searchParams.get('amount') || '';
+    donorName = $page.url.searchParams.get('name') || 'Anonymous';
+    phone = $page.url.searchParams.get('phone') || '';
+    panCard = $page.url.searchParams.get('pan_card') || '';
+
+    if (!paymentId) {
+      goto('/');
+      return;
+    }
+
+    // Save donation to Firestore
+    await saveDonation();
+  });
+
+  async function saveDonation() {
+    if (!paymentId || !amount) return;
+
+    isSaving = true;
+    saveError = '';
+
+    try {
+      await addDonationToFirestore({
+        donorName,
+        phone,
+        ...(panCard && { panCard }),
+        amount: parseFloat(amount),
+        razorpayPaymentId: paymentId
+      });
+
+      savedSuccessfully = true;
+      console.log('✅ Donation saved successfully');
+    } catch (error) {
+      console.error('Failed to save donation:', error);
+      saveError = 'Failed to save donation record. Please contact support.';
+    } finally {
+      isSaving = false;
+    }
+  }
+</script>
+
+<!-- Success UI with error handling -->
+{#if saveError}
+  <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+    <p class="text-sm text-yellow-900">{saveError}</p>
+    <p class="text-xs text-yellow-700 mt-1">Payment ID: {paymentId}</p>
+  </div>
+{/if}
+```
+
+### Firestore Security Rules for Donations
+**File:** `firestore.rules`
+
+```javascript
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Donations - Payment records
+    match /donations/{document} {
+      allow create: if true;  // Allow users to create after successful payment
+      allow read: if true;    // Allow admin to read donations
+      allow update: if false; // Donations should not be modified
+      allow delete: if false; // Donations should not be deleted
+    }
+
+    // Other collections...
+  }
+}
+```
+
+**Important:** Deploy rules using Firebase Console or CLI:
+```bash
+firebase deploy --only firestore:rules
+```
+
 ## Failure Page
 
 ### Payment Failure Handler
@@ -738,17 +965,40 @@ function handlePayment() {
    - Log payment IDs for reference
    - Keep PII (personally identifiable information) secure
 
+## Admin Donations Dashboard
+**Added:** Nov 2024 - View all donations in admin panel
+
+**Route:** `/admin/donations`
+**File:** `src/routes/admin/donations/+page.svelte`
+
+### Features:
+- View all donations with masked PAN cards
+- Search by name, phone, payment ID
+- Sort by date, amount, name
+- Pagination (25/50/100 per page)
+- CSV export with full data
+- Click to reveal masked PAN (ABCDE****F → ABCDE1234F)
+
+### Key Points:
+- PAN cards are masked by default for privacy
+- Click eye icon to reveal full PAN
+- Statistics: Total donations, total amount, last 30 days
+- Authentication required (admin session cookie)
+
 ## When to Use This Skill
 - Implementing donation functionality
 - Configuring Razorpay integration
-- Creating payment forms
+- Creating payment forms with PAN card validation
 - Handling payment success/failure
-- Validating payment data
+- Validating payment data (including PAN cards)
+- Saving donations to Firestore
+- Setting up Firestore security rules for donations
+- Creating admin donation dashboard
 - Troubleshooting payment issues
 - Setting up test/production environments
 
 ## Related Skills
 - `sikhaid-forms` - Form patterns and validation
-- `sikhaid-data` - Stores and data management
-- `sikhaid-routing` - Payment success/failure routes
+- `sikhaid-data` - Stores, Firestore, and data management
+- `sikhaid-routing` - Payment success/failure routes, admin routes
 - `sikhaid-components` - PaymentForm component

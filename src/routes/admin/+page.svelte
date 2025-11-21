@@ -122,6 +122,9 @@
 			<button onclick={() => navigateTo('/admin/donations')} class="action-btn">
 				Donations
 			</button>
+			<button onclick={() => navigateTo('/admin/content')} class="action-btn">
+				Content Management
+			</button>
 		</div>
 	</div>
 </div>

@@ -31,32 +31,57 @@ let initializationPromise: Promise<void> | null = null;
  * Can be called multiple times safely - will reuse existing initialization
  */
 export async function ensureFirebaseInitialized(): Promise<void> {
-	if (!browser) return;
+	console.log('🔥 [ensureFirebaseInitialized] Called');
+
+	if (!browser) {
+		console.log('🔥 [ensureFirebaseInitialized] Not in browser, skipping');
+		return;
+	}
 
 	// Already initialized successfully
 	if (db && app) {
+		console.log('🔥 [ensureFirebaseInitialized] Already initialized, returning immediately');
 		return;
 	}
 
 	// Already initializing - wait for it to complete
 	if (initializationPromise) {
+		console.log('🔥 [ensureFirebaseInitialized] Initialization in progress, waiting...');
 		return initializationPromise;
 	}
 
 	// Start new initialization
+	console.log('🔥 [ensureFirebaseInitialized] Starting new initialization...');
 	initializationPromise = (async () => {
+		console.log('🔥 [ensureFirebaseInitialized] Setting firebaseInitializing = true');
 		firebaseInitializing.set(true);
 
 		try {
 			// Validate config
+			console.log('🔥 [ensureFirebaseInitialized] Validating config...');
+			console.log('🔥 [ensureFirebaseInitialized] Config check:', {
+				hasApiKey: !!firebaseConfig.apiKey,
+				hasProjectId: !!firebaseConfig.projectId,
+				projectId: firebaseConfig.projectId?.substring(0, 10) + '...'
+			});
+
 			if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
 				throw new Error('Firebase configuration is incomplete. Check your .env file.');
 			}
 
 			// Initialize Firebase services
+			console.log('🔥 [ensureFirebaseInitialized] Calling initializeApp()...');
 			app = initializeApp(firebaseConfig);
+			console.log('🔥 [ensureFirebaseInitialized] initializeApp() complete');
+
+			console.log('🔥 [ensureFirebaseInitialized] Getting Firestore instance...');
 			db = getFirestore(app);
+			console.log('🔥 [ensureFirebaseInitialized] Firestore instance acquired');
+
+			console.log('🔥 [ensureFirebaseInitialized] Getting Auth instance...');
 			auth = getAuth(app);
+
+			console.log('🔥 [ensureFirebaseInitialized] Getting Storage instance...');
 			storage = getStorage(app);
 
 			firebaseInitialized.set(true);
@@ -65,7 +90,12 @@ export async function ensureFirebaseInitialized(): Promise<void> {
 			console.log('✅ Firebase initialized successfully');
 		} catch (error) {
 			const errorMessage = error instanceof Error ? error.message : 'Firebase initialization failed';
-			console.error('❌ Firebase initialization failed:', error);
+			console.error('❌ [ensureFirebaseInitialized] Firebase initialization failed:', error);
+			console.error('❌ [ensureFirebaseInitialized] Error details:', {
+				message: errorMessage,
+				name: error instanceof Error ? error.name : 'Unknown',
+				stack: error instanceof Error ? error.stack : 'No stack trace'
+			});
 			firebaseError.set(errorMessage);
 
 			// Reset so retry is possible
@@ -76,8 +106,10 @@ export async function ensureFirebaseInitialized(): Promise<void> {
 
 			throw error;
 		} finally {
+			console.log('🔥 [ensureFirebaseInitialized] FINALLY block');
 			firebaseInitializing.set(false);
 			initializationPromise = null;
+			console.log('🔥 [ensureFirebaseInitialized] Initialization promise cleared');
 		}
 	})();
 
@@ -86,9 +118,14 @@ export async function ensureFirebaseInitialized(): Promise<void> {
 
 // Auto-initialize on module load (but don't throw if it fails)
 if (browser) {
-	ensureFirebaseInitialized().catch((error) => {
-		console.error('Failed to auto-initialize Firebase:', error);
-	});
+	console.log('🔥 [AUTO-INIT] Starting auto-initialization on module load...');
+	ensureFirebaseInitialized()
+		.then(() => {
+			console.log('✅ [AUTO-INIT] Auto-initialization completed successfully');
+		})
+		.catch((error) => {
+			console.error('❌ [AUTO-INIT] Failed to auto-initialize Firebase:', error);
+		});
 }
 
 // Export Firebase instances

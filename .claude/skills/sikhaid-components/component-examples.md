@@ -345,6 +345,461 @@
 
 ---
 
+### CelebrityEndorsementsSection.svelte
+**Location:** `src/lib/components/home/CelebrityEndorsementsSection.svelte`
+**Added:** Nov 2024
+
+**Purpose:** Auto-playing carousel showcasing celebrity endorsements and support
+
+**Key Features:**
+- Auto-playing 3D carousel (3-second intervals)
+- Pause on hover
+- Touch/swipe support for mobile
+- Navigation arrows and dot indicators
+- Responsive (Desktop: 3 cards, Tablet: 2 cards, Mobile: 1 card)
+- Handwriting font (Caveat) for "Support from" title
+- Images use object-fit: contain to show full images without cropping
+- Names and professions displayed below images
+
+**Pattern Used:**
+```
+- Svelte 5 runes ($state, $effect)
+- Auto-play with pause on hover/swipe
+- Touch/swipe handlers for mobile
+- Conditional card visibility based on position
+- 3D transform effects for depth
+- Reactive card positioning and scaling
+- Google Fonts (Caveat) for handwriting style
+```
+
+**File Structure:**
+```svelte
+<script lang="ts">
+  import { onMount, onDestroy } from 'svelte';
+
+  const celebrities = [
+    {
+      name: 'Banita Sandhu',
+      profession: 'Actress',
+      image: '/personalities/banita-sandhu.jpg'
+    },
+    // ... more celebrities
+  ];
+
+  let activeIndex = $state(0);
+  let isHovered = $state(false);
+  let intervalId: number | null = null;
+  let visibleCards = $state(3); // Responsive: 1-3 cards
+
+  function startAutoPlay() {
+    intervalId = window.setInterval(() => {
+      if (!isHovered && !isSwiping) {
+        nextSlide();
+      }
+    }, 3000);
+  }
+
+  function handleTouchStart(e: TouchEvent) {
+    touchStartX = e.touches[0].clientX;
+    isSwiping = true;
+  }
+
+  onMount(() => {
+    updateVisibleCards();
+    window.addEventListener('resize', updateVisibleCards);
+    startAutoPlay();
+  });
+
+  onDestroy(() => {
+    stopAutoPlay();
+  });
+</script>
+
+<section class="celebrity-section">
+  <div class="section-header">
+    <h3 class="handwriting-text">Support from</h3>
+    <h2 class="section-title">Renowned Personalities</h2>
+  </div>
+
+  <div class="carousel-wrapper"
+       onmouseenter={handleMouseEnter}
+       onmouseleave={handleMouseLeave}
+       ontouchstart={handleTouchStart}>
+    <div class="cards-container">
+      {#each celebrities as celebrity, index}
+        {#if isCardVisible(index)}
+          <div class="celebrity-card"
+               style="transform: translateX(calc({position} * 110%)) scale({isActive ? 1 : 0.85})">
+            <div class="card-image-wrapper">
+              <img src={celebrity.image} alt={celebrity.name} class="card-image" />
+            </div>
+            <div class="card-content">
+              <h4 class="celebrity-name">{celebrity.name}</h4>
+              <p class="celebrity-profession">{celebrity.profession}</p>
+            </div>
+          </div>
+        {/if}
+      {/each}
+    </div>
+  </div>
+
+  <!-- Navigation Controls -->
+  <div class="navigation-controls">
+    <button onclick={prevSlide}>Previous</button>
+    <div class="dot-indicators">
+      {#each celebrities as _, index}
+        <button class:active={index === activeIndex} onclick={() => goToSlide(index)} />
+      {/each}
+    </div>
+    <button onclick={nextSlide}>Next</button>
+  </div>
+</section>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap');
+
+  .celebrity-section {
+    padding: 32px 16px;
+  }
+
+  .handwriting-text {
+    font-family: 'Caveat', cursive;
+    color: #ffa617; /* Orange */
+  }
+
+  .card-image {
+    object-fit: contain; /* Show full image without cropping */
+  }
+
+  .card-content {
+    padding: 16px 20px;
+    text-align: center;
+  }
+</style>
+```
+
+**Data Structure:**
+```typescript
+interface Celebrity {
+  name: string;
+  profession: string;
+  image: string; // Path: /personalities/[name].jpg
+}
+```
+
+**Celebrity Images Location:**
+- Directory: `/static/personalities/`
+- Files: `banita-sandhu.jpg`, `harbhajan-singh.jpg`, `rohanpreet-singh.jpg`, `prophc.jpg`, `jaspreet-singh.jpg`
+
+**Key Implementation Details:**
+- Auto-play interval: 3000ms (3 seconds)
+- Card dimensions: 320x450px (desktop), responsive on mobile
+- Image area: 360px height, uses `object-fit: contain`
+- Text area: ~90px, separate from image
+- Transform: `translateX` for positioning, `scale` for active/inactive states
+- Opacity: Active card 1.0, inactive 0.5
+- Z-index: Active card higher for proper layering
+
+---
+
+### CelebrityCardModal.svelte (Admin)
+**Location:** `src/lib/components/admin/CelebrityCardModal.svelte`
+**Added:** Nov 2025
+
+**Purpose:** Modal form for adding/editing celebrity endorsement cards in the admin content management system
+
+**Key Features:**
+- Create new or edit existing celebrity cards
+- Form validation for all fields
+- Image URL validation with live preview
+- Toggle visibility (isActive)
+- Loading states during submission
+- Error handling and user feedback
+- Escape key and backdrop click to close
+
+**Pattern Used:**
+```
+- Svelte 5 runes ($state, $props)
+- Props for card data and callbacks
+- Form validation with error messages
+- Image preview with error handling
+- Firestore integration (addCelebrityCard, updateCelebrityCard)
+- Modal backdrop pattern
+```
+
+**File Structure:**
+```svelte
+<script lang="ts">
+  import { addCelebrityCard, updateCelebrityCard, type FirestoreCelebrityCard } from '$lib/firestore';
+  import type { CelebrityCard } from '$lib/types/content';
+
+  interface Props {
+    card: FirestoreCelebrityCard | null;
+    onClose: () => void;
+    onSave: () => void;
+  }
+
+  let { card = null, onClose, onSave }: Props = $props();
+
+  // Form state using Svelte 5 $state rune
+  let name = $state(card?.name || '');
+  let profession = $state(card?.profession || '');
+  let imageUrl = $state(card?.imageUrl || '');
+  let isActive = $state(card?.isActive ?? true);
+
+  // Validation errors
+  let errors = $state<Record<string, string>>({});
+  let isSubmitting = $state(false);
+  let errorMessage = $state('');
+
+  function validateForm(): boolean {
+    errors = {};
+
+    if (!name.trim() || name.trim().length < 2) {
+      errors.name = 'Name must be at least 2 characters';
+    }
+
+    if (!profession.trim() || profession.trim().length < 2) {
+      errors.profession = 'Profession must be at least 2 characters';
+    }
+
+    if (!imageUrl.trim()) {
+      errors.imageUrl = 'Image URL is required';
+    } else if (!imageUrl.match(/^https?:\/\/.+/)) {
+      errors.imageUrl = 'Please enter a valid URL starting with http:// or https://';
+    }
+
+    return Object.keys(errors).length === 0;
+  }
+
+  async function handleSubmit() {
+    if (!validateForm()) return;
+
+    isSubmitting = true;
+    errorMessage = '';
+
+    try {
+      const cardData = {
+        name: name.trim(),
+        profession: profession.trim(),
+        imageUrl: imageUrl.trim(),
+        isActive
+      };
+
+      if (card?.id) {
+        await updateCelebrityCard(card.id, cardData);
+      } else {
+        await addCelebrityCard(cardData);
+      }
+
+      onSave();
+    } catch (error) {
+      console.error('Error saving celebrity card:', error);
+      errorMessage = 'Failed to save celebrity card. Please try again.';
+    } finally {
+      isSubmitting = false;
+    }
+  }
+</script>
+
+<!-- Modal Backdrop -->
+<div class="modal-backdrop" onclick={handleBackdropClick}>
+  <!-- Modal Container -->
+  <div class="modal-content" onclick={(e) => e.stopPropagation()}>
+    <!-- Header with close button -->
+    <div class="modal-header">
+      <h2>{card ? 'Edit Celebrity Card' : 'Add Celebrity Card'}</h2>
+    </div>
+
+    <!-- Form Fields -->
+    <form onsubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
+      <!-- Name Input -->
+      <input type="text" bind:value={name} placeholder="e.g., Banita Sandhu" />
+      {#if errors.name}<p class="error">{errors.name}</p>{/if}
+
+      <!-- Profession Input -->
+      <input type="text" bind:value={profession} placeholder="e.g., Actress" />
+      {#if errors.profession}<p class="error">{errors.profession}</p>{/if}
+
+      <!-- Image URL Input with Preview -->
+      <input type="url" bind:value={imageUrl} placeholder="https://example.com/image.jpg" />
+      {#if errors.imageUrl}<p class="error">{errors.imageUrl}</p>{/if}
+      {#if imageUrl && !errors.imageUrl}
+        <img src={imageUrl} alt="Preview"
+             onerror={() => { errors.imageUrl = 'Failed to load image.'; }} />
+      {/if}
+
+      <!-- Is Active Checkbox -->
+      <label>
+        <input type="checkbox" bind:checked={isActive} />
+        Display on website (Active)
+      </label>
+    </form>
+
+    <!-- Footer with action buttons -->
+    <div class="modal-footer">
+      <button onclick={onClose} disabled={isSubmitting}>Cancel</button>
+      <button onclick={handleSubmit} disabled={isSubmitting}>
+        {#if isSubmitting}Saving...{:else}Save Celebrity Card{/if}
+      </button>
+    </div>
+  </div>
+</div>
+```
+
+**Data Structure:**
+```typescript
+interface CelebrityCard {
+  id?: string;
+  name: string;           // e.g., "Banita Sandhu"
+  profession: string;     // e.g., "Actress"
+  imageUrl: string;       // Full URL
+  isActive: boolean;      // Visibility toggle
+  createdAt: string;
+  updatedAt: string;
+}
+```
+
+---
+
+### TestimonialModal.svelte (Admin)
+**Location:** `src/lib/components/admin/TestimonialModal.svelte`
+**Added:** Nov 2025
+
+**Purpose:** Modal form for adding/editing testimonials in the admin content management system
+
+**Key Features:**
+- Create new or edit existing testimonials
+- Character counter (500 character limit for testimonial text)
+- Form validation for all fields
+- Image URL validation with live preview
+- Toggle visibility (isActive)
+- Loading states during submission
+- Error handling and user feedback
+- Escape key and backdrop click to close
+
+**Pattern Used:**
+```
+- Svelte 5 runes ($state, $props, $derived)
+- Props for testimonial data and callbacks
+- Form validation with error messages
+- Character counting with $derived
+- Image preview with error handling
+- Firestore integration (addTestimonial, updateTestimonial)
+- Modal backdrop pattern
+```
+
+**File Structure:**
+```svelte
+<script lang="ts">
+  import { addTestimonial, updateTestimonial, type FirestoreTestimonial } from '$lib/firestore';
+  import type { Testimonial } from '$lib/types/content';
+
+  interface Props {
+    testimonial: FirestoreTestimonial | null;
+    onClose: () => void;
+    onSave: () => void;
+  }
+
+  let { testimonial = null, onClose, onSave }: Props = $props();
+
+  // Form state using Svelte 5 $state rune
+  let name = $state(testimonial?.name || '');
+  let designation = $state(testimonial?.designation || '');
+  let imageUrl = $state(testimonial?.imageUrl || '');
+  let text = $state(testimonial?.text || '');
+  let isActive = $state(testimonial?.isActive ?? true);
+
+  // Character counter using $derived
+  let characterCount = $derived(text.length);
+  const characterLimit = 500;
+
+  // Validation errors
+  let errors = $state<Record<string, string>>({});
+  let isSubmitting = $state(false);
+  let errorMessage = $state('');
+
+  function validateForm(): boolean {
+    errors = {};
+
+    if (!name.trim() || name.trim().length < 2) {
+      errors.name = 'Name must be at least 2 characters';
+    }
+
+    if (!designation.trim() || designation.trim().length < 2) {
+      errors.designation = 'Designation must be at least 2 characters';
+    }
+
+    if (!imageUrl.trim()) {
+      errors.imageUrl = 'Image URL is required';
+    } else if (!imageUrl.match(/^https?:\/\/.+/)) {
+      errors.imageUrl = 'Please enter a valid URL';
+    }
+
+    if (!text.trim() || text.trim().length < 10) {
+      errors.text = 'Testimonial must be at least 10 characters';
+    }
+
+    if (text.length > characterLimit) {
+      errors.text = `Testimonial cannot exceed ${characterLimit} characters`;
+    }
+
+    return Object.keys(errors).length === 0;
+  }
+
+  async function handleSubmit() {
+    if (!validateForm()) return;
+
+    isSubmitting = true;
+    errorMessage = '';
+
+    try {
+      const testimonialData = {
+        name: name.trim(),
+        designation: designation.trim(),
+        imageUrl: imageUrl.trim(),
+        text: text.trim(),
+        isActive
+      };
+
+      if (testimonial?.id) {
+        await updateTestimonial(testimonial.id, testimonialData);
+      } else {
+        await addTestimonial(testimonialData);
+      }
+
+      onSave();
+    } catch (error) {
+      console.error('Error saving testimonial:', error);
+      errorMessage = 'Failed to save testimonial. Please try again.';
+    } finally {
+      isSubmitting = false;
+    }
+  }
+</script>
+
+<!-- Modal structure similar to CelebrityCardModal -->
+<!-- Additional field: Testimonial Text with character counter -->
+<textarea bind:value={text} maxlength={characterLimit} />
+<p class="character-count">{characterCount}/{characterLimit}</p>
+```
+
+**Data Structure:**
+```typescript
+interface Testimonial {
+  id?: string;
+  name: string;           // e.g., "Rajesh Kumar"
+  designation: string;    // e.g., "Beneficiary, Punjab"
+  imageUrl: string;       // Full URL
+  text: string;           // Testimonial content (max 500 chars)
+  isActive: boolean;      // Visibility toggle
+  createdAt: string;
+  updatedAt: string;
+}
+```
+
+---
+
 ## Component Composition Example
 
 ### Home Page (+page.svelte)
@@ -356,13 +811,17 @@
   import CampaignCarousel from '$lib/components/CampaignCarousel.svelte';
   import ImpactCounterSection from '$lib/components/home/ImpactCounterSection.svelte';
   import MissionSection from '$lib/components/home/MissionSection.svelte';
+  import CelebrityEndorsementsSection from '$lib/components/home/CelebrityEndorsementsSection.svelte';
+  import OurImpactSection from '$lib/components/home/OurImpactSection.svelte';
 </script>
 
 <!-- Page composition -->
 <Hero />
+<CampaignCarousel />
 <ImpactCounterSection />
 <MissionSection />
-<CampaignCarousel />
+<CelebrityEndorsementsSection /> <!-- Added Nov 2024 -->
+<OurImpactSection />
 
 <style>
   /* Page-specific styles */
@@ -473,4 +932,5 @@
 | CampaignCarousel | `src/lib/components/CampaignCarousel.svelte` |
 | ImpactCounterSection | `src/lib/components/home/ImpactCounterSection.svelte` |
 | MissionSection | `src/lib/components/home/MissionSection.svelte` |
+| CelebrityEndorsementsSection | `src/lib/components/home/CelebrityEndorsementsSection.svelte` (Added Nov 2024) |
 | SubmissionModal | `src/lib/components/admin/SubmissionModal.svelte` |

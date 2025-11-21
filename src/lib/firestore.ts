@@ -18,6 +18,7 @@ import type { VolunteerSubmission } from './stores/volunteering';
 import type { CSRSubmission } from './stores/csr';
 import type { Blog } from './types/blog';
 import type { Campaign } from './types/campaign';
+import type { CelebrityCard, Testimonial, FirestoreCelebrityCard, FirestoreTestimonial } from './types/content';
 
 // Types for Firestore documents (includes id and status)
 export interface FirestoreContactSubmission extends ContactSubmission {
@@ -58,7 +59,9 @@ const COLLECTIONS = {
 	CSR: 'csr_submissions',
 	BLOGS: 'blogs',
 	CAMPAIGNS: 'campaigns',
-	DONATIONS: 'donations'
+	DONATIONS: 'donations',
+	CELEBRITY_CARDS: 'celebrity_cards',
+	TESTIMONIALS: 'testimonials'
 };
 
 /**
@@ -795,6 +798,280 @@ export async function getDonations(): Promise<Donation[]> {
 		return donations;
 	} catch (error) {
 		console.error('❌ Error fetching donations:', error);
+		throw error;
+	}
+}
+
+/**
+ * Celebrity Card Functions
+ */
+
+/**
+ * Add a new celebrity card to Firestore
+ */
+export async function addCelebrityCard(
+	card: Omit<CelebrityCard, 'id' | 'createdAt' | 'updatedAt' | 'firestoreTimestamp'>
+): Promise<string> {
+	await ensureFirebaseInitialized();
+
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		const now = new Date().toISOString();
+		const cardData = {
+			...card,
+			createdAt: now,
+			updatedAt: now,
+			firestoreTimestamp: serverTimestamp() as any
+		};
+
+		const docRef = await addDoc(collection(db, COLLECTIONS.CELEBRITY_CARDS), cardData);
+		return docRef.id;
+	} catch (error) {
+		console.error('❌ Error adding celebrity card to Firestore:', error);
+		throw error;
+	}
+}
+
+/**
+ * Get all celebrity cards
+ */
+export async function getCelebrityCards(): Promise<FirestoreCelebrityCard[]> {
+	console.log('🟢 [getCelebrityCards] START');
+	console.log('🟢 [getCelebrityCards] Ensuring Firebase initialized...');
+
+	try {
+		await ensureFirebaseInitialized();
+		console.log('🟢 [getCelebrityCards] Firebase initialization complete');
+	} catch (error) {
+		console.error('❌ [getCelebrityCards] Firebase initialization failed:', error);
+		throw error;
+	}
+
+	if (!db) {
+		console.error('❌ [getCelebrityCards] db is null/undefined after initialization!');
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	console.log('🟢 [getCelebrityCards] db is available, creating query...');
+
+	try {
+		const q = query(
+			collection(db, COLLECTIONS.CELEBRITY_CARDS),
+			orderBy('firestoreTimestamp', 'desc')
+		);
+		console.log('🟢 [getCelebrityCards] Query created, calling getDocs()...');
+
+		// Add timeout to Firestore operation
+		const timeout = new Promise<never>((_, reject) =>
+			setTimeout(() => {
+				console.error('⏰ [getCelebrityCards] Firestore getDocs() TIMEOUT after 8 seconds!');
+				reject(new Error('Firestore query timeout (celebrity_cards)'));
+			}, 8000)
+		);
+
+		const querySnapshot = await Promise.race([getDocs(q), timeout]);
+		console.log('🟢 [getCelebrityCards] getDocs() completed successfully');
+
+		const cards: FirestoreCelebrityCard[] = [];
+		querySnapshot.forEach((doc) => {
+			cards.push({
+				id: doc.id,
+				...doc.data()
+			} as FirestoreCelebrityCard);
+		});
+
+		console.log(`✅ [getCelebrityCards] SUCCESS - Found ${cards.length} cards`);
+		return cards;
+	} catch (error) {
+		console.error('❌ [getCelebrityCards] Error:', error);
+		console.error('❌ [getCelebrityCards] Error details:', {
+			message: error instanceof Error ? error.message : 'Unknown',
+			code: (error as any)?.code,
+			name: error instanceof Error ? error.name : 'Unknown'
+		});
+		throw error;
+	}
+}
+
+/**
+ * Update a celebrity card
+ */
+export async function updateCelebrityCard(id: string, updates: Partial<CelebrityCard>): Promise<void> {
+	await ensureFirebaseInitialized();
+
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		const docRef = doc(db, COLLECTIONS.CELEBRITY_CARDS, id);
+		const updateData = {
+			...updates,
+			updatedAt: new Date().toISOString()
+		};
+
+		await updateDoc(docRef, updateData);
+	} catch (error) {
+		console.error('❌ Error updating celebrity card:', error);
+		throw error;
+	}
+}
+
+/**
+ * Delete a celebrity card
+ */
+export async function deleteCelebrityCard(id: string): Promise<void> {
+	await ensureFirebaseInitialized();
+
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		const docRef = doc(db, COLLECTIONS.CELEBRITY_CARDS, id);
+		await deleteDoc(docRef);
+	} catch (error) {
+		console.error('❌ Error deleting celebrity card:', error);
+		throw error;
+	}
+}
+
+/**
+ * Testimonial Functions
+ */
+
+/**
+ * Add a new testimonial to Firestore
+ */
+export async function addTestimonial(
+	testimonial: Omit<Testimonial, 'id' | 'createdAt' | 'updatedAt' | 'firestoreTimestamp'>
+): Promise<string> {
+	await ensureFirebaseInitialized();
+
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		const now = new Date().toISOString();
+		const testimonialData = {
+			...testimonial,
+			createdAt: now,
+			updatedAt: now,
+			firestoreTimestamp: serverTimestamp() as any
+		};
+
+		const docRef = await addDoc(collection(db, COLLECTIONS.TESTIMONIALS), testimonialData);
+		return docRef.id;
+	} catch (error) {
+		console.error('❌ Error adding testimonial to Firestore:', error);
+		throw error;
+	}
+}
+
+/**
+ * Get all testimonials
+ */
+export async function getTestimonials(): Promise<FirestoreTestimonial[]> {
+	console.log('🟡 [getTestimonials] START');
+	console.log('🟡 [getTestimonials] Ensuring Firebase initialized...');
+
+	try {
+		await ensureFirebaseInitialized();
+		console.log('🟡 [getTestimonials] Firebase initialization complete');
+	} catch (error) {
+		console.error('❌ [getTestimonials] Firebase initialization failed:', error);
+		throw error;
+	}
+
+	if (!db) {
+		console.error('❌ [getTestimonials] db is null/undefined after initialization!');
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	console.log('🟡 [getTestimonials] db is available, creating query...');
+
+	try {
+		const q = query(
+			collection(db, COLLECTIONS.TESTIMONIALS),
+			orderBy('firestoreTimestamp', 'desc')
+		);
+		console.log('🟡 [getTestimonials] Query created, calling getDocs()...');
+
+		// Add timeout to Firestore operation
+		const timeout = new Promise<never>((_, reject) =>
+			setTimeout(() => {
+				console.error('⏰ [getTestimonials] Firestore getDocs() TIMEOUT after 8 seconds!');
+				reject(new Error('Firestore query timeout (testimonials)'));
+			}, 8000)
+		);
+
+		const querySnapshot = await Promise.race([getDocs(q), timeout]);
+		console.log('🟡 [getTestimonials] getDocs() completed successfully');
+
+		const testimonials: FirestoreTestimonial[] = [];
+		querySnapshot.forEach((doc) => {
+			testimonials.push({
+				id: doc.id,
+				...doc.data()
+			} as FirestoreTestimonial);
+		});
+
+		console.log(`✅ [getTestimonials] SUCCESS - Found ${testimonials.length} testimonials`);
+		return testimonials;
+	} catch (error) {
+		console.error('❌ [getTestimonials] Error:', error);
+		console.error('❌ [getTestimonials] Error details:', {
+			message: error instanceof Error ? error.message : 'Unknown',
+			code: (error as any)?.code,
+			name: error instanceof Error ? error.name : 'Unknown'
+		});
+		throw error;
+	}
+}
+
+/**
+ * Update a testimonial
+ */
+export async function updateTestimonial(id: string, updates: Partial<Testimonial>): Promise<void> {
+	await ensureFirebaseInitialized();
+
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		const docRef = doc(db, COLLECTIONS.TESTIMONIALS, id);
+		const updateData = {
+			...updates,
+			updatedAt: new Date().toISOString()
+		};
+
+		await updateDoc(docRef, updateData);
+	} catch (error) {
+		console.error('❌ Error updating testimonial:', error);
+		throw error;
+	}
+}
+
+/**
+ * Delete a testimonial
+ */
+export async function deleteTestimonial(id: string): Promise<void> {
+	await ensureFirebaseInitialized();
+
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		const docRef = doc(db, COLLECTIONS.TESTIMONIALS, id);
+		await deleteDoc(docRef);
+	} catch (error) {
+		console.error('❌ Error deleting testimonial:', error);
 		throw error;
 	}
 }

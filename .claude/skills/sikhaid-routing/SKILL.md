@@ -57,8 +57,12 @@ src/routes/
     │   └── +page.svelte     → /admin/formsubmissions
     ├── blogs/
     │   └── +page.svelte     → /admin/blogs
-    └── campaigns/
-        └── +page.svelte     → /admin/campaigns
+    ├── campaigns/
+    │   └── +page.svelte     → /admin/campaigns
+    ├── donations/
+    │   └── +page.svelte     → /admin/donations (Added Nov 2025)
+    └── content/
+        └── +page.svelte     → /admin/content (Added Nov 2025)
 ```
 
 ## All Routes Reference
@@ -88,6 +92,8 @@ src/routes/
 | `/admin/formsubmissions` | `routes/admin/formsubmissions/+page.svelte` | View all form submissions | Login required |
 | `/admin/blogs` | `routes/admin/blogs/+page.svelte` | Manage blog posts | Login required |
 | `/admin/campaigns` | `routes/admin/campaigns/+page.svelte` | Manage campaigns | Login required |
+| `/admin/donations` | `routes/admin/donations/+page.svelte` | View all donations (Added Nov 2024) | Login required |
+| `/admin/content` | `routes/admin/content/+page.svelte` | Manage celebrity endorsements and testimonials (Added Nov 2025) | Login required |
 
 ## Layout Hierarchy
 

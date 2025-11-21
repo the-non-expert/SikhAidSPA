@@ -159,16 +159,35 @@ export interface BlogPost {
 // src/lib/razorpay.ts
 
 export interface DonationData {
-  amount: number;  // Amount in INR (minimum 10, maximum 500000)
-  name: string;    // Donor name (minimum 2 characters)
-  phone: string;   // 10-digit mobile number starting with 6-9
-  email?: string;  // Optional email address
+  amount: number;    // Amount in INR (minimum 10, maximum 500000)
+  name: string;      // Donor name (minimum 2 characters)
+  phone: string;     // 10-digit mobile number starting with 6-9
+  email?: string;    // Optional email address
+  panCard?: string;  // Required for donations >= ₹2,000 (10 chars: 5 letters, 4 digits, 1 letter)
 }
 
 export interface RazorpayResponse {
   razorpay_payment_id: string;   // Payment ID from Razorpay
   razorpay_order_id?: string;    // Optional order ID
   razorpay_signature?: string;   // Optional signature for verification
+}
+```
+
+### Donation (Firestore) Schema
+
+```typescript
+// src/lib/firestore.ts
+
+export interface Donation {
+  id?: string;                    // Firestore document ID
+  donorName: string;              // Donor's full name
+  phone: string;                  // 10-digit mobile number
+  panCard?: string;               // PAN Card (required for amounts >= ₹2,000)
+  amount: number;                 // Donation amount in INR
+  razorpayPaymentId: string;      // Razorpay payment ID
+  razorpayOrderId?: string;       // Optional Razorpay order ID
+  timestamp: string;              // ISO 8601 timestamp string
+  firestoreTimestamp?: Timestamp; // Firestore Timestamp object
 }
 ```
 
@@ -267,6 +286,137 @@ csr_submissions/{documentId}
 }
 ```
 
+### donations Collection
+
+```
+donations/{documentId}
+  ├── donorName: string
+  ├── phone: string
+  ├── panCard: string (optional, required for amounts >= ₹2,000)
+  ├── amount: number
+  ├── razorpayPaymentId: string
+  ├── razorpayOrderId: string (optional)
+  ├── timestamp: string (ISO 8601)
+  └── firestoreTimestamp: Firestore Timestamp
+```
+
+**Example Document:**
+```javascript
+{
+  donorName: "Amit Sharma",
+  phone: "9876543210",
+  panCard: "ABCDE1234F",
+  amount: 5000,
+  razorpayPaymentId: "pay_NjhKJhsd8973hs",
+  razorpayOrderId: "order_NjhKJhsd8973hs",
+  timestamp: "2024-11-11T10:30:00.000Z",
+  firestoreTimestamp: Timestamp(seconds=1731320200, nanoseconds=0)
+}
+```
+
+**Note:** PAN Card is required for donations of ₹2,000 or more as per Indian tax regulations. Donations below ₹2,000 will not have a panCard field.
+
+### Content Management Schemas
+
+#### Celebrity Card Schema
+
+```typescript
+// src/lib/types/content.ts
+
+export interface CelebrityCard {
+  id?: string;                    // Firestore document ID
+  name: string;                   // Celebrity name (e.g., "Banita Sandhu")
+  profession: string;             // What they do (e.g., "Actress")
+  imageUrl: string;               // Full image URL
+  isActive: boolean;              // Visibility toggle for frontend
+  createdAt: string;              // ISO 8601 timestamp string
+  updatedAt: string;              // ISO 8601 timestamp string
+  firestoreTimestamp?: Timestamp; // Firestore Timestamp object
+}
+
+// Extended Firestore version
+export interface FirestoreCelebrityCard extends CelebrityCard {
+  id: string; // Required for Firestore documents
+}
+```
+
+#### Testimonial Schema
+
+```typescript
+// src/lib/types/content.ts
+
+export interface Testimonial {
+  id?: string;                    // Firestore document ID
+  name: string;                   // Person's name (e.g., "Rajesh Kumar")
+  designation: string;            // Role/Location (e.g., "Beneficiary, Punjab")
+  imageUrl: string;               // Full image URL
+  text: string;                   // Testimonial content (max 500 characters)
+  isActive: boolean;              // Visibility toggle for frontend
+  createdAt: string;              // ISO 8601 timestamp string
+  updatedAt: string;              // ISO 8601 timestamp string
+  firestoreTimestamp?: Timestamp; // Firestore Timestamp object
+}
+
+// Extended Firestore version
+export interface FirestoreTestimonial extends Testimonial {
+  id: string; // Required for Firestore documents
+}
+```
+
+### celebrity_cards Collection
+
+```
+celebrity_cards/{documentId}
+  ├── name: string
+  ├── profession: string
+  ├── imageUrl: string
+  ├── isActive: boolean
+  ├── createdAt: string (ISO 8601)
+  ├── updatedAt: string (ISO 8601)
+  └── firestoreTimestamp: Firestore Timestamp
+```
+
+**Example Document:**
+```javascript
+{
+  name: "Banita Sandhu",
+  profession: "Actress",
+  imageUrl: "/personalities/banita-sandhu.jpg",
+  isActive: true,
+  createdAt: "2025-11-21T10:30:00.000Z",
+  updatedAt: "2025-11-21T10:30:00.000Z",
+  firestoreTimestamp: Timestamp(seconds=1732185000, nanoseconds=0)
+}
+```
+
+### testimonials Collection
+
+```
+testimonials/{documentId}
+  ├── name: string
+  ├── designation: string
+  ├── imageUrl: string
+  ├── text: string (max 500 characters)
+  ├── isActive: boolean
+  ├── createdAt: string (ISO 8601)
+  ├── updatedAt: string (ISO 8601)
+  └── firestoreTimestamp: Firestore Timestamp
+```
+
+**Example Document:**
+```javascript
+{
+  name: "Rajesh Kumar",
+  designation: "Beneficiary, Punjab",
+  imageUrl: "https://ui-avatars.com/api/?name=Rajesh+Kumar&size=200",
+  text: "SikhAid saved our family during the floods. Their quick response and compassionate care gave us hope when we had lost everything.",
+  isActive: true,
+  createdAt: "2025-11-21T10:30:00.000Z",
+  updatedAt: "2025-11-21T10:30:00.000Z",
+  firestoreTimestamp: Timestamp(seconds=1732185000, nanoseconds=0)
+}
+```
+
 ## Validation Rules
 
 ### Email Validation
@@ -301,6 +451,25 @@ const MAX_AMOUNT = 500000;
 
 function validateAmount(amount: number): boolean {
   return amount >= MIN_AMOUNT && amount <= MAX_AMOUNT;
+}
+```
+
+### PAN Card Validation
+```typescript
+// PAN Card format: 5 letters + 4 digits + 1 letter (e.g., ABCDE1234F)
+const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
+
+function validatePanCard(panCard: string, amount: number): string | null {
+  // PAN is required for donations >= ₹2,000
+  if (amount >= 2000) {
+    if (!panCard || panCard.trim().length === 0) {
+      return 'PAN Card is required for donations of ₹2,000 or more';
+    }
+    if (!panRegex.test(panCard.toUpperCase())) {
+      return 'Invalid PAN format (e.g., ABCDE1234F)';
+    }
+  }
+  return null; // Valid
 }
 ```
 
@@ -430,6 +599,10 @@ async function updateStatus(
   import type { VolunteerSubmission } from '$lib/stores/volunteering';
   import type { CSRSubmission } from '$lib/stores/csr';
 
+  // Donation types
+  import type { DonationData } from '$lib/razorpay';
+  import type { Donation } from '$lib/firestore';
+
   // Firestore types
   import type {
     FirestoreContactSubmission,
@@ -457,8 +630,13 @@ async function updateStatus(
   import {
     addContactToFirestore,
     getContactSubmissions,
-    updateSubmissionStatus
+    updateSubmissionStatus,
+    addDonationToFirestore,
+    getDonations
   } from '$lib/firestore';
+
+  // Payment functions
+  import { openRazorpayCheckout, validatePanCard } from '$lib/razorpay';
 </script>
 ```
 
@@ -527,6 +705,29 @@ async function updateStatus(
   about: 'I am a certified teacher with 5 years of experience...',
   timestamp: 1704067200000,
   status: 'new'
+}
+```
+
+### Donation Example
+```javascript
+// Donation with PAN Card (amount >= ₹2,000)
+{
+  donorName: 'Amit Sharma',
+  phone: '9876543210',
+  panCard: 'ABCDE1234F',
+  amount: 5000,
+  razorpayPaymentId: 'pay_NjhKJhsd8973hs',
+  razorpayOrderId: 'order_NjhKJhsd8973hs',
+  timestamp: '2024-11-11T10:30:00.000Z'
+}
+
+// Donation without PAN Card (amount < ₹2,000)
+{
+  donorName: 'Neha Gupta',
+  phone: '9123456789',
+  amount: 1000,
+  razorpayPaymentId: 'pay_MkhsKjh8765ds',
+  timestamp: '2024-11-11T11:15:00.000Z'
 }
 ```
 

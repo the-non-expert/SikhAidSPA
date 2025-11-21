@@ -1,49 +1,37 @@
 <script lang="ts">
-	// Testimonials data
-	const testimonials = [
-		{
-			name: 'Rajesh Kumar',
-			initials: 'RK',
-			location: 'Punjab',
-			text: 'SikhAid saved our family during the floods. Their quick response and compassionate care gave us hope when we had lost everything.',
-			color: 'bg-blue-500'
-		},
-		{
-			name: 'Priya Sharma',
-			initials: 'PS',
-			location: 'Delhi',
-			text: 'I have been donating to SikhAid for 2 years. Their transparency and direct impact on communities is remarkable.',
-			color: 'bg-green-500'
-		},
-		{
-			name: 'Dr. Amit Singh',
-			initials: 'AS',
-			location: 'Mumbai',
-			text: 'As a medical volunteer with SikhAid, I have witnessed their incredible organizational skills and dedication to serving humanity.',
-			color: 'bg-purple-500'
-		},
-		{
-			name: 'Sunita Devi',
-			initials: 'SD',
-			location: 'Odisha',
-			text: 'The mobile medical units reached our remote village when no one else could. SikhAid truly serves with compassion.',
-			color: 'bg-orange-500'
-		},
-		{
-			name: 'Manpreet Kaur',
-			initials: 'MK',
-			location: 'Haryana',
-			text: 'SikhAid helped rebuild our community after the cyclone. Their long-term support made all the difference.',
-			color: 'bg-teal-500'
-		},
-		{
-			name: 'Ravi Patel',
-			initials: 'RP',
-			location: 'Gujarat',
-			text: 'Working as a corporate partner with SikhAid has shown me what true humanitarian work looks like. Exceptional organization.',
-			color: 'bg-red-500'
+	import { onMount } from 'svelte';
+	import { getTestimonials } from '$lib/firestore';
+	import type { FirestoreTestimonial } from '$lib/types/content';
+
+	// Testimonials data from Firestore
+	let testimonials: Array<{ name: string; designation: string; imageUrl: string; text: string }> = $state([]);
+	let isLoading = $state(true);
+
+	// Fetch testimonials from Firestore
+	async function loadTestimonials() {
+		try {
+			const tests = await getTestimonials();
+			// Filter only active testimonials and map to the format expected by the carousel
+			testimonials = tests
+				.filter((test) => test.isActive)
+				.map((test) => ({
+					name: test.name,
+					designation: test.designation,
+					imageUrl: test.imageUrl,
+					text: test.text
+				}));
+		} catch (error) {
+			console.error('❌ Error loading testimonials:', error);
+			// Fallback to empty array if loading fails
+			testimonials = [];
+		} finally {
+			isLoading = false;
 		}
-	];
+	}
+
+	onMount(() => {
+		loadTestimonials();
+	});
 
 	let currentTestimonial = 0;
 
@@ -85,6 +73,18 @@
 			<p class="text-xl text-gray-700 max-w-3xl mx-auto">Hear from the communities we serve and partners who support our mission</p>
 		</div>
 
+		<!-- Loading State -->
+		{#if isLoading}
+			<div class="flex flex-col items-center justify-center py-20">
+				<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-custom mb-4"></div>
+				<p class="text-gray-600">Loading testimonials...</p>
+			</div>
+		{:else if testimonials.length === 0}
+			<!-- Empty State -->
+			<div class="flex flex-col items-center justify-center py-20">
+				<p class="text-gray-600">No testimonials to display at the moment.</p>
+			</div>
+		{:else}
 		<div
 			class="relative flex items-center justify-center"
 			on:touchstart={handleTouchStart}
@@ -106,9 +106,11 @@
 			<div class="max-w-4xl w-full bg-white rounded-xl shadow-xl p-8 md:p-12 card-solid-bg">
 				<div class="text-center">
 					<div class="flex justify-center mb-6">
-						<div class="{testimonials[currentTestimonial].color} w-20 h-20 rounded-full flex items-center justify-center text-white font-bold text-2xl">
-							{testimonials[currentTestimonial].initials}
-						</div>
+						<img
+							src={testimonials[currentTestimonial].imageUrl}
+							alt={testimonials[currentTestimonial].name}
+							class="w-20 h-20 rounded-full object-cover border-4 border-orange-custom"
+						/>
 					</div>
 
 					<blockquote class="text-lg md:text-xl text-gray-700 mb-6 leading-relaxed italic">
@@ -117,7 +119,7 @@
 
 					<div class="text-center">
 						<h4 class="font-bold text-navy text-lg">{testimonials[currentTestimonial].name}</h4>
-						<p class="text-gray-600">{testimonials[currentTestimonial].location}</p>
+						<p class="text-gray-600">{testimonials[currentTestimonial].designation}</p>
 					</div>
 				</div>
 			</div>
@@ -145,6 +147,7 @@
 				></button>
 			{/each}
 		</div>
+		{/if}
 	</div>
 </section>
 

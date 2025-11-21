@@ -1,36 +1,35 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
+	import { getCelebrityCards } from '$lib/firestore';
+	import type { FirestoreCelebrityCard } from '$lib/types/content';
 
-	// Celebrity data
-	const celebrities = [
-		{
-			name: 'Banita Sandhu',
-			profession: 'Actress',
-			image: '/personalities/banita-sandhu.jpg'
-		},
-		{
-			name: 'Harbhajan Singh',
-			profession: 'Ex-Cricketer',
-			image: '/personalities/harbhajan-singh.jpg'
-		},
-		{
-			name: 'Rohanpreet Singh',
-			profession: 'Singer',
-			image: '/personalities/rohanpreet-singh.jpg'
-		},
-		{
-			name: 'ProphC',
-			profession: 'Singer',
-			image: '/personalities/prophc.jpg'
-		},
-		{
-			name: 'Jaspreet Singh',
-			profession: 'Comedian',
-			image: '/personalities/jaspreet-singh.jpg'
+	// Celebrity data from Firestore
+	let celebrities: Array<{ name: string; profession: string; image: string }> = $state([]);
+	let isLoading = $state(true);
+
+	// Fetch celebrities from Firestore
+	async function loadCelebrities() {
+		try {
+			const cards = await getCelebrityCards();
+			// Filter only active cards and map to the format expected by the carousel
+			celebrities = cards
+				.filter((card) => card.isActive)
+				.map((card) => ({
+					name: card.name,
+					profession: card.profession,
+					image: card.imageUrl
+				}));
+		} catch (error) {
+			console.error('❌ Error loading celebrity cards:', error);
+			// Fallback to empty array if loading fails
+			celebrities = [];
+		} finally {
+			isLoading = false;
 		}
-	];
+	}
 
-	const totalCelebrities = celebrities.length;
+	// Derived state
+	let totalCelebrities = $derived(celebrities.length);
 
 	// State
 	let activeIndex = $state(0);
@@ -158,9 +157,10 @@
 	}
 
 	// Lifecycle
-	onMount(() => {
+	onMount(async () => {
 		updateVisibleCards();
 		window.addEventListener('resize', updateVisibleCards);
+		await loadCelebrities();
 		startAutoPlay();
 	});
 
@@ -196,6 +196,18 @@
 			</p> -->
 		</div>
 
+		<!-- Loading State -->
+		{#if isLoading}
+			<div class="flex flex-col items-center justify-center py-20">
+				<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-custom mb-4"></div>
+				<p class="text-gray-600">Loading personalities...</p>
+			</div>
+		{:else if celebrities.length === 0}
+			<!-- Empty State -->
+			<div class="flex flex-col items-center justify-center py-20">
+				<p class="text-gray-600">No personalities to display at the moment.</p>
+			</div>
+		{:else}
 		<!-- Carousel -->
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div
@@ -267,6 +279,7 @@
 				</svg>
 			</button>
 		</div>
+		{/if}
 	</div>
 </section>
 
