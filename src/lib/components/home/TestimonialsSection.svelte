@@ -33,7 +33,7 @@
 		loadTestimonials();
 	});
 
-	let currentTestimonial = 0;
+	let currentTestimonial = $state(0);
 
 	function nextTestimonial() {
 		currentTestimonial = (currentTestimonial + 1) % testimonials.length;
