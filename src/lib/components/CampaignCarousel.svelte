@@ -1,17 +1,20 @@
 <script lang="ts">
 	import { onMount, onDestroy } from "svelte";
-	import { campaigns, featuredCampaign } from "$lib/data/campaigns.js";
+	import { getPublishedCampaigns } from "$lib/firestore";
 	import CampaignCard from "./CampaignCard.svelte";
 	import type { Campaign } from "$lib/types/campaign";
 
-	// Combine featured campaign with regular campaigns
-	const allCampaigns: Campaign[] = [featuredCampaign, ...campaigns];
-	const totalCampaigns = allCampaigns.length;
-
 	// State
+	let campaigns: Campaign[] = $state([]);
+	let loading = $state(true);
+	let error = $state("");
 	let activeIndex = $state(0);
 	let isHovered = $state(false);
 	let intervalId: number | null = null;
+
+	// Derived state
+	const allCampaigns = $derived(campaigns);
+	const totalCampaigns = $derived(allCampaigns.length);
 
 	// Touch/Swipe state for mobile
 	let touchStartX = $state(0);
@@ -134,9 +137,25 @@
 	}
 
 	// Lifecycle
-	onMount(() => {
+	onMount(async () => {
 		updateVisibleCards();
 		window.addEventListener("resize", updateVisibleCards);
+
+		// Fetch campaigns from Firestore
+		try {
+			loading = true;
+			error = "";
+			const publishedCampaigns = await getPublishedCampaigns();
+			// Filter for only ongoing campaigns
+			campaigns = publishedCampaigns.filter((c) => c.status === "ongoing");
+		} catch (err) {
+			error = err instanceof Error ? err.message : "Failed to load campaigns";
+			console.error("Error loading campaigns:", err);
+			campaigns = [];
+		} finally {
+			loading = false;
+		}
+
 		startAutoPlay();
 	});
 
@@ -168,7 +187,24 @@
 			<h2 class="section-title">Current Campaigns</h2>
 		</div>
 
-		<!-- Carousel -->
+		<!-- Loading State -->
+		{#if loading}
+			<div class="state-message loading-message">
+				<div class="spinner"></div>
+				<p>Loading campaigns...</p>
+			</div>
+		{:else if error}
+			<!-- Error State -->
+			<div class="state-message error-message">
+				<p>❌ {error}</p>
+			</div>
+		{:else if allCampaigns.length === 0}
+			<!-- Empty State -->
+			<div class="state-message empty-message">
+				<p>No ongoing campaigns at the moment.</p>
+			</div>
+		{:else}
+			<!-- Carousel -->
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div
 			class="carousel-wrapper"
@@ -253,10 +289,11 @@
 			</button>
 		</div>
 
-		<!-- View All Campaigns Button -->
-		<div class="view-all-container">
-			<a href="/campaigns" class="view-all-button">VIEW ALL CAMPAIGNS</a>
-		</div>
+			<!-- View All Campaigns Button -->
+			<div class="view-all-container">
+				<a href="/campaigns" class="view-all-button">VIEW ALL CAMPAIGNS</a>
+			</div>
+		{/if}
 	</div>
 </section>
 
@@ -266,6 +303,65 @@
 		padding: 16px 16px;
 		background: linear-gradient(to bottom, #fafafa 0%, #ffffff 100%);
 		overflow: hidden;
+	}
+
+	/* State Messages */
+	.state-message {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 350px;
+		border-radius: 12px;
+		margin-bottom: 24px;
+		font-size: 16px;
+	}
+
+	.loading-message {
+		background: #f3f4f6;
+		color: #4b5563;
+		flex-direction: column;
+		gap: 16px;
+	}
+
+	.loading-message p {
+		margin: 0;
+		font-weight: 500;
+	}
+
+	.error-message {
+		background: #fee2e2;
+		color: #991b1b;
+	}
+
+	.error-message p {
+		margin: 0;
+		font-weight: 500;
+	}
+
+	.empty-message {
+		background: #f9fafb;
+		color: #6b7280;
+	}
+
+	.empty-message p {
+		margin: 0;
+		font-weight: 500;
+	}
+
+	/* Spinner */
+	.spinner {
+		width: 40px;
+		height: 40px;
+		border: 4px solid #e5e7eb;
+		border-top-color: #ff6b35;
+		border-radius: 50%;
+		animation: spin 0.8s linear infinite;
+	}
+
+	@keyframes spin {
+		to {
+			transform: rotate(360deg);
+		}
 	}
 
 	.carousel-container {
