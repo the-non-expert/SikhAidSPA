@@ -68,7 +68,7 @@
 					</p>
 
 					<a
-						href="/donate"
+						href="https://donate.sikhaid.ngo/"
 						class="inline-block bg-orange-custom hover:bg-orange-dark text-white font-semibold px-8 py-3 rounded-lg transition-colors transform hover:scale-105"
 					>
 						Donate Now

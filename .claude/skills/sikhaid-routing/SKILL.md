@@ -36,7 +36,7 @@ src/routes/
 │   └── +page.svelte         → /contact
 │
 ├── donate/
-│   └── +page.svelte         → /donate
+│   └── +page.svelte         → https://donate.sikhaid.ngo/
 │
 ├── volunteering/
 │   └── +page.svelte         → /volunteering
@@ -77,7 +77,7 @@ src/routes/
 | `/campaigns/:slug` | `routes/campaigns/[slug]/+page.svelte` | Single campaign details | Campaign cards |
 | `/blog` | `routes/blog/+page.svelte` | All blog posts | Header nav |
 | `/blog/:slug` | `routes/blog/[slug]/+page.svelte` | Single blog post | Blog cards |
-| `/donate` | `routes/donate/+page.svelte` | Donation page with payment form | Header CTA, Hero CTA |
+| `https://donate.sikhaid.ngo/` | `routeshttps://donate.sikhaid.ngo//+page.svelte` | Donation page with payment form | Header CTA, Hero CTA |
 | `/contact` | `routes/contact/+page.svelte` | Contact form | Footer |
 | `/volunteering` | `routes/volunteering/+page.svelte` | Volunteer opportunities & form | Header dropdown |
 | `/csr` | `routes/csr/+page.svelte` | CSR partnership inquiry | Header dropdown |
@@ -204,7 +204,7 @@ src/routes/
   }
 </script>
 
-<button on:click={() => goto('/donate')}>
+<button on:click={() => goto('https://donate.sikhaid.ngo/')}>
   Donate Now
 </button>
 

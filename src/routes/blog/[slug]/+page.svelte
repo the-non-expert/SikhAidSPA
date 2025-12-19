@@ -101,7 +101,7 @@
 								<p class="text-gray-600">Your donation can make a real difference in flood victims' lives.</p>
 							</div>
 							<a
-								href="/donate"
+								href="https://donate.sikhaid.ngo/"
 								class="bg-navy hover:bg-navy-dark text-white font-semibold px-8 py-4 rounded-lg transition-colors"
 							>
 								Donate Now

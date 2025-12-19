@@ -227,7 +227,7 @@
 
 			<!-- Donate Button -->
 			<a
-				href="/donate"
+				href="https://donate.sikhaid.ngo/"
 				class="bg-orange-custom hover:bg-orange-dark text-white px-4 py-2 rounded-lg text-sm font-normal transition-colors"
 			>
 				Donate Now

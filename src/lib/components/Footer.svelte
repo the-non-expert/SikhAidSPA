@@ -133,7 +133,7 @@
 						>CSR Partnerships</a
 					>
 					<a
-						href="/donate"
+						href="https://donate.sikhaid.ngo/"
 						class="block text-gray-600 hover:text-orange-custom transition-colors"
 						>Donate Now</a
 					>

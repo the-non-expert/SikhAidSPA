@@ -56,7 +56,7 @@
 				The floods in Punjab have destroyed homes and displaced thousands of families. SikhAid is on the ground, providing food, water, shelter, and medical aid. Your support can bring hope and relief to those who have lost everything.
 			</p>
 
-			<a href="/donate" class="inline-block bg-orange-custom hover:bg-orange-dark text-white px-8 py-3 rounded-lg font-semibold text-lg transition-colors uppercase tracking-wide shadow-lg">
+			<a href="https://donate.sikhaid.ngo/" class="inline-block bg-orange-custom hover:bg-orange-dark text-white px-8 py-3 rounded-lg font-semibold text-lg transition-colors uppercase tracking-wide shadow-lg">
 				DONATE NOW
 			</a>
 		</div>
@@ -88,7 +88,7 @@
 			The floods in Punjab have destroyed homes and displaced thousands of families. SikhAid is on the ground, providing food, water, shelter, and medical aid. Your support can bring hope and relief to those who have lost everything.
 		</p>
 
-		<a href="/donate" class="inline-block bg-orange-custom hover:bg-orange-dark text-white px-6 py-3 rounded-lg font-semibold text-base transition-colors uppercase tracking-wide shadow-lg">
+		<a href="https://donate.sikhaid.ngo/" class="inline-block bg-orange-custom hover:bg-orange-dark text-white px-6 py-3 rounded-lg font-semibold text-base transition-colors uppercase tracking-wide shadow-lg">
 			DONATE NOW
 		</a>
 	</div>

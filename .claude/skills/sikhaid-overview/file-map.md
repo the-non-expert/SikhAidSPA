@@ -22,7 +22,7 @@
 | Single campaign | `src/routes/campaigns/[slug]/+page.svelte` |
 | Blog listing | `src/routes/blog/+page.svelte` |
 | Single blog post | `src/routes/blog/[slug]/+page.svelte` |
-| Donation page | `src/routes/donate/+page.svelte` |
+| Donation page | `src/routeshttps://donate.sikhaid.ngo//+page.svelte` |
 | Contact page | `src/routes/contact/+page.svelte` |
 | Volunteering page | `src/routes/volunteering/+page.svelte` |
 | CSR partnerships | `src/routes/csr/+page.svelte` |

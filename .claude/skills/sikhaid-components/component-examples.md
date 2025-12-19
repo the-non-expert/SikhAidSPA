@@ -220,7 +220,7 @@
       <h1 class="text-5xl md:text-7xl font-bold text-white animate-fade-in">
         Making a Difference
       </h1>
-      <button on:click={() => goto('/donate')} class="btn-primary">
+      <button on:click={() => goto('https://donate.sikhaid.ngo/')} class="btn-primary">
         Donate Now
       </button>
     </div>

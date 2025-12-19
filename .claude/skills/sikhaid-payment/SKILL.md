@@ -833,7 +833,7 @@ firebase deploy --only firestore:rules
 
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
       <button
-        on:click={() => goto('/donate')}
+        on:click={() => goto('https://donate.sikhaid.ngo/')}
         class="bg-orange-custom hover:bg-orange-dark text-white font-semibold py-3 px-6 rounded-lg transition-colors"
       >
         Try Again
@@ -880,7 +880,7 @@ export function setDonationAmount(amount: number) {
 
   function handleDonate(amount: number) {
     setDonationAmount(amount);
-    goto('/donate');
+    goto('https://donate.sikhaid.ngo/');
   }
 </script>
 

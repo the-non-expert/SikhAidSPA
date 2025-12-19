@@ -111,7 +111,7 @@
 						<!-- Action Buttons -->
 						<div class="flex flex-col sm:flex-row gap-4 justify-center">
 							<a
-								href="/donate"
+								href="https://donate.sikhaid.ngo/"
 								class="bg-orange-custom hover:bg-orange-dark text-white font-bold px-8 py-4 rounded-lg transition-colors text-center"
 							>
 								Donate to This Campaign
@@ -198,7 +198,7 @@
 				</div>
 				<div class="flex flex-col sm:flex-row gap-4 justify-center">
 					<a
-						href="/donate"
+						href="https://donate.sikhaid.ngo/"
 						class="bg-white text-navy font-bold px-8 py-4 rounded-lg hover:bg-gray-100 transition-colors"
 					>
 						Donate Now

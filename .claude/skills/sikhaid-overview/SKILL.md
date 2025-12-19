@@ -143,7 +143,7 @@ User Input → Svelte Store → Component Reactivity → UI Update
 ```
 
 ### Routing Pattern
-- File-based routing: `/routes/donate/+page.svelte` → `/donate`
+- File-based routing: `/routeshttps://donate.sikhaid.ngo//+page.svelte` → `https://donate.sikhaid.ngo/`
 - Dynamic routes: `/routes/campaigns/[slug]/+page.svelte` → `/campaigns/:slug`
 - Nested layouts: `+layout.svelte` files for shared wrappers
 

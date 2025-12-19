@@ -65,7 +65,7 @@
 	}
 
 	function donateAgain() {
-		goto('/donate');
+		goto('https://donate.sikhaid.ngo/');
 	}
 </script>
 
