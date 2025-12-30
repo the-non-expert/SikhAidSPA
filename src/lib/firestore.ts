@@ -19,6 +19,9 @@ import type { CSRSubmission } from './stores/csr';
 import type { Blog } from './types/blog';
 import type { Campaign } from './types/campaign';
 import type { CelebrityCard, Testimonial, FirestoreCelebrityCard, FirestoreTestimonial } from './types/content';
+import type { PressItem, FirestorePressItem } from './types/press';
+import { generateSlug, extractYoutubeId } from './types/press';
+import { pressArticles } from './data/articles';
 
 // Types for Firestore documents (includes id and status)
 export interface FirestoreContactSubmission extends ContactSubmission {
@@ -61,7 +64,8 @@ const COLLECTIONS = {
 	CAMPAIGNS: 'campaigns',
 	DONATIONS: 'donations',
 	CELEBRITY_CARDS: 'celebrity_cards',
-	TESTIMONIALS: 'testimonials'
+	TESTIMONIALS: 'testimonials',
+	PRESS_COVERAGE: 'press_coverage'
 };
 
 /**
@@ -865,14 +869,16 @@ export async function getCelebrityCards(): Promise<FirestoreCelebrityCard[]> {
 		console.log('🟢 [getCelebrityCards] Query created, calling getDocs()...');
 
 		// Add timeout to Firestore operation
-		const timeout = new Promise<never>((_, reject) =>
-			setTimeout(() => {
+		let timeoutId: NodeJS.Timeout;
+		const timeout = new Promise<never>((_, reject) => {
+			timeoutId = setTimeout(() => {
 				console.error('⏰ [getCelebrityCards] Firestore getDocs() TIMEOUT after 8 seconds!');
 				reject(new Error('Firestore query timeout (celebrity_cards)'));
-			}, 8000)
-		);
+			}, 8000);
+		});
 
 		const querySnapshot = await Promise.race([getDocs(q), timeout]);
+		clearTimeout(timeoutId!); // Clear timeout on success
 		console.log('🟢 [getCelebrityCards] getDocs() completed successfully');
 
 		const cards: FirestoreCelebrityCard[] = [];
@@ -1002,14 +1008,16 @@ export async function getTestimonials(): Promise<FirestoreTestimonial[]> {
 		console.log('🟡 [getTestimonials] Query created, calling getDocs()...');
 
 		// Add timeout to Firestore operation
-		const timeout = new Promise<never>((_, reject) =>
-			setTimeout(() => {
+		let timeoutId: NodeJS.Timeout;
+		const timeout = new Promise<never>((_, reject) => {
+			timeoutId = setTimeout(() => {
 				console.error('⏰ [getTestimonials] Firestore getDocs() TIMEOUT after 8 seconds!');
 				reject(new Error('Firestore query timeout (testimonials)'));
-			}, 8000)
-		);
+			}, 8000);
+		});
 
 		const querySnapshot = await Promise.race([getDocs(q), timeout]);
+		clearTimeout(timeoutId!); // Clear timeout on success
 		console.log('🟡 [getTestimonials] getDocs() completed successfully');
 
 		const testimonials: FirestoreTestimonial[] = [];
@@ -1072,6 +1080,271 @@ export async function deleteTestimonial(id: string): Promise<void> {
 		await deleteDoc(docRef);
 	} catch (error) {
 		console.error('❌ Error deleting testimonial:', error);
+		throw error;
+	}
+}
+
+/**
+ * ========================================
+ * PRESS COVERAGE FUNCTIONS
+ * ========================================
+ */
+
+/**
+ * Add a press item (article or video)
+ */
+export async function addPressItem(item: Omit<PressItem, 'id' | 'createdAt' | 'updatedAt' | 'firestoreTimestamp'>): Promise<string> {
+	await ensureFirebaseInitialized();
+
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		// Generate slug from title
+		const slug = generateSlug(item.title);
+
+		// Extract YouTube ID if video
+		let youtubeId: string | undefined = undefined;
+		if (item.type === 'video' && item.youtubeUrl) {
+			const extractedId = extractYoutubeId(item.youtubeUrl);
+			if (!extractedId) {
+				throw new Error('Invalid YouTube URL');
+			}
+			youtubeId = extractedId;
+		}
+
+		const pressData = removeUndefinedFields({
+			...item,
+			slug,
+			youtubeId,
+			createdAt: new Date().toISOString(),
+			updatedAt: new Date().toISOString(),
+			firestoreTimestamp: serverTimestamp() as any
+		});
+
+		const docRef = await addDoc(collection(db, COLLECTIONS.PRESS_COVERAGE), pressData);
+		console.log('✅ Press item added:', docRef.id);
+		return docRef.id;
+	} catch (error) {
+		console.error('❌ Error adding press item:', error);
+		throw error;
+	}
+}
+
+/**
+ * Get all press items (admin view - includes inactive)
+ */
+export async function getAllPressItems(): Promise<FirestorePressItem[]> {
+	await ensureFirebaseInitialized();
+
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		const q = query(
+			collection(db, COLLECTIONS.PRESS_COVERAGE),
+			orderBy('firestoreTimestamp', 'desc')
+		);
+
+		const querySnapshot = await getDocs(q);
+		const items: FirestorePressItem[] = [];
+
+		querySnapshot.forEach((doc) => {
+			items.push({
+				id: doc.id,
+				...doc.data()
+			} as FirestorePressItem);
+		});
+
+		console.log(`✅ Fetched ${items.length} press items (all)`);
+		return items;
+	} catch (error) {
+		console.error('❌ Error fetching all press items:', error);
+		throw error;
+	}
+}
+
+/**
+ * Get active press items (public view - only active items)
+ */
+export async function getActivePressItems(): Promise<FirestorePressItem[]> {
+	await ensureFirebaseInitialized();
+
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		const q = query(
+			collection(db, COLLECTIONS.PRESS_COVERAGE),
+			orderBy('firestoreTimestamp', 'desc')
+		);
+
+		const querySnapshot = await getDocs(q);
+		const items: FirestorePressItem[] = [];
+
+		querySnapshot.forEach((doc) => {
+			const data = doc.data() as PressItem;
+			if (data.isActive) {
+				items.push({
+					id: doc.id,
+					...data
+				} as FirestorePressItem);
+			}
+		});
+
+		console.log(`✅ Fetched ${items.length} active press items`);
+		return items;
+	} catch (error) {
+		console.error('❌ Error fetching active press items:', error);
+		throw error;
+	}
+}
+
+/**
+ * Get a single press item by ID
+ */
+export async function getPressItemById(id: string): Promise<FirestorePressItem | null> {
+	await ensureFirebaseInitialized();
+
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		const docRef = doc(db, COLLECTIONS.PRESS_COVERAGE, id);
+		const docSnap = await getDoc(docRef);
+
+		if (docSnap.exists()) {
+			return {
+				id: docSnap.id,
+				...docSnap.data()
+			} as FirestorePressItem;
+		}
+
+		return null;
+	} catch (error) {
+		console.error('❌ Error fetching press item by ID:', error);
+		throw error;
+	}
+}
+
+/**
+ * Update a press item
+ */
+export async function updatePressItem(id: string, updates: Partial<PressItem>): Promise<void> {
+	await ensureFirebaseInitialized();
+
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		// Regenerate slug if title changed
+		let slug = updates.slug;
+		if (updates.title && !slug) {
+			slug = generateSlug(updates.title);
+		}
+
+		// Extract YouTube ID if video URL changed
+		let youtubeId = updates.youtubeId;
+		if (updates.type === 'video' && updates.youtubeUrl) {
+			const extractedId = extractYoutubeId(updates.youtubeUrl);
+			if (!extractedId) {
+				throw new Error('Invalid YouTube URL');
+			}
+			youtubeId = extractedId;
+		}
+
+		const updateData = {
+			...removeUndefinedFields(updates),
+			...(slug && { slug }),
+			...(youtubeId && { youtubeId }),
+			updatedAt: new Date().toISOString()
+		};
+
+		const docRef = doc(db, COLLECTIONS.PRESS_COVERAGE, id);
+		await updateDoc(docRef, updateData);
+		console.log('✅ Press item updated:', id);
+	} catch (error) {
+		console.error('❌ Error updating press item:', error);
+		throw error;
+	}
+}
+
+/**
+ * Delete a press item
+ */
+export async function deletePressItem(id: string): Promise<void> {
+	await ensureFirebaseInitialized();
+
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		const docRef = doc(db, COLLECTIONS.PRESS_COVERAGE, id);
+		await deleteDoc(docRef);
+		console.log('✅ Press item deleted:', id);
+	} catch (error) {
+		console.error('❌ Error deleting press item:', error);
+		throw error;
+	}
+}
+
+/**
+ * Migrate existing press articles from static data
+ * One-time migration function
+ */
+export async function migratePressData(): Promise<{ success: boolean; count: number; message: string }> {
+	await ensureFirebaseInitialized();
+
+	if (!db) {
+		throw new Error('Firestore is not initialized. Please check your Firebase configuration.');
+	}
+
+	try {
+		// Check if data already exists
+		const existing = await getAllPressItems();
+		if (existing.length > 0) {
+			return {
+				success: false,
+				count: 0,
+				message: 'Press data already exists. Migration skipped to prevent duplicates.'
+			};
+		}
+
+		let migratedCount = 0;
+
+		// Migrate each article
+		for (const article of pressArticles) {
+			const pressItem: Omit<PressItem, 'id' | 'createdAt' | 'updatedAt' | 'firestoreTimestamp'> = {
+				type: 'article',
+				title: article.title,
+				description: article.description,
+				publishedDate: article.publishedDate,
+				category: article.category,
+				tags: article.tags || [],
+				isActive: true,
+				slug: article.slug,
+				link: article.link,
+				image: article.image
+			};
+
+			await addPressItem(pressItem);
+			migratedCount++;
+		}
+
+		console.log(`✅ Successfully migrated ${migratedCount} press articles`);
+		return {
+			success: true,
+			count: migratedCount,
+			message: `Successfully migrated ${migratedCount} press articles from static data.`
+		};
+	} catch (error) {
+		console.error('❌ Error migrating press data:', error);
 		throw error;
 	}
 }

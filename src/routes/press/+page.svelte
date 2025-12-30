@@ -1,6 +1,23 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import Icon from '@iconify/svelte';
-  import { pressArticles, categoryColors } from '$lib/data/articles';
+  import { getActivePressItems, type FirestorePressItem } from '$lib/firestore';
+  import { categoryColors } from '$lib/types/press';
+
+  // Tab state
+  let activeTab = $state<'articles' | 'videos'>('articles');
+
+  // Data
+  let pressItems: FirestorePressItem[] = $state([]);
+  let loading = $state(true);
+
+  // Derived filtered data
+  const articles = $derived(pressItems.filter(item => item.type === 'article'));
+  const videos = $derived(pressItems.filter(item => item.type === 'video'));
+  const displayedItems = $derived(activeTab === 'articles' ? articles : videos);
+
+  // Video player state (for facade pattern)
+  let playingVideoId = $state<string | null>(null);
 
   /**
    * Format date for display
@@ -29,6 +46,28 @@
 
     return dateString;
   }
+
+  // Get category badge color
+  function getCategoryColor(category: string): string {
+    return categoryColors[category] || categoryColors['default'];
+  }
+
+  // Play video (facade pattern)
+  function playVideo(youtubeId: string) {
+    playingVideoId = youtubeId;
+  }
+
+  // Load data on mount
+  onMount(async () => {
+    try {
+      loading = true;
+      pressItems = await getActivePressItems();
+    } catch (error) {
+      console.error('Error loading press coverage:', error);
+    } finally {
+      loading = false;
+    }
+  });
 </script>
 
 <svelte:head>
@@ -62,80 +101,194 @@
   </div>
 </section>
 
-<!-- Articles Grid Section -->
+<!-- Tabbed Navigation -->
+<section class="bg-gray-50 border-b border-gray-200">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="flex justify-center gap-0">
+      <button
+        type="button"
+        class="tab-button {activeTab === 'articles' ? 'active' : ''}"
+        onclick={() => activeTab = 'articles'}
+      >
+        Articles ({articles.length})
+      </button>
+      <button
+        type="button"
+        class="tab-button {activeTab === 'videos' ? 'active' : ''}"
+        onclick={() => activeTab = 'videos'}
+      >
+        Videos ({videos.length})
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Content Display -->
 <section class="py-12 md:py-16 lg:py-24 bg-gray-50">
   <div class="container mx-auto px-4 md:px-8 lg:px-16">
-    <!-- Section Header -->
-    <!-- <div class="text-center mb-12">
-      <h2 class="text-3xl md:text-4xl font-bold text-navy-custom mb-4">
-        Media Features
-      </h2>
-      <p class="text-gray-600 max-w-2xl mx-auto">
-        {pressArticles.length} articles featuring our humanitarian initiatives and community impact
-      </p>
-    </div> -->
-
-    <!-- Articles Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-6 lg:gap-6">
-      {#each pressArticles as article, index}
-        <article
-          class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl animate-fade-in card-solid-bg"
-          style="animation-delay: {index * 100}ms"
-        >
-          <!-- Article Image -->
-          <div class="relative h-48 overflow-hidden bg-gray-200">
-            <img
-              src={article.image}
-              alt={article.title}
-              class="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
-              loading="lazy"
-            />
-
-            <!-- Category Badge -->
-            <div class="absolute top-4 left-4">
-              <span
-                class="px-3 py-1 rounded-full text-xs font-semibold text-white shadow-md {categoryColors[article.category]}"
-              >
-                {article.category}
-              </span>
-            </div>
-          </div>
-
-          <!-- Article Content -->
-          <div class="p-6">
-            <!-- Title -->
-            <h3 class="text-xl font-bold text-navy-custom mb-3 line-clamp-2 min-h-[3.5rem]">
-              {article.title}
-            </h3>
-
-            <!-- Description -->
-            <p class="text-gray-600 text-sm mb-4 line-clamp-3 min-h-[4rem]">
-              {article.description}
-            </p>
-
-            <!-- Meta Info -->
-            <div class="flex items-center justify-between mb-4">
-              <time datetime={article.publishedDate} class="text-xs text-gray-500 flex items-center">
-                <Icon icon="mdi:calendar" class="mr-1" />
-                {formatDate(article.publishedDate)}
-              </time>
-            </div>
-
-            <!-- Read More Button -->
-            <a
-              href={article.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="flex items-center justify-center w-full bg-orange-custom hover:bg-orange-dark text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-300"
-              aria-label="Read {article.title} on external site"
+    {#if loading}
+      <div class="text-center py-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-custom mx-auto mb-4"></div>
+        <p class="text-gray-600">Loading press coverage...</p>
+      </div>
+    {:else if displayedItems.length === 0}
+      <div class="text-center py-12">
+        <p class="text-gray-600 text-lg">No {activeTab} available at the moment.</p>
+      </div>
+    {:else}
+      <!-- Articles Grid (4 columns) -->
+      {#if activeTab === 'articles'}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-6 lg:gap-6">
+          {#each displayedItems as article, index}
+            <article
+              class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl animate-fade-in card-solid-bg"
+              style="animation-delay: {index * 100}ms"
             >
-              Read More
-              <Icon icon="mdi:arrow-right" class="ml-2" />
-            </a>
-          </div>
-        </article>
-      {/each}
-    </div>
+              <!-- Article Image -->
+              <div class="relative h-48 overflow-hidden bg-gray-200">
+                <img
+                  src={article.image}
+                  alt={article.title}
+                  class="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                  loading="lazy"
+                />
+
+                <!-- Category Badge -->
+                <div class="absolute top-4 left-4">
+                  <span
+                    class="px-3 py-1 rounded-full text-xs font-semibold text-white shadow-md {getCategoryColor(article.category)}"
+                  >
+                    {article.category}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Article Content -->
+              <div class="p-6">
+                <!-- Title -->
+                <h3 class="text-xl font-bold text-navy-custom mb-3 line-clamp-2 min-h-[3.5rem]">
+                  {article.title}
+                </h3>
+
+                <!-- Description -->
+                <p class="text-gray-600 text-sm mb-4 line-clamp-3 min-h-[4rem]">
+                  {article.description}
+                </p>
+
+                <!-- Meta Info -->
+                <div class="flex items-center justify-between mb-4">
+                  <time datetime={article.publishedDate} class="text-xs text-gray-500 flex items-center">
+                    <Icon icon="mdi:calendar" class="mr-1" />
+                    {formatDate(article.publishedDate)}
+                  </time>
+                </div>
+
+                <!-- Read More Button -->
+                <a
+                  href={article.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="flex items-center justify-center w-full bg-orange-custom hover:bg-orange-dark text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-300"
+                  aria-label="Read {article.title} on external site"
+                >
+                  Read More
+                  <Icon icon="mdi:arrow-right" class="ml-2" />
+                </a>
+              </div>
+            </article>
+          {/each}
+        </div>
+      {/if}
+
+      <!-- Videos Grid (2-3 columns responsive) -->
+      {#if activeTab === 'videos'}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          {#each displayedItems as video, index}
+            <article
+              class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl animate-fade-in card-solid-bg"
+              style="animation-delay: {index * 100}ms"
+            >
+              <!-- Video Thumbnail/Player -->
+              <div class="relative h-64 overflow-hidden bg-gray-200">
+                {#if playingVideoId === video.youtubeId}
+                  <!-- YouTube iframe (loaded on demand) -->
+                  <iframe
+                    src="https://www.youtube.com/embed/{video.youtubeId}?autoplay=1"
+                    title={video.title}
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+                    class="w-full h-full"
+                  ></iframe>
+                {:else}
+                  <!-- YouTube Thumbnail (facade pattern for performance) -->
+                  <img
+                    src="https://img.youtube.com/vi/{video.youtubeId}/hqdefault.jpg"
+                    alt={video.title}
+                    class="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+
+                  <!-- Play Button Overlay -->
+                  <button
+                    onclick={() => playVideo(video.youtubeId!)}
+                    class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 hover:bg-opacity-50 transition-all group"
+                    aria-label="Play {video.title}"
+                  >
+                    <div class="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                      <Icon icon="mdi:play" class="text-white text-4xl ml-1" />
+                    </div>
+                  </button>
+
+                  <!-- Category Badge -->
+                  <div class="absolute top-4 left-4">
+                    <span
+                      class="px-3 py-1 rounded-full text-xs font-semibold text-white shadow-md {getCategoryColor(video.category)} flex items-center gap-1"
+                    >
+                      <Icon icon="mdi:video" class="text-sm" />
+                      {video.category}
+                    </span>
+                  </div>
+                {/if}
+              </div>
+
+              <!-- Video Content -->
+              <div class="p-6">
+                <!-- Title -->
+                <h3 class="text-xl font-bold text-navy-custom mb-3 line-clamp-2 min-h-[3.5rem]">
+                  {video.title}
+                </h3>
+
+                <!-- Description -->
+                <p class="text-gray-600 text-sm mb-4 line-clamp-3 min-h-[4rem]">
+                  {video.description}
+                </p>
+
+                <!-- Meta Info -->
+                <div class="flex items-center justify-between mb-4">
+                  <time datetime={video.publishedDate} class="text-xs text-gray-500 flex items-center">
+                    <Icon icon="mdi:calendar" class="mr-1" />
+                    {formatDate(video.publishedDate)}
+                  </time>
+                </div>
+
+                <!-- Watch on YouTube Button -->
+                <a
+                  href={video.youtubeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="flex items-center justify-center w-full bg-orange-custom hover:bg-orange-dark text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-300"
+                  aria-label="Watch {video.title} on YouTube"
+                >
+                  <Icon icon="mdi:youtube" class="mr-2 text-xl" />
+                  Watch on YouTube
+                </a>
+              </div>
+            </article>
+          {/each}
+        </div>
+      {/if}
+    {/if}
 
     <!-- Bottom CTA -->
     <div class="text-center mt-16">
@@ -170,6 +323,10 @@
     background-color: var(--navy);
   }
 
+  .hover\:bg-navy-dark:hover {
+    background-color: var(--navy-dark);
+  }
+
   .text-navy-custom {
     color: var(--navy);
   }
@@ -187,6 +344,10 @@
   }
 
   .hover\:bg-orange-dark:hover {
+    background-color: var(--orange-dark);
+  }
+
+  .bg-orange-dark {
     background-color: var(--orange-dark);
   }
 
@@ -221,6 +382,38 @@
         rgba(255, 255, 255, 0.1) 50px
       );
     background-size: 50px 50px;
+  }
+
+  /* Tabbed Navigation */
+  .tab-button {
+    padding: 16px 32px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #6b7280;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .tab-button:hover {
+    color: var(--navy);
+  }
+
+  .tab-button.active {
+    color: var(--orange);
+    border-bottom-color: var(--orange);
+    font-weight: 600;
+  }
+
+  /* Responsive tab buttons */
+  @media (max-width: 640px) {
+    .tab-button {
+      padding: 12px 20px;
+      font-size: 14px;
+    }
   }
 
   /* Line clamp utilities for text truncation */
@@ -266,5 +459,9 @@
 
   .bg-red-600 {
     background-color: #dc2626;
+  }
+
+  .bg-gray-600 {
+    background-color: #4b5563;
   }
 </style>
